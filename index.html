@@ -1,1225 +1,525 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>WR Hacks</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, set, push, onValue, update, get, child, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD13N4-9MjTrmlPwGP7mves0Exje4v2ACw",
+      authDomain: "kahoot-8529e.firebaseapp.com",
+      databaseURL: "https://kahoot-8529e-default-rtdb.firebaseio.com",
+      projectId: "kahoot-8529e",
+      storageBucket: "kahoot-8529e.firebasestorage.app",
+      messagingSenderId: "313414356056",
+      appId: "1:313414356056:web:4aab4587f7df9393008e2d",
+      measurementId: "G-8T4CPC1BQ3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const analytics = getAnalytics(app);
+    window.db = database;
+    window.firebaseRef = ref;
+    window.firebaseSet = set;
+    window.firebaseOnValue = onValue;
+    window.firebasePush = push;
+    window.firebaseUpdate = update;
+    window.firebaseServerTimestamp = serverTimestamp;
+  </script>
   <style>
-    :root {
-      --bg: #050810;
-      --surface: #0d1117;
-      --card: #111827;
-      --border: #1e2d3d;
-      --accent: #00f5ff;
-      --accent2: #7c3aed;
-      --accent3: #10b981;
-      --danger: #ef4444;
-      --text: #e2e8f0;
-      --muted: #64748b;
-      --gold: #f59e0b;
+    * { box-sizing: border-box; margin: 0; font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+    body {
+      background: #0b0f1a;
+      color: #eef2fb;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior: smooth; }
-
-```
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Exo 2', sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
-}
-
-/* GRID BG */
-body::before {
-  content:'';
-  position:fixed; inset:0;
-  background-image:
-    linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events:none;
-  z-index:0;
-}
-
-/* LANG SELECTOR */
-#lang-bar {
-  position:fixed; top:12px; right:60px; z-index:999;
-  display:flex; gap:6px;
-}
-.lang-btn {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  padding: 4px 12px; border-radius:20px;
-  cursor:pointer; font-size:12px; font-family:'Exo 2',sans-serif;
-  transition:all .2s;
-}
-.lang-btn.active { border-color:var(--accent); color:var(--accent); }
-
-/* ADMIN BUTTON */
-#admin-btn {
-  position:fixed; top:12px; right:12px; z-index:999;
-  width:36px; height:36px; border-radius:50%;
-  background:var(--surface); border:1px solid var(--border);
-  color:var(--accent); font-size:18px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-  transition:all .3s;
-}
-#admin-btn:hover { border-color:var(--accent); box-shadow:0 0 12px var(--accent); }
-
-/* HEADER */
-header {
-  position:relative; z-index:10;
-  text-align:center; padding:80px 20px 40px;
-}
-.logo {
-  font-family:'Orbitron',monospace;
-  font-size:clamp(2.5rem,8vw,5rem);
-  font-weight:900;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  letter-spacing:6px;
-  text-shadow:none;
-  animation: glitch 4s infinite;
-}
-@keyframes glitch {
-  0%,90%,100% { filter: none; }
-  92% { filter: hue-rotate(90deg) brightness(1.5); transform:translateX(2px); }
-  94% { filter: hue-rotate(-90deg); transform:translateX(-2px); }
-  96% { filter: none; transform:translateX(0); }
-}
-.tagline {
-  color:var(--muted); font-size:14px; letter-spacing:4px;
-  margin-top:8px; text-transform:uppercase;
-}
-
-/* NAV BUTTONS */
-.nav-buttons {
-  display:flex; gap:16px; justify-content:center;
-  margin:40px auto; flex-wrap:wrap;
-  position:relative; z-index:10;
-}
-.nav-btn {
-  padding:14px 36px; border-radius:4px;
-  font-family:'Orbitron',monospace; font-size:13px; font-weight:700;
-  letter-spacing:2px; cursor:pointer; border:none;
-  transition:all .3s; text-transform:uppercase;
-  position:relative; overflow:hidden;
-}
-.nav-btn::before {
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
-  transform:translateX(-100%); transition:transform .4s;
-}
-.nav-btn:hover::before { transform:translateX(100%); }
-.btn-premium {
-  background:linear-gradient(135deg,#7c3aed,#4f46e5);
-  color:#fff; box-shadow:0 0 20px rgba(124,58,237,0.4);
-}
-.btn-premium:hover { box-shadow:0 0 35px rgba(124,58,237,0.7); transform:translateY(-2px); }
-.btn-demo {
-  background:transparent; color:var(--accent);
-  border:1px solid var(--accent); box-shadow:0 0 15px rgba(0,245,255,0.2);
-}
-.btn-demo:hover { background:rgba(0,245,255,0.08); box-shadow:0 0 30px rgba(0,245,255,0.4); transform:translateY(-2px); }
-
-/* SECTIONS */
-.section {
-  display:none; max-width:900px; margin:0 auto;
-  padding:20px 20px 60px; position:relative; z-index:10;
-  animation: fadeIn .4s ease;
-}
-.section.active { display:block; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-
-/* URL BAR SIMULATION */
-.url-bar {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:6px; padding:8px 16px; margin-bottom:24px;
-  font-family:monospace; font-size:13px; color:var(--muted);
-  display:flex; align-items:center; gap:8px;
-}
-.url-dot { width:8px; height:8px; border-radius:50%; background:var(--accent3); }
-
-/* PREMIUM PLAN */
-.plan-card {
-  background:var(--card);
-  border:1px solid var(--accent2);
-  border-radius:12px; padding:36px;
-  box-shadow:0 0 40px rgba(124,58,237,0.2);
-  position:relative; overflow:hidden;
-}
-.plan-card::before {
-  content:'PREMIUM';
-  position:absolute; top:16px; right:-28px;
-  background:var(--gold); color:#000;
-  font-family:'Orbitron',monospace; font-size:10px; font-weight:900;
-  padding:4px 48px; transform:rotate(35deg);
-  letter-spacing:2px;
-}
-.plan-title {
-  font-family:'Orbitron',monospace; font-size:1.6rem;
-  color:var(--accent2); margin-bottom:8px;
-}
-.plan-price {
-  font-family:'Orbitron',monospace; font-size:3rem;
-  font-weight:900; color:var(--text);
-  margin:16px 0;
-}
-.plan-price span { font-size:1.2rem; color:var(--muted); }
-.features-grid {
-  display:grid; grid-template-columns:1fr 1fr;
-  gap:12px; margin:28px 0;
-}
-@media(max-width:580px){ .features-grid{grid-template-columns:1fr;} }
-.feature-item {
-  background:rgba(0,245,255,0.04);
-  border:1px solid var(--border); border-radius:8px;
-  padding:14px 16px; display:flex; gap:10px; align-items:flex-start;
-}
-.feature-icon { font-size:20px; flex-shrink:0; margin-top:2px; }
-.feature-name { font-weight:600; font-size:14px; color:var(--text); }
-.feature-desc { font-size:12px; color:var(--muted); margin-top:3px; }
-
-.buy-btn {
-  width:100%; padding:18px; margin-top:20px;
-  background:linear-gradient(135deg,#7c3aed,#4f46e5);
-  color:#fff; border:none; border-radius:8px;
-  font-family:'Orbitron',monospace; font-size:15px; font-weight:700;
-  letter-spacing:2px; cursor:pointer;
-  box-shadow:0 0 25px rgba(124,58,237,0.5);
-  transition:all .3s;
-}
-.buy-btn:hover { box-shadow:0 0 45px rgba(124,58,237,0.8); transform:translateY(-2px); }
-
-/* IFRAME OVERLAY */
-#iframe-overlay {
-  display:none; position:fixed; inset:0; z-index:500;
-  background:rgba(5,8,16,0.95);
-  flex-direction:column;
-}
-#iframe-overlay.active { display:flex; }
-#iframe-header {
-  display:flex; align-items:center; gap:12px;
-  padding:10px 16px;
-  background:var(--surface); border-bottom:1px solid var(--border);
-}
-#iframe-url {
-  flex:1; background:var(--bg); border:1px solid var(--border);
-  border-radius:4px; padding:6px 12px; color:var(--muted);
-  font-family:monospace; font-size:13px;
-}
-#iframe-close {
-  background:var(--danger); border:none; color:#fff;
-  width:32px; height:32px; border-radius:4px; cursor:pointer;
-  font-size:16px; display:flex; align-items:center; justify-content:center;
-}
-#iframe-frame {
-  flex:1; border:none; width:100%;
-}
-
-/* DEMO SECTION */
-.demo-options {
-  display:grid; gap:16px;
-}
-.demo-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:10px; padding:28px; cursor:pointer;
-  transition:all .3s; display:flex; gap:18px; align-items:center;
-}
-.demo-card:hover { border-color:var(--accent); box-shadow:0 0 20px rgba(0,245,255,0.15); }
-.demo-icon { font-size:2.2rem; }
-.demo-label { font-family:'Orbitron',monospace; font-size:15px; font-weight:700; margin-bottom:5px; }
-.demo-sublabel { font-size:13px; color:var(--muted); }
-
-/* GMAIL FORM */
-#gmail-form-wrap, #call-wrap, #calendar-wrap {
-  display:none; margin-top:20px;
-  animation:fadeIn .3s ease;
-}
-#gmail-form-wrap.show, #call-wrap.show, #calendar-wrap.show { display:block; }
-
-.form-group { margin-bottom:16px; }
-.form-label { font-size:13px; color:var(--muted); margin-bottom:6px; display:block; }
-.form-input, .form-textarea {
-  width:100%; background:var(--surface);
-  border:1px solid var(--border); border-radius:6px;
-  padding:12px 14px; color:var(--text);
-  font-family:'Exo 2',sans-serif; font-size:14px;
-  transition:border-color .2s;
-}
-.form-input:focus, .form-textarea:focus {
-  outline:none; border-color:var(--accent);
-}
-.form-textarea { min-height:100px; resize:vertical; }
-.send-btn {
-  padding:12px 32px; background:var(--accent3);
-  border:none; border-radius:6px; color:#000;
-  font-family:'Orbitron',monospace; font-size:13px; font-weight:700;
-  cursor:pointer; transition:all .3s;
-}
-.send-btn:hover { box-shadow:0 0 20px rgba(16,185,129,0.5); transform:translateY(-1px); }
-
-/* GMAIL IFRAME */
-#gmail-iframe-wrap {
-  display:none; margin-top:20px;
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:8px; overflow:hidden;
-}
-#gmail-iframe-wrap.show { display:block; }
-#gmail-iframe-wrap iframe { width:100%; height:500px; border:none; }
-
-/* CALL */
-.call-card {
-  background:var(--card); border:1px solid var(--accent3);
-  border-radius:12px; padding:32px; text-align:center;
-  box-shadow:0 0 30px rgba(16,185,129,0.1);
-}
-.call-status { font-size:13px; color:var(--muted); margin-bottom:20px; }
-.call-btn-ring {
-  width:80px; height:80px; border-radius:50%;
-  background:linear-gradient(135deg,var(--accent3),#059669);
-  border:none; color:#fff; font-size:32px; cursor:pointer;
-  margin:0 auto 20px; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 0 0 0 rgba(16,185,129,0.6);
-  animation:none; transition:transform .2s;
-}
-.call-btn-ring.ringing {
-  animation:ring-pulse 1.2s infinite;
-}
-@keyframes ring-pulse {
-  0% { box-shadow:0 0 0 0 rgba(16,185,129,0.6); }
-  70% { box-shadow:0 0 0 20px rgba(16,185,129,0); }
-  100% { box-shadow:0 0 0 0 rgba(16,185,129,0); }
-}
-#call-log { font-size:13px; color:var(--muted); min-height:24px; }
-
-/* CALENDAR SCHEDULE */
-.cal-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:12px; padding:28px;
-}
-.cal-title { font-family:'Orbitron',monospace; font-size:1rem; color:var(--accent); margin-bottom:20px; }
-.cal-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-@media(max-width:500px){ .cal-grid{grid-template-columns:1fr;} }
-
-/* MODAL */
-.modal-bg {
-  display:none; position:fixed; inset:0; z-index:800;
-  background:rgba(5,8,16,0.92); align-items:center; justify-content:center;
-}
-.modal-bg.active { display:flex; }
-.modal {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:12px; padding:36px; width:90%; max-width:420px;
-  animation:fadeIn .3s ease;
-}
-.modal-title {
-  font-family:'Orbitron',monospace; font-size:1rem;
-  color:var(--accent); margin-bottom:20px; text-align:center;
-}
-.modal-input {
-  width:100%; background:var(--surface);
-  border:1px solid var(--border); border-radius:6px;
-  padding:12px 14px; color:var(--text); font-size:14px;
-  font-family:'Exo 2',sans-serif; margin-bottom:16px;
-  letter-spacing:4px; text-align:center;
-}
-.modal-input:focus { outline:none; border-color:var(--accent); }
-.modal-actions { display:flex; gap:10px; }
-.modal-ok {
-  flex:1; padding:12px; background:var(--accent);
-  border:none; border-radius:6px; color:#000;
-  font-family:'Orbitron',monospace; font-size:12px; font-weight:700;
-  cursor:pointer; letter-spacing:1px;
-}
-.modal-cancel {
-  flex:1; padding:12px; background:transparent;
-  border:1px solid var(--border); border-radius:6px; color:var(--muted);
-  font-family:'Exo 2',sans-serif; font-size:14px; cursor:pointer;
-}
-.modal-err { color:var(--danger); font-size:13px; text-align:center; margin-top:10px; display:none; }
-
-/* ADMIN PANEL */
-#admin-panel {
-  display:none; max-width:900px; margin:0 auto;
-  padding:20px 20px 60px; position:relative; z-index:10;
-  animation:fadeIn .4s ease;
-}
-#admin-panel.active { display:block; }
-.admin-title {
-  font-family:'Orbitron',monospace; font-size:1.4rem;
-  color:var(--accent); margin-bottom:24px;
-  display:flex; align-items:center; gap:12px;
-}
-.admin-tabs {
-  display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;
-}
-.admin-tab {
-  padding:8px 20px; border-radius:4px;
-  background:var(--surface); border:1px solid var(--border);
-  color:var(--muted); cursor:pointer; font-size:13px;
-  transition:all .2s;
-}
-.admin-tab.active { border-color:var(--accent); color:var(--accent); }
-
-.admin-section { display:none; }
-.admin-section.active { display:block; }
-
-/* CALL LOGS TABLE */
-.log-table { width:100%; border-collapse:collapse; font-size:13px; }
-.log-table th {
-  text-align:left; padding:10px 14px;
-  border-bottom:1px solid var(--border);
-  color:var(--muted); font-weight:600;
-  font-family:'Orbitron',monospace; font-size:11px; letter-spacing:1px;
-}
-.log-table td {
-  padding:12px 14px; border-bottom:1px solid rgba(30,45,61,0.5);
-}
-.log-table tr:hover td { background:rgba(0,245,255,0.03); }
-.badge {
-  display:inline-block; padding:3px 10px; border-radius:20px;
-  font-size:11px; font-weight:600;
-}
-.badge-live { background:rgba(16,185,129,0.15); color:var(--accent3); border:1px solid var(--accent3); }
-.badge-missed { background:rgba(239,68,68,0.1); color:var(--danger); border:1px solid var(--danger); }
-.badge-ended { background:rgba(100,116,139,0.1); color:var(--muted); border:1px solid var(--muted); }
-
-/* CALENDAR REQUESTS */
-.cal-request-card {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:8px; padding:20px; margin-bottom:12px;
-}
-.cal-request-info { margin-bottom:14px; }
-.cal-request-info b { color:var(--text); }
-.cal-request-info span { color:var(--muted); font-size:13px; }
-.cal-actions { display:flex; gap:8px; }
-.cal-accept {
-  padding:8px 20px; background:var(--accent3);
-  border:none; border-radius:4px; color:#000;
-  font-weight:700; cursor:pointer; font-size:13px;
-}
-.cal-reject {
-  padding:8px 20px; background:transparent;
-  border:1px solid var(--danger); border-radius:4px;
-  color:var(--danger); cursor:pointer; font-size:13px;
-}
-.status-badge {
-  display:inline-block; padding:4px 14px; border-radius:20px;
-  font-size:11px; font-weight:700; margin-left:8px;
-}
-.status-pending { background:rgba(245,158,11,0.15); color:var(--gold); border:1px solid var(--gold); }
-.status-accepted { background:rgba(16,185,129,0.15); color:var(--accent3); border:1px solid var(--accent3); }
-.status-rejected { background:rgba(239,68,68,0.1); color:var(--danger); border:1px solid var(--danger); }
-
-/* LIVE CALL INDICATOR */
-#live-call-banner {
-  display:none; position:fixed; bottom:20px; right:20px;
-  background:var(--card); border:1px solid var(--accent3);
-  border-radius:12px; padding:16px 20px; z-index:700;
-  box-shadow:0 0 30px rgba(16,185,129,0.3);
-  animation:slideUp .3s ease;
-}
-@keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
-#live-call-banner.show { display:block; }
-.live-call-title { font-family:'Orbitron',monospace; font-size:12px; color:var(--accent3); margin-bottom:8px; }
-.live-call-actions { display:flex; gap:8px; margin-top:12px; }
-.pick-btn {
-  padding:8px 18px; background:var(--accent3);
-  border:none; border-radius:4px; color:#000;
-  font-weight:700; cursor:pointer; font-size:13px;
-}
-.reject-btn {
-  padding:8px 18px; background:var(--danger);
-  border:none; border-radius:4px; color:#fff;
-  font-weight:700; cursor:pointer; font-size:13px;
-}
-
-/* TOAST */
-#toast {
-  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-  background:var(--card); border:1px solid var(--accent3);
-  border-radius:8px; padding:12px 24px;
-  color:var(--text); font-size:14px; z-index:900;
-  display:none; animation:fadeIn .3s ease;
-}
-#toast.show { display:block; }
-
-.section-head {
-  font-family:'Orbitron',monospace; font-size:1.1rem;
-  color:var(--text); margin-bottom:20px;
-}
-.back-btn {
-  background:transparent; border:1px solid var(--border);
-  color:var(--muted); padding:8px 18px; border-radius:4px;
-  cursor:pointer; font-size:13px; margin-bottom:20px;
-  display:inline-flex; align-items:center; gap:6px;
-}
-.back-btn:hover { border-color:var(--accent); color:var(--accent); }
-
-.divider { border:none; border-top:1px solid var(--border); margin:28px 0; }
-
-.empty-state { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
-```
-
+    #app {
+      max-width: 900px;
+      width: 100%;
+      background: #151e2c;
+      border-radius: 2rem;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      border: 1px solid #2e3a4e;
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #b4e6ff, #9ac8ff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    .lang-switch {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .lang-btn {
+      background: #1f2a3c;
+      border: 1px solid #3a4a62;
+      color: #ccddf8;
+      padding: 0.4rem 1rem;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .lang-btn.active {
+      background: #2d6a9f;
+      border-color: #7ab7ef;
+      color: white;
+    }
+    .star-btn {
+      background: #1e2a3a;
+      border: 1px solid #facc15;
+      color: #facc15;
+      font-size: 1.8rem;
+      line-height: 1;
+      width: 48px;
+      height: 48px;
+      border-radius: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 10px #facc1540;
+      transition: 0.2s;
+    }
+    .star-btn:hover { background: #2e405b; }
+    .main-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      margin: 2.5rem 0;
+    }
+    .primary-btn {
+      background: #1f3a5f;
+      border: none;
+      padding: 1.2rem 2.5rem;
+      border-radius: 60px;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 8px 0 #0e1a28;
+      cursor: pointer;
+      transition: 0.1s ease;
+      border: 1px solid #3d6b9c;
+      min-width: 220px;
+    }
+    .primary-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #0e1a28; }
+    .secondary-btn {
+      background: #2c3a4e;
+      border: 1px solid #5f7a9a;
+      padding: 1rem 2rem;
+      border-radius: 40px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .card {
+      background: #101a26;
+      border-radius: 24px;
+      padding: 1.8rem;
+      margin: 1.5rem 0;
+      border: 1px solid #2b4057;
+    }
+    .price-tag {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #b7e4ff;
+    }
+    iframe {
+      width: 100%;
+      height: 600px;
+      border-radius: 20px;
+      border: 1px solid #2e4b6b;
+      margin-top: 1rem;
+    }
+    .back-link {
+      margin-top: 1rem;
+      color: #8db5e0;
+      cursor: pointer;
+    }
+    .password-panel {
+      background: #0e1622;
+      padding: 1.5rem;
+      border-radius: 28px;
+      margin-top: 20px;
+    }
+    .call-log-entry {
+      background: #1b2636;
+      padding: 10px 15px;
+      border-radius: 16px;
+      margin: 8px 0;
+    }
+    .flex-row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
+    .hidden { display: none !important; }
+    input, select, textarea {
+      background: #1b2738;
+      border: 1px solid #3d5a78;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 30px;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
-
-<!-- LANGUAGE BAR -->
-
-<div id="lang-bar">
-  <button class="lang-btn active" onclick="setLang('es')">🇪🇸 ES</button>
-  <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
-</div>
-
-<!-- ADMIN BUTTON -->
-
-<button id="admin-btn" title="Admin" onclick="openAdminModal()">✱</button>
-
-<!-- HEADER -->
-
-<header>
-  <div class="logo">WR HACKS</div>
-  <div class="tagline" data-i18n="tagline">Sistema de seguridad avanzado</div>
-</header>
-
-<!-- NAV BUTTONS -->
-
-<div class="nav-buttons">
-  <button class="nav-btn btn-premium" onclick="showSection('premium')" data-i18n="btn_premium">Ver Planes Premium</button>
-  <button class="nav-btn btn-demo" onclick="showSection('demo')" data-i18n="btn_demo">Demo</button>
-</div>
-
-<!-- PREMIUM SECTION -->
-
-<div class="section" id="section-premium">
-  <div class="url-bar">
-    <div class="url-dot"></div>
-    <span>https://wrhacks.vercel.app/premium</span>
+<div id="app">
+  <div class="top-bar">
+    <div class="lang-switch">
+      <button class="lang-btn active" data-lang="es">🇪🇸 ES</button>
+      <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+    </div>
+    <div class="star-btn" id="adminStarBtn" title="Admin">✦</div>
   </div>
-  <button class="back-btn" onclick="showSection(null)">← <span data-i18n="back">Volver</span></button>
-  <div class="plan-card">
-    <div class="plan-title" data-i18n="plan_title">Plan de Seguridad Élite</div>
-    <div style="color:var(--muted);font-size:14px;" data-i18n="plan_sub">Acceso completo a todas las herramientas</div>
-    <div class="plan-price">4,99€ <span data-i18n="per_month">/ mes</span></div>
-    <div class="features-grid">
-      <div class="feature-item">
-        <div class="feature-icon">🛡️</div>
-        <div>
-          <div class="feature-name" data-i18n="f1_name">Firewall Inteligente</div>
-          <div class="feature-desc" data-i18n="f1_desc">Protección en tiempo real contra intrusiones y ataques DDoS avanzados</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">🔑</div>
-        <div>
-          <div class="feature-name" data-i18n="f2_name">Hacks Exclusivos</div>
-          <div class="feature-desc" data-i18n="f2_desc">Acceso a las mejores técnicas de hacking ético y exploits verificados</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">🕵️</div>
-        <div>
-          <div class="feature-name" data-i18n="f3_name">Modo Sigiloso</div>
-          <div class="feature-desc" data-i18n="f3_desc">Enmascaramiento total de IP y navegación anónima sin rastros</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">⚡</div>
-        <div>
-          <div class="feature-name" data-i18n="f4_name">Ataques Ultra-Rápidos</div>
-          <div class="feature-desc" data-i18n="f4_desc">Scripts optimizados para máxima velocidad y menor detección</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">🌐</div>
-        <div>
-          <div class="feature-name" data-i18n="f5_name">Red VPN Global</div>
-          <div class="feature-desc" data-i18n="f5_desc">Más de 50 servidores en 30 países con cifrado AES-256</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">💬</div>
-        <div>
-          <div class="feature-name" data-i18n="f6_name">Soporte 24/7</div>
-          <div class="feature-desc" data-i18n="f6_desc">Canal privado con el equipo, respuesta en menos de 30 minutos</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">📊</div>
-        <div>
-          <div class="feature-name" data-i18n="f7_name">Dashboard Analítico</div>
-          <div class="feature-desc" data-i18n="f7_desc">Monitoreo en vivo de amenazas, logs y estadísticas detalladas</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">🔄</div>
-        <div>
-          <div class="feature-name" data-i18n="f8_name">Actualizaciones Automáticas</div>
-          <div class="feature-desc" data-i18n="f8_desc">Nuevas herramientas y exploits añadidos semanalmente</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">🧰</div>
-        <div>
-          <div class="feature-name" data-i18n="f9_name">Toolkit Completo</div>
-          <div class="feature-desc" data-i18n="f9_desc">+200 herramientas preconfiguradas: SQLi, XSS, OSINT, fuzzing...</div>
-        </div>
-      </div>
-      <div class="feature-item">
-        <div class="feature-icon">🎓</div>
-        <div>
-          <div class="feature-name" data-i18n="f10_name">Tutoriales Privados</div>
-          <div class="feature-desc" data-i18n="f10_desc">Guías paso a paso grabadas en vídeo acceso exclusivo Premium</div>
-        </div>
-      </div>
-    </div>
-    <button class="buy-btn" onclick="openPaypal()" data-i18n="buy_btn">💳 Comprar Plan Premium — 4,99€/mes</button>
-  </div>
-</div>
+  <h1>WR Hacks</h1>
 
-<!-- DEMO SECTION -->
-
-<div class="section" id="section-demo">
-  <div class="url-bar">
-    <div class="url-dot"></div>
-    <span>https://wrhacks.vercel.app/demo</span>
-  </div>
-  <button class="back-btn" onclick="showSection(null)">← <span data-i18n="back">Volver</span></button>
-  <div class="section-head" data-i18n="demo_title">Área de Demo</div>
-  <div class="demo-options">
-    <div class="demo-card" onclick="toggleGmailSection()">
-      <div class="demo-icon">📧</div>
-      <div>
-        <div class="demo-label" data-i18n="demo_gmail">Enviar mensaje al dueño</div>
-        <div class="demo-sublabel" data-i18n="demo_gmail_sub">Contactar vía Gmail · contactnotifieralex@gmail.com</div>
-      </div>
+  <!-- VISTA PRINCIPAL -->
+  <div id="homeView">
+    <div class="main-buttons">
+      <button class="primary-btn" id="premiumBtn">🔒 Ver planes premium</button>
+      <button class="primary-btn" id="demoBtn">📞 Demo</button>
     </div>
-
-```
-<!-- GMAIL IFRAME EMBED -->
-<div id="gmail-iframe-wrap">
-  <iframe
-    src="https://mail.google.com/mail/?view=cm&to=contactnotifieralex@gmail.com"
-    title="Gmail Compose"
-    sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation">
-  </iframe>
-  <div style="padding:12px 16px;background:var(--surface);border-top:1px solid var(--border);font-size:12px;color:var(--muted);">
-    <span data-i18n="gmail_note">Si Gmail no carga directamente, usa el formulario abajo ↓</span>
-  </div>
-</div>
-
-<!-- FALLBACK FORM -->
-<div id="gmail-form-wrap">
-  <div class="cal-card">
-    <div class="cal-title" data-i18n="contact_form">Formulario de contacto</div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form_name">Tu nombre</label>
-      <input class="form-input" id="f-name" type="text" placeholder="Alex..."/>
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form_email">Tu email</label>
-      <input class="form-input" id="f-email" type="email" placeholder="tu@email.com"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form_subject">Asunto</label>
-      <input class="form-input" id="f-subject" type="text" placeholder="Consulta sobre WR Hacks..."/>
-    </div>
-    <div class="form-group">
-      <label class="form-label" data-i18n="form_msg">Mensaje</label>
-      <textarea class="form-textarea" id="f-msg" placeholder="Escribe tu mensaje aquí..."></textarea>
-    </div>
-    <button class="send-btn" onclick="sendGmail()" data-i18n="form_send">📨 Enviar Gmail</button>
-  </div>
-</div>
-
-<hr class="divider"/>
-
-<!-- CALL OPTION -->
-<div class="demo-card" onclick="toggleCallSection()">
-  <div class="demo-icon">📞</div>
-  <div>
-    <div class="demo-label" data-i18n="demo_call">Llamar al dueño</div>
-    <div class="demo-sublabel" data-i18n="demo_call_sub">Llamada por la web · Primero programa una cita</div>
-  </div>
-</div>
-
-<!-- CALENDAR SCHEDULING -->
-<div id="calendar-wrap">
-  <div class="cal-card">
-    <div class="cal-title">📅 <span data-i18n="cal_title">Programar llamada vía Google Calendar</span></div>
-    <div class="cal-grid">
-      <div class="form-group">
-        <label class="form-label" data-i18n="cal_name">Tu nombre completo</label>
-        <input class="form-input" id="cal-name" type="text" placeholder="Alex García"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label" data-i18n="cal_email">Tu email</label>
-        <input class="form-input" id="cal-email" type="email" placeholder="tu@email.com"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label" data-i18n="cal_date">Fecha preferida</label>
-        <input class="form-input" id="cal-date" type="date"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label" data-i18n="cal_time">Hora preferida</label>
-        <input class="form-input" id="cal-time" type="time"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label" data-i18n="cal_duration">Duración</label>
-        <select class="form-input" id="cal-duration">
-          <option value="15">15 min</option>
-          <option value="30" selected>30 min</option>
-          <option value="60">1 hora</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label" data-i18n="cal_topic">Tema de la llamada</label>
-        <input class="form-input" id="cal-topic" type="text" placeholder="Consulta Premium..."/>
-      </div>
-    </div>
-    <div class="form-group" style="margin-top:4px;">
-      <label class="form-label" data-i18n="cal_notes">Notas adicionales</label>
-      <textarea class="form-textarea" id="cal-notes" placeholder="Cualquier detalle extra..." style="min-height:70px;"></textarea>
-    </div>
-    <button class="send-btn" onclick="submitCalRequest()" data-i18n="cal_submit">📅 Solicitar cita</button>
+    <p style="text-align:center; opacity:0.8; margin-top:2rem;" id="homeFooter">Seguridad · Hacks avanzados · Soporte 24/7</p>
   </div>
 
-  <!-- CALL PANEL (after booking) -->
-  <div id="call-wrap">
-    <div class="call-card" style="margin-top:20px;">
-      <div class="call-status" id="call-status-text" data-i18n="call_ready">Cita pendiente de aprobación. Cuando sea aceptada podrás iniciar la llamada.</div>
-      <div style="display:flex;justify-content:center;">
-        <button class="call-btn-ring" id="main-call-btn" onclick="startCall()" disabled style="opacity:0.4;cursor:not-allowed;">📞</button>
+  <!-- VISTA PREMIUM -->
+  <div id="premiumView" class="hidden">
+    <h2 style="margin-bottom: 0.5rem;">⚡ Plan WR Hacks Elite</h2>
+    <div class="card">
+      <ul style="list-style: none; padding-left: 0; font-size: 1.2rem; line-height: 2;">
+        <li>✅ Acceso a todos los hacks privados</li>
+        <li>✅ Protección DDoS avanzada</li>
+        <li>✅ Soporte prioritario 24/7</li>
+        <li>✅ Métodos de ingeniería social</li>
+        <li>✅ Actualizaciones mensuales exclusivas</li>
+        <li>✅ Curso de anonimato (PDF + vídeos)</li>
+        <li>✅ Asistencia remota segura</li>
+      </ul>
+      <div class="price-tag">4,99 € <span style="font-size:1rem;">/mes</span></div>
+      <button class="primary-btn" id="buyPlanBtn" style="margin-top:20px; padding:1rem 2rem;">💳 Comprar plan</button>
+    </div>
+    <div id="paypalIframeContainer" class="hidden">
+      <iframe id="paypalFrame" src="" frameborder="0" allowpaymentrequest></iframe>
+      <button class="secondary-btn" id="closePaypalBtn" style="margin-top:10px;">Cerrar PayPal</button>
+    </div>
+    <div class="back-link" id="backFromPremium">← Volver</div>
+  </div>
+
+  <!-- VISTA DEMO -->
+  <div id="demoView" class="hidden">
+    <h2>📱 Demo interactiva</h2>
+    <div class="card">
+      <div style="display: flex; gap: 1.5rem; justify-content: center;">
+        <button class="secondary-btn" id="emailOwnerBtn">✉️ Enviar mensaje al dueño</button>
+        <button class="secondary-btn" id="callOwnerBtn">📞 Llamar al dueño</button>
       </div>
-      <div id="call-log"></div>
+      <div id="emailPanel" class="hidden" style="margin-top:2rem;">
+        <p>Redacta tu mensaje (se enviará por Gmail en esta misma ventana):</p>
+        <textarea id="emailMessage" rows="3" placeholder="Escribe tu consulta..."></textarea>
+        <button class="secondary-btn" id="sendEmailBtn" style="margin-top:10px;">Enviar a contactnotifieralex@gmail.com</button>
+        <p style="font-size:0.9rem; opacity:0.8;">* Se abrirá el cliente de correo en un iframe (simulado)</p>
+      </div>
+      <div id="callPanel" class="hidden" style="margin-top:1.5rem;">
+        <p><strong>Programa tu llamada con Google Calendar</strong></p>
+        <input type="datetime-local" id="callDateTime" />
+        <button class="secondary-btn" id="scheduleCallBtn">📅 Solicitar llamada</button>
+        <div id="callStatus" style="margin-top:12px;"></div>
+        <button class="secondary-btn" id="startDirectCallBtn" style="margin-top:15px;">⚡ Iniciar llamada directa (WebRTC)</button>
+        <video id="localVideo" autoplay muted style="width:120px; border-radius:20px; margin-top:10px; background:#000;"></video>
+        <video id="remoteVideo" autoplay style="width:100%; max-width:300px; border-radius:20px; margin-top:10px; background:#111;"></video>
+      </div>
+    </div>
+    <div class="back-link" id="backFromDemo">← Volver</div>
+  </div>
+
+  <!-- PANEL ADMIN (contraseña) -->
+  <div id="adminPanel" class="hidden password-panel">
+    <h3>🔐 Panel de administración</h3>
+    <div id="adminLoginSection">
+      <input type="password" id="adminPassInput" placeholder="Contraseña" />
+      <button class="secondary-btn" id="adminLoginBtn">Acceder</button>
+    </div>
+    <div id="adminContent" class="hidden">
+      <h4>📋 Registro de llamadas</h4>
+      <div id="callLogsList"></div>
+      <h4 style="margin-top:20px;">📅 Solicitudes de llamada (Calendar)</h4>
+      <div id="scheduleRequests"></div>
+      <h4 style="margin-top:20px;">📞 Llamada entrante en directo</h4>
+      <div id="incomingCallSection">
+        <p id="incomingCallInfo">Esperando...</p>
+        <button class="secondary-btn" id="answerCallBtn" disabled>📞 Contestar</button>
+        <button class="secondary-btn" id="rejectCallBtn" disabled>❌ Rechazar</button>
+        <video id="adminRemoteVideo" autoplay style="width:200px; background:#000; border-radius:20px;"></video>
+      </div>
+      <button class="secondary-btn" id="adminLogoutBtn">Cerrar panel</button>
     </div>
   </div>
 </div>
-```
 
-  </div>
-</div>
-
-<!-- ADMIN PANEL -->
-
-<div id="admin-panel">
-  <div class="admin-title">
-    ✱ <span data-i18n="admin_title">Panel de Administración</span>
-    <button class="back-btn" style="margin:0 0 0 auto;" onclick="closeAdmin()">✕ <span data-i18n="close">Cerrar</span></button>
-  </div>
-  <div class="admin-tabs">
-    <button class="admin-tab active" onclick="switchAdminTab('calls')" data-i18n="tab_calls">Registro de Llamadas</button>
-    <button class="admin-tab" onclick="switchAdminTab('calendar')" data-i18n="tab_calendar">Solicitudes de Cita</button>
-  </div>
-
-  <!-- CALLS TAB -->
-
-  <div class="admin-section active" id="admin-calls">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-      <div class="section-head" style="margin:0" data-i18n="calls_title">Historial de Llamadas</div>
-      <span id="live-indicator" style="display:none;" class="badge badge-live">● LIVE</span>
-    </div>
-    <div style="overflow-x:auto;">
-      <table class="log-table">
-        <thead>
-          <tr>
-            <th data-i18n="th_date">Fecha</th>
-            <th data-i18n="th_time">Hora</th>
-            <th data-i18n="th_country">País</th>
-            <th data-i18n="th_caller">Nombre</th>
-            <th data-i18n="th_status">Estado</th>
-            <th data-i18n="th_action">Acción</th>
-          </tr>
-        </thead>
-        <tbody id="calls-tbody"></tbody>
-      </table>
-    </div>
-    <div id="calls-empty" class="empty-state" data-i18n="no_calls">Sin llamadas registradas aún.</div>
-  </div>
-
-  <!-- CALENDAR TAB -->
-
-  <div class="admin-section" id="admin-calendar">
-    <div class="section-head" data-i18n="cal_requests">Solicitudes de Cita</div>
-    <div id="cal-requests-list"></div>
-    <div id="cal-empty" class="empty-state" data-i18n="no_cal">Sin solicitudes de cita aún.</div>
-  </div>
-</div>
-
-<!-- PAYPAL IFRAME OVERLAY -->
-
-<div id="iframe-overlay">
-  <div id="iframe-header">
-    <div style="width:12px;height:12px;border-radius:50%;background:#ef4444;margin-right:4px;"></div>
-    <div style="width:12px;height:12px;border-radius:50%;background:var(--gold);margin-right:4px;"></div>
-    <div style="width:12px;height:12px;border-radius:50%;background:var(--accent3);margin-right:12px;"></div>
-    <input id="iframe-url" readonly value="https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE"/>
-    <button id="iframe-close" onclick="closePaypal()">✕</button>
-  </div>
-  <iframe id="iframe-frame" src="" title="PayPal Payment" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
-</div>
-
-<!-- ADMIN PASSWORD MODAL -->
-
-<div class="modal-bg" id="admin-modal">
-  <div class="modal">
-    <div class="modal-title">✱ <span data-i18n="admin_password">Contraseña de administrador</span></div>
-    <input type="password" class="modal-input" id="admin-pass" placeholder="••••••••••" onkeydown="if(event.key==='Enter')checkAdminPass()"/>
-    <div class="modal-actions">
-      <button class="modal-ok" onclick="checkAdminPass()" data-i18n="enter">Entrar</button>
-      <button class="modal-cancel" onclick="closeAdminModal()" data-i18n="cancel">Cancelar</button>
-    </div>
-    <div class="modal-err" id="pass-err" data-i18n="wrong_pass">Contraseña incorrecta</div>
-  </div>
-</div>
-
-<!-- LIVE CALL BANNER (for admin) -->
-
-<div id="live-call-banner">
-  <div class="live-call-title">📞 <span data-i18n="incoming_call">LLAMADA ENTRANTE</span></div>
-  <div id="live-caller-info" style="font-size:13px;color:var(--muted);"></div>
-  <div class="live-call-actions">
-    <button class="pick-btn" onclick="pickCall()" data-i18n="pick_up">Coger</button>
-    <button class="reject-btn" onclick="rejectCall()" data-i18n="reject">Rechazar</button>
-  </div>
-</div>
-
-<!-- TOAST -->
-
-<div id="toast"></div>
-
-<script>
-// ============================================================
-// TRANSLATIONS
-// ============================================================
-const TRANSLATIONS = {
-  es: {
-    tagline: "Sistema de seguridad avanzado",
-    btn_premium: "Ver Planes Premium",
-    btn_demo: "Demo",
-    back: "Volver",
-    plan_title: "Plan de Seguridad Élite",
-    plan_sub: "Acceso completo a todas las herramientas",
-    per_month: "/ mes",
-    f1_name:"Firewall Inteligente", f1_desc:"Protección en tiempo real contra intrusiones y ataques DDoS avanzados",
-    f2_name:"Hacks Exclusivos", f2_desc:"Acceso a las mejores técnicas de hacking ético y exploits verificados",
-    f3_name:"Modo Sigiloso", f3_desc:"Enmascaramiento total de IP y navegación anónima sin rastros",
-    f4_name:"Ataques Ultra-Rápidos", f4_desc:"Scripts optimizados para máxima velocidad y menor detección",
-    f5_name:"Red VPN Global", f5_desc:"Más de 50 servidores en 30 países con cifrado AES-256",
-    f6_name:"Soporte 24/7", f6_desc:"Canal privado con el equipo, respuesta en menos de 30 minutos",
-    f7_name:"Dashboard Analítico", f7_desc:"Monitoreo en vivo de amenazas, logs y estadísticas detalladas",
-    f8_name:"Actualizaciones Automáticas", f8_desc:"Nuevas herramientas y exploits añadidos semanalmente",
-    f9_name:"Toolkit Completo", f9_desc:"+200 herramientas preconfiguradas: SQLi, XSS, OSINT, fuzzing...",
-    f10_name:"Tutoriales Privados", f10_desc:"Guías paso a paso grabadas en vídeo acceso exclusivo Premium",
-    buy_btn:"💳 Comprar Plan Premium — 4,99€/mes",
-    demo_title:"Área de Demo",
-    demo_gmail:"Enviar mensaje al dueño",
-    demo_gmail_sub:"Contactar vía Gmail · contactnotifieralex@gmail.com",
-    gmail_note:"Si Gmail no carga directamente, usa el formulario abajo ↓",
-    contact_form:"Formulario de contacto",
-    form_name:"Tu nombre", form_email:"Tu email", form_subject:"Asunto", form_msg:"Mensaje", form_send:"📨 Enviar Gmail",
-    demo_call:"Llamar al dueño",
-    demo_call_sub:"Llamada por la web · Primero programa una cita",
-    cal_title:"Programar llamada vía Google Calendar",
-    cal_name:"Tu nombre completo", cal_email:"Tu email", cal_date:"Fecha preferida",
-    cal_time:"Hora preferida", cal_duration:"Duración", cal_topic:"Tema de la llamada",
-    cal_notes:"Notas adicionales", cal_submit:"📅 Solicitar cita",
-    call_ready:"Cita pendiente de aprobación. Cuando sea aceptada podrás iniciar la llamada.",
-    admin_title:"Panel de Administración",
-    close:"Cerrar",
-    tab_calls:"Registro de Llamadas", tab_calendar:"Solicitudes de Cita",
-    calls_title:"Historial de Llamadas",
-    th_date:"Fecha", th_time:"Hora", th_country:"País", th_caller:"Nombre", th_status:"Estado", th_action:"Acción",
-    no_calls:"Sin llamadas registradas aún.",
-    cal_requests:"Solicitudes de Cita",
-    no_cal:"Sin solicitudes de cita aún.",
-    admin_password:"Contraseña de administrador",
-    enter:"Entrar", cancel:"Cancelar",
-    wrong_pass:"Contraseña incorrecta",
-    incoming_call:"LLAMADA ENTRANTE",
-    pick_up:"Coger", reject:"Rechazar",
-  },
-  en: {
-    tagline: "Advanced security system",
-    btn_premium: "View Premium Plans",
-    btn_demo: "Demo",
-    back: "Back",
-    plan_title: "Elite Security Plan",
-    plan_sub: "Full access to all tools",
-    per_month: "/ month",
-    f1_name:"Smart Firewall", f1_desc:"Real-time protection against intrusions and advanced DDoS attacks",
-    f2_name:"Exclusive Hacks", f2_desc:"Access to top ethical hacking techniques and verified exploits",
-    f3_name:"Stealth Mode", f3_desc:"Full IP masking and anonymous browsing without traces",
-    f4_name:"Ultra-Fast Attacks", f4_desc:"Optimized scripts for maximum speed and minimum detection",
-    f5_name:"Global VPN Network", f5_desc:"50+ servers in 30 countries with AES-256 encryption",
-    f6_name:"24/7 Support", f6_desc:"Private team channel, response in under 30 minutes",
-    f7_name:"Analytics Dashboard", f7_desc:"Live monitoring of threats, logs and detailed stats",
-    f8_name:"Auto Updates", f8_desc:"New tools and exploits added weekly",
-    f9_name:"Complete Toolkit", f9_desc:"200+ pre-configured tools: SQLi, XSS, OSINT, fuzzing...",
-    f10_name:"Private Tutorials", f10_desc:"Step-by-step video guides, exclusive Premium access",
-    buy_btn:"💳 Buy Premium Plan — €4.99/month",
-    demo_title:"Demo Area",
-    demo_gmail:"Send message to owner",
-    demo_gmail_sub:"Contact via Gmail · contactnotifieralex@gmail.com",
-    gmail_note:"If Gmail doesn't load directly, use the form below ↓",
-    contact_form:"Contact form",
-    form_name:"Your name", form_email:"Your email", form_subject:"Subject", form_msg:"Message", form_send:"📨 Send Gmail",
-    demo_call:"Call the owner",
-    demo_call_sub:"Web call · Schedule an appointment first",
-    cal_title:"Schedule call via Google Calendar",
-    cal_name:"Your full name", cal_email:"Your email", cal_date:"Preferred date",
-    cal_time:"Preferred time", cal_duration:"Duration", cal_topic:"Call topic",
-    cal_notes:"Additional notes", cal_submit:"📅 Request appointment",
-    call_ready:"Appointment pending approval. Once accepted you can start the call.",
-    admin_title:"Administration Panel",
-    close:"Close",
-    tab_calls:"Call Log", tab_calendar:"Appointment Requests",
-    calls_title:"Call History",
-    th_date:"Date", th_time:"Time", th_country:"Country", th_caller:"Name", th_status:"Status", th_action:"Action",
-    no_calls:"No calls logged yet.",
-    cal_requests:"Appointment Requests",
-    no_cal:"No appointment requests yet.",
-    admin_password:"Administrator password",
-    enter:"Enter", cancel:"Cancel",
-    wrong_pass:"Incorrect password",
-    incoming_call:"INCOMING CALL",
-    pick_up:"Answer", reject:"Reject",
-  }
-};
-
-let currentLang = 'es';
-function setLang(l) {
-  currentLang = l;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.includes(l.toUpperCase())));
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (TRANSLATIONS[l][key]) el.textContent = TRANSLATIONS[l][key];
-  });
-}
-
-// ============================================================
-// SECTION ROUTING
-// ============================================================
-function showSection(name) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('admin-panel').classList.remove('active');
-  if (name) {
-    const el = document.getElementById('section-' + name);
-    if (el) el.classList.add('active');
-  }
-}
-
-// ============================================================
-// PAYPAL IFRAME
-// ============================================================
-function openPaypal() {
-  const overlay = document.getElementById('iframe-overlay');
-  overlay.classList.add('active');
-  document.getElementById('iframe-frame').src = 'https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE';
-}
-function closePaypal() {
-  document.getElementById('iframe-overlay').classList.remove('active');
-  document.getElementById('iframe-frame').src = '';
-}
-
-// ============================================================
-// GMAIL / DEMO
-// ============================================================
-function toggleGmailSection() {
-  const iframeWrap = document.getElementById('gmail-iframe-wrap');
-  const formWrap = document.getElementById('gmail-form-wrap');
-  const isOpen = iframeWrap.classList.contains('show');
-  if (isOpen) {
-    iframeWrap.classList.remove('show');
-    formWrap.classList.remove('show');
-  } else {
-    iframeWrap.classList.add('show');
-    formWrap.classList.add('show');
-  }
-}
-
-function sendGmail() {
-  const name = document.getElementById('f-name').value.trim();
-  const email = document.getElementById('f-email').value.trim();
-  const subject = encodeURIComponent(document.getElementById('f-subject').value.trim() || 'Mensaje WR Hacks');
-  const body = encodeURIComponent(
-    `De: ${name} (${email})\n\n${document.getElementById('f-msg').value.trim()}`
-  );
-  const gmailUrl = `https://mail.google.com/mail/?view=cm&to=contactnotifieralex@gmail.com&su=${subject}&body=${body}`;
-  document.getElementById('iframe-url').value = gmailUrl;
-  document.getElementById('iframe-frame').src = gmailUrl;
-  document.getElementById('iframe-overlay').classList.add('active');
-}
-
-// ============================================================
-// CALL + CALENDAR
-// ============================================================
-let calRequests = [];
-let callLog = [];
-let activeCall = null;
-let approvedSlot = null;
-
-function toggleCallSection() {
-  const wrap = document.getElementById('calendar-wrap');
-  wrap.classList.toggle('show');
-}
-
-function submitCalRequest() {
-  const name = document.getElementById('cal-name').value.trim();
-  const email = document.getElementById('cal-email').value.trim();
-  const date = document.getElementById('cal-date').value;
-  const time = document.getElementById('cal-time').value;
-  const duration = document.getElementById('cal-duration').value;
-  const topic = document.getElementById('cal-topic').value.trim();
-  const notes = document.getElementById('cal-notes').value.trim();
-
-  if (!name || !email || !date || !time) {
-    showToast('⚠️ ' + (currentLang === 'es' ? 'Rellena los campos obligatorios' : 'Fill in required fields'));
-    return;
-  }
-
-  const req = {
-    id: Date.now(),
-    name, email, date, time, duration, topic, notes,
-    status: 'pending',
-    country: 'España' // simulated
-  };
-  calRequests.push(req);
-  showToast('✅ ' + (currentLang === 'es' ? 'Solicitud enviada. Esperando aprobación.' : 'Request sent. Awaiting approval.'));
-
-  // show call panel
-  document.getElementById('call-wrap').classList.add('show');
-  document.getElementById('call-status-text').textContent =
-    currentLang === 'es'
-      ? 'Cita pendiente de aprobación. Cuando sea aceptada podrás iniciar la llamada.'
-      : 'Appointment pending approval. Once accepted you can start the call.';
-  document.getElementById('main-call-btn').disabled = true;
-  document.getElementById('main-call-btn').style.opacity = '0.4';
-  document.getElementById('main-call-btn').style.cursor = 'not-allowed';
-
-  renderCalRequests();
-}
-
-function enableCallBtn(reqId) {
-  approvedSlot = reqId;
-  const btn = document.getElementById('main-call-btn');
-  if (btn) {
-    btn.disabled = false;
-    btn.style.opacity = '1';
-    btn.style.cursor = 'pointer';
-    document.getElementById('call-status-text').textContent =
-      currentLang === 'es' ? '¡Cita aprobada! Pulsa el botón para llamar.' : 'Appointment approved! Press button to call.';
-  }
-}
-
-function startCall() {
-  if (!approvedSlot) return;
-  const btn = document.getElementById('main-call-btn');
-  btn.classList.add('ringing');
-  document.getElementById('call-log').textContent =
-    currentLang === 'es' ? 'Llamando...' : 'Calling...';
-  document.getElementById('call-status-text').textContent =
-    currentLang === 'es' ? 'Llamada en curso...' : 'Call in progress...';
-
-  const req = calRequests.find(r => r.id === approvedSlot);
-  const now = new Date();
-  activeCall = {
-    id: Date.now(),
-    date: now.toLocaleDateString(),
-    time: now.toLocaleTimeString(),
-    country: req ? (req.country || 'España') : 'España',
-    name: req ? req.name : 'Visitante',
-    status: 'live'
-  };
-  callLog.unshift(activeCall);
-
-  // Notify admin
-  showLiveCallBanner(activeCall);
-  renderCallLogs();
-}
-
-function showLiveCallBanner(call) {
-  const banner = document.getElementById('live-call-banner');
-  document.getElementById('live-caller-info').textContent =
-    `${call.name} · ${call.country} · ${call.time}`;
-  banner.classList.add('show');
-  document.getElementById('live-indicator').style.display = 'inline';
-}
-
-function pickCall() {
-  document.getElementById('live-call-banner').classList.remove('show');
-  document.getElementById('live-indicator').style.display = 'none';
-  if (activeCall) activeCall.status = 'answered';
-  showToast('📞 ' + (currentLang === 'es' ? 'Llamada contestada' : 'Call answered'));
-  renderCallLogs();
-}
-
-function rejectCall() {
-  document.getElementById('live-call-banner').classList.remove('show');
-  document.getElementById('live-indicator').style.display = 'none';
-  if (activeCall) activeCall.status = 'missed';
-  const btn = document.getElementById('main-call-btn');
-  btn.classList.remove('ringing');
-  document.getElementById('call-log').textContent =
-    currentLang === 'es' ? 'Llamada rechazada.' : 'Call rejected.';
-  showToast('❌ ' + (currentLang === 'es' ? 'Llamada rechazada' : 'Call rejected'));
-  renderCallLogs();
-  activeCall = null;
-}
-
-// ============================================================
-// ADMIN PANEL
-// ============================================================
-const ADMIN_PASS = 'Alex27Junio';
-
-function openAdminModal() {
-  document.getElementById('admin-modal').classList.add('active');
-  document.getElementById('admin-pass').value = '';
-  document.getElementById('pass-err').style.display = 'none';
-  setTimeout(() => document.getElementById('admin-pass').focus(), 100);
-}
-function closeAdminModal() {
-  document.getElementById('admin-modal').classList.remove('active');
-}
-
-function checkAdminPass() {
-  const val = document.getElementById('admin-pass').value;
-  if (val === ADMIN_PASS) {
-    closeAdminModal();
-    openAdmin();
-  } else {
-    document.getElementById('pass-err').style.display = 'block';
-    document.getElementById('admin-pass').value = '';
-  }
-}
-
-function openAdmin() {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.getElementById('admin-panel').classList.add('active');
-  renderCallLogs();
-  renderCalRequests();
-}
-
-function closeAdmin() {
-  document.getElementById('admin-panel').classList.remove('active');
-}
-
-function switchAdminTab(tab) {
-  document.querySelectorAll('.admin-tab').forEach((t,i) => {
-    const tabs = ['calls','calendar'];
-    t.classList.toggle('active', tabs[i] === tab);
-  });
-  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
-  document.getElementById('admin-' + tab).classList.add('active');
-}
-
-function renderCallLogs() {
-  const tbody = document.getElementById('calls-tbody');
-  const empty = document.getElementById('calls-empty');
-  if (!callLog.length) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
-  empty.style.display = 'none';
-  tbody.innerHTML = callLog.map(c => {
-    let badge = '';
-    if (c.status === 'live') badge = `<span class="badge badge-live">● LIVE</span>`;
-    else if (c.status === 'missed') badge = `<span class="badge badge-missed">Perdida</span>`;
-    else badge = `<span class="badge badge-ended">Contestada</span>`;
-
-    let action = '';
-    if (c.status === 'live') {
-      action = `<button class="pick-btn" style="font-size:12px;padding:5px 12px;" onclick="pickCall()">Coger</button>
-                <button class="reject-btn" style="font-size:12px;padding:5px 12px;margin-left:6px;" onclick="rejectCall()">Rechazar</button>`;
+<script type="module">
+  // --- Configuración e i18n ---
+  const i18n = {
+    es: {
+      premiumTitle: 'Plan WR Hacks Elite',
+      premiumDesc: 'Acceso a todos los hacks privados...',
+      buy: 'Comprar plan',
+      demo: 'Demo',
+      back: '← Volver',
+      call: 'Llamar al dueño',
+      email: 'Enviar mensaje'
+    },
+    en: {
+      premiumTitle: 'WR Hacks Elite Plan',
+      premiumDesc: 'Access all private hacks...',
+      buy: 'Buy plan',
+      demo: 'Demo',
+      back: '← Back',
+      call: 'Call owner',
+      email: 'Send message'
     }
-    return `<tr>
-      <td>${c.date}</td>
-      <td>${c.time}</td>
-      <td>${c.country}</td>
-      <td>${c.name}</td>
-      <td>${badge}</td>
-      <td>${action}</td>
-    </tr>`;
-  }).join('');
-}
-
-function renderCalRequests() {
-  const list = document.getElementById('cal-requests-list');
-  const empty = document.getElementById('cal-empty');
-  if (!calRequests.length) {
-    list.innerHTML = '';
-    empty.style.display = 'block';
-    return;
+  };
+  let currentLang = 'es';
+  function t(key) { return i18n[currentLang][key] || key; }
+  function updateUITexts() {
+    document.querySelector('#premiumBtn').innerText = currentLang === 'es' ? '🔒 Ver planes premium' : '🔒 View premium plans';
+    document.querySelector('#demoBtn').innerText = currentLang === 'es' ? '📞 Demo' : '📞 Demo';
+    document.querySelector('#buyPlanBtn').innerText = currentLang === 'es' ? '💳 Comprar plan' : '💳 Buy plan';
+    // etc...
   }
-  empty.style.display = 'none';
-  list.innerHTML = calRequests.map(r => {
-    let statusBadge = '';
-    let actions = '';
-    if (r.status === 'pending') {
-      statusBadge = `<span class="status-badge status-pending">${currentLang==='es'?'Pendiente':'Pending'}</span>`;
-      actions = `<button class="cal-accept" onclick="acceptCalReq(${r.id})">${currentLang==='es'?'✓ Aceptar':'✓ Accept'}</button>
-                 <button class="cal-reject" onclick="rejectCalReq(${r.id})">${currentLang==='es'?'✕ Rechazar':'✕ Reject'}</button>`;
-    } else if (r.status === 'accepted') {
-      statusBadge = `<span class="status-badge status-accepted">${currentLang==='es'?'Aceptada':'Accepted'}</span>`;
-    } else {
-      statusBadge = `<span class="status-badge status-rejected">${currentLang==='es'?'Rechazada':'Rejected'}</span>`;
-    }
-    return `<div class="cal-request-card">
-      <div class="cal-request-info">
-        <b>${r.name}</b> ${statusBadge}<br/>
-        <span>${r.email}</span><br/>
-        <span>📅 ${r.date} · ⏰ ${r.time} · ⏱ ${r.duration} min</span><br/>
-        <span>📌 ${r.topic || '—'}</span>
-        ${r.notes ? `<br/><span>📝 ${r.notes}</span>` : ''}
-      </div>
-      <div class="cal-actions">${actions}</div>
-    </div>`;
-  }).join('');
-}
+  document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', (e) => {
+    currentLang = btn.dataset.lang;
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    updateUITexts();
+  }));
 
-function acceptCalReq(id) {
-  const req = calRequests.find(r => r.id === id);
-  if (req) {
-    req.status = 'accepted';
-    showToast('✅ ' + (currentLang==='es'?'Cita aceptada':'Appointment accepted'));
-    enableCallBtn(id);
-    renderCalRequests();
+  // --- Navegación / Vistas ---
+  const homeView = document.getElementById('homeView');
+  const premiumView = document.getElementById('premiumView');
+  const demoView = document.getElementById('demoView');
+  const adminPanel = document.getElementById('adminPanel');
+  function showView(view) {
+    homeView.classList.add('hidden');
+    premiumView.classList.add('hidden');
+    demoView.classList.add('hidden');
+    adminPanel.classList.add('hidden');
+    view.classList.remove('hidden');
+    // Actualizar URL
+    if (view === premiumView) history.pushState({view:'premium'}, '', '/premium');
+    else if (view === demoView) history.pushState({view:'demo'}, '', '/demo');
+    else if (view === adminPanel) history.pushState({view:'admin'}, '', '/admin');
+    else history.pushState({view:'home'}, '', '/');
   }
-}
+  document.getElementById('premiumBtn').addEventListener('click', ()=> showView(premiumView));
+  document.getElementById('demoBtn').addEventListener('click', ()=> showView(demoView));
+  document.getElementById('backFromPremium').addEventListener('click', ()=> showView(homeView));
+  document.getElementById('backFromDemo').addEventListener('click', ()=> showView(homeView));
+  window.addEventListener('popstate', (e) => {
+    if(e.state?.view === 'premium') showView(premiumView);
+    else if(e.state?.view === 'demo') showView(demoView);
+    else showView(homeView);
+  });
 
-function rejectCalReq(id) {
-  const req = calRequests.find(r => r.id === id);
-  if (req) {
-    req.status = 'rejected';
-    showToast('❌ ' + (currentLang==='es'?'Cita rechazada':'Appointment rejected'));
-    renderCalRequests();
+  // --- PayPal (misma página) ---
+  const paypalContainer = document.getElementById('paypalIframeContainer');
+  const paypalFrame = document.getElementById('paypalFrame');
+  document.getElementById('buyPlanBtn').addEventListener('click', ()=>{
+    paypalFrame.src = 'https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE';
+    paypalContainer.classList.remove('hidden');
+  });
+  document.getElementById('closePaypalBtn').addEventListener('click', ()=>{
+    paypalFrame.src = '';
+    paypalContainer.classList.add('hidden');
+  });
+
+  // --- Demo: Email y Call ---
+  document.getElementById('emailOwnerBtn').addEventListener('click', ()=>{
+    document.getElementById('emailPanel').classList.remove('hidden');
+    document.getElementById('callPanel').classList.add('hidden');
+  });
+  document.getElementById('callOwnerBtn').addEventListener('click', ()=>{
+    document.getElementById('callPanel').classList.remove('hidden');
+    document.getElementById('emailPanel').classList.add('hidden');
+    initializeCallFeatures();
+  });
+  document.getElementById('sendEmailBtn').addEventListener('click', ()=>{
+    const msg = document.getElementById('emailMessage').value;
+    // Simular envío en iframe (Gmail no permite iframe real)
+    alert(`[SIMULADO] Mensaje a contactnotifieralex@gmail.com: ${msg}`);
+    // En producción podrías usar EmailJS
+  });
+
+  // --- Firebase + WebRTC (simplificado pero funcional) ---
+  let localStream = null;
+  let peerConnection = null;
+  const servers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+  const db = window.db;
+  const callRef = (id) => window.firebaseRef(db, `calls/${id}`);
+  const logsRef = window.firebaseRef(db, 'callLogs');
+  const scheduleRef = window.firebaseRef(db, 'scheduleRequests');
+
+  async function initializeCallFeatures() {
+    try {
+      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+      document.getElementById('localVideo').srcObject = localStream;
+    } catch(e) { console.warn('Sin permisos de cámara/mic'); }
   }
-}
 
-// ============================================================
-// TOAST
-// ============================================================
-let toastTimeout;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
-}
+  // Crear llamada directa (WebRTC)
+  document.getElementById('startDirectCallBtn').addEventListener('click', async ()=>{
+    const callId = window.firebasePush(window.firebaseRef(db, 'calls')).key;
+    peerConnection = new RTCPeerConnection(servers);
+    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+    
+    // ICE candidates a Firebase
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate) {
+        window.firebasePush(window.firebaseRef(db, `calls/${callId}/offerCandidates`), event.candidate.toJSON());
+      }
+    };
+    peerConnection.oniceconnectionstatechange = () => console.log('ICE state:', peerConnection.iceConnectionState);
+    
+    // Crear offer
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+    await window.firebaseSet(window.firebaseRef(db, `calls/${callId}/offer`), {
+      type: offer.type,
+      sdp: offer.sdp
+    });
+    
+    // Escuchar answer
+    window.firebaseOnValue(window.firebaseRef(db, `calls/${callId}/answer`), async (snapshot) => {
+      const data = snapshot.val();
+      if (data && !peerConnection.currentRemoteDescription) {
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(data));
+      }
+    });
+    window.firebaseOnValue(window.firebaseRef(db, `calls/${callId}/answerCandidates`), (snapshot) => {
+      snapshot.forEach(child => {
+        peerConnection.addIceCandidate(new RTCIceCandidate(child.val()));
+      });
+    });
+    
+    // Registrar log
+    const logEntry = {
+      timestamp: window.firebaseServerTimestamp(),
+      status: 'outgoing',
+      country: 'Desconocido' // Se podría obtener con IP API
+    };
+    window.firebasePush(logsRef, logEntry);
+    document.getElementById('callStatus').innerText = 'Llamando al dueño...';
+  });
 
-// Set today as min date for calendar
-const today = new Date().toISOString().split('T')[0];
-const dateInput = document.getElementById('cal-date');
-if (dateInput) dateInput.min = today;
+  // Admin: contestar
+  let currentCallId = null;
+  window.firebaseOnValue(window.firebaseRef(db, 'calls'), (snapshot) => {
+    snapshot.forEach(child => {
+      const call = child.val();
+      if (call.offer && !call.answer) {
+        currentCallId = child.key;
+        document.getElementById('incomingCallInfo').innerText = `Llamada entrante ID: ${currentCallId}`;
+        document.getElementById('answerCallBtn').disabled = false;
+        document.getElementById('rejectCallBtn').disabled = false;
+      }
+    });
+  });
+  
+  document.getElementById('answerCallBtn').addEventListener('click', async ()=>{
+    if (!currentCallId) return;
+    peerConnection = new RTCPeerConnection(servers);
+    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+    document.getElementById('adminRemoteVideo').srcObject = localStream; // mostrar local?
+    const callOffer = await (await get(window.firebaseRef(db, `calls/${currentCallId}/offer`))).val();
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(callOffer));
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
+    await window.firebaseSet(window.firebaseRef(db, `calls/${currentCallId}/answer`), {
+      type: answer.type,
+      sdp: answer.sdp
+    });
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate) {
+        window.firebasePush(window.firebaseRef(db, `calls/${currentCallId}/answerCandidates`), event.candidate.toJSON());
+      }
+    };
+    peerConnection.ontrack = (event) => {
+      document.getElementById('adminRemoteVideo').srcObject = event.streams[0];
+    };
+  });
+
+  // Admin password
+  const correctPass = 'Alex27Junio';
+  document.getElementById('adminStarBtn').addEventListener('click', ()=>{
+    showView(adminPanel);
+  });
+  document.getElementById('adminLoginBtn').addEventListener('click', ()=>{
+    if(document.getElementById('adminPassInput').value === correctPass) {
+      document.getElementById('adminLoginSection').classList.add('hidden');
+      document.getElementById('adminContent').classList.remove('hidden');
+      loadAdminLogs();
+    } else alert('Contraseña incorrecta');
+  });
+  function loadAdminLogs() {
+    window.firebaseOnValue(logsRef, (snap) => {
+      const logsDiv = document.getElementById('callLogsList');
+      logsDiv.innerHTML = '';
+      snap.forEach(child => {
+        const log = child.val();
+        const date = log.timestamp ? new Date(log.timestamp).toLocaleString() : 'Ahora';
+        logsDiv.innerHTML += `<div class="call-log-entry">📅 ${date} | ${log.status} | 🌍 ${log.country || 'Desconocido'}</div>`;
+      });
+    });
+    window.firebaseOnValue(scheduleRef, (snap) => {
+      const reqDiv = document.getElementById('scheduleRequests');
+      reqDiv.innerHTML = '';
+      snap.forEach(child => {
+        const req = child.val();
+        reqDiv.innerHTML += `<div>🗓️ ${req.datetime} - Aceptar / Rechazar (simulado)</div>`;
+      });
+    });
+  }
+  document.getElementById('adminLogoutBtn').addEventListener('click', ()=>{
+    document.getElementById('adminContent').classList.add('hidden');
+    document.getElementById('adminLoginSection').classList.remove('hidden');
+    showView(homeView);
+  });
+
+  // Calendar scheduling
+  document.getElementById('scheduleCallBtn').addEventListener('click', ()=>{
+    const dt = document.getElementById('callDateTime').value;
+    if(!dt) return;
+    window.firebasePush(scheduleRef, { datetime: dt, status: 'pending' });
+    alert('Solicitud enviada. El administrador la revisará.');
+  });
+
+  // Simulación país para logs
+  fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=> window.userCountry = d.country_name);
+  
+  // Inicialización
+  updateUITexts();
+  console.log('WR Hacks — WebRTC + Firebase listo');
 </script>
-
 </body>
 </html>
