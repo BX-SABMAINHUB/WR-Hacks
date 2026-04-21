@@ -1,363 +1,1183 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WR Hacks</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap');
-        
-        :root {
-            --primary: #00ff9d;
-        }
-        
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        .title-font {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        
-        .cyber-bg {
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
-        }
-        
-        .section {
-            animation: fadeIn 0.4s ease forwards;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .video-container {
-            background: #000;
-            border: 3px solid #00ff9d;
-            border-radius: 20px;
-            overflow: hidden;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WR Hacks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #050810;
+      --surface: #0c1120;
+      --surface2: #111827;
+      --accent: #00f5ff;
+      --accent2: #7c3aed;
+      --accent3: #f59e0b;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --border: rgba(0,245,255,0.15);
+      --glow: 0 0 20px rgba(0,245,255,0.3);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+```
+/* BACKGROUND GRID */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* HEADER */
+header {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(5,8,16,0.95);
+  backdrop-filter: blur(10px);
+}
+.logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.6rem;
+  font-weight: 900;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+}
+.logo span { color: var(--accent3); -webkit-text-fill-color: var(--accent3); }
+.header-right { display: flex; align-items: center; gap: 1rem; }
+
+/* LANGUAGE TOGGLE */
+.lang-toggle {
+  display: flex;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.lang-btn {
+  padding: 0.4rem 0.9rem;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 1px;
+}
+.lang-btn.active { background: var(--accent); color: #000; }
+
+/* SECRET BUTTON */
+.secret-btn {
+  width: 36px; height: 36px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--accent);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  font-family: 'Orbitron', monospace;
+}
+.secret-btn:hover { border-color: var(--accent); box-shadow: var(--glow); }
+
+/* MAIN */
+main {
+  position: relative;
+  z-index: 5;
+  min-height: calc(100vh - 70px);
+}
+
+/* PAGE SECTIONS */
+.page { display: none; animation: fadeIn 0.4s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* HOME PAGE */
+#home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px);
+  text-align: center;
+  padding: 3rem 2rem;
+}
+#home.active { display: flex; }
+.hero-badge {
+  display: inline-block;
+  background: rgba(0,245,255,0.1);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 0.75rem;
+  letter-spacing: 3px;
+  padding: 0.35rem 1rem;
+  border-radius: 20px;
+  font-family: 'Orbitron', monospace;
+  margin-bottom: 1.5rem;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{box-shadow:0 0 10px rgba(0,245,255,0.2)} 50%{box-shadow:0 0 25px rgba(0,245,255,0.5)} }
+.hero-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #fff 30%, var(--accent) 70%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero-sub {
+  font-size: 1.15rem;
+  color: var(--muted);
+  max-width: 480px;
+  line-height: 1.6;
+  margin-bottom: 3rem;
+  font-weight: 400;
+}
+.btn-group { display: flex; gap: 1.2rem; flex-wrap: wrap; justify-content: center; }
+.btn-primary {
+  padding: 0.9rem 2.2rem;
+  background: linear-gradient(135deg, var(--accent), #00a8b5);
+  border: none;
+  border-radius: 10px;
+  color: #000;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.25s;
+  box-shadow: 0 4px 20px rgba(0,245,255,0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,245,255,0.5); }
+.btn-secondary {
+  padding: 0.9rem 2.2rem;
+  background: transparent;
+  border: 1px solid var(--accent2);
+  border-radius: 10px;
+  color: var(--accent2);
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.btn-secondary:hover { background: rgba(124,58,237,0.15); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(124,58,237,0.3); }
+
+/* PREMIUM PAGE */
+#premium { padding: 3rem 2rem; max-width: 780px; margin: 0 auto; }
+.page-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.page-header h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: 2rem;
+  color: var(--accent3);
+  margin-bottom: 0.5rem;
+}
+.page-header p { color: var(--muted); font-size: 1.05rem; }
+
+.plan-card {
+  background: var(--surface);
+  border: 1px solid var(--accent3);
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 0 40px rgba(245,158,11,0.1);
+  position: relative;
+  overflow: hidden;
+}
+.plan-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent3), #f97316);
+}
+.plan-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.plan-name {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent3);
+}
+.plan-name span { display: block; font-size: 0.75rem; color: var(--muted); font-family: 'Rajdhani', sans-serif; letter-spacing: 2px; margin-top: 2px; }
+.plan-price {
+  text-align: right;
+}
+.plan-price .amount {
+  font-family: 'Orbitron', monospace;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--accent3);
+  line-height: 1;
+}
+.plan-price .period { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+@media(max-width: 560px){ .features-grid { grid-template-columns: 1fr; } }
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.75rem;
+  background: rgba(245,158,11,0.05);
+  border: 1px solid rgba(245,158,11,0.15);
+  border-radius: 8px;
+}
+.feature-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.feature-text { font-size: 0.9rem; line-height: 1.4; color: var(--text); }
+.feature-text strong { color: var(--accent3); display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+.paypal-frame-wrap {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  height: 200px;
+}
+.paypal-frame-wrap iframe { width: 100%; height: 100%; border: none; }
+
+.btn-buy {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, var(--accent3), #f97316);
+  border: none;
+  border-radius: 10px;
+  color: #000;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.25s;
+  margin-bottom: 1rem;
+}
+.btn-buy:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(245,158,11,0.4); }
+.btn-back {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+}
+.btn-back:hover { border-color: var(--accent); color: var(--accent); }
+
+/* PAYPAL EMBED */
+#paypal-embed {
+  display: none;
+  margin-top: 1.5rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--accent3);
+}
+#paypal-embed.open { display: block; animation: fadeIn 0.3s ease; }
+#paypal-embed iframe { width: 100%; height: 480px; border: none; background: #fff; }
+
+/* DEMO PAGE */
+#demo { padding: 3rem 2rem; max-width: 680px; margin: 0 auto; }
+.demo-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 2rem; }
+@media(max-width: 500px){ .demo-options { grid-template-columns: 1fr; } }
+.demo-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.demo-card:hover { border-color: var(--accent); box-shadow: var(--glow); transform: translateY(-3px); }
+.demo-card .icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.demo-card h3 { font-family: 'Orbitron', monospace; font-size: 0.9rem; color: var(--accent); margin-bottom: 0.4rem; }
+.demo-card p { color: var(--muted); font-size: 0.85rem; }
+
+/* EMAIL PANEL */
+#email-panel, #call-panel { display: none; margin-top: 1.5rem; animation: fadeIn 0.3s ease; }
+#email-panel.open, #call-panel.open { display: block; }
+.panel-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 2rem;
+}
+.panel-box h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+}
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.4rem; letter-spacing: 0.5px; }
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.form-group input:focus, .form-group textarea:focus { border-color: var(--accent); }
+.form-group textarea { resize: vertical; min-height: 100px; }
+.btn-send {
+  width: 100%;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, var(--accent), #00a8b5);
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.25s;
+  margin-top: 0.5rem;
+}
+.btn-send:hover { box-shadow: var(--glow); transform: translateY(-1px); }
+.success-msg {
+  text-align: center;
+  padding: 1rem;
+  color: var(--accent);
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  display: none;
+}
+
+/* CALL PANEL */
+.call-status {
+  text-align: center;
+  padding: 2rem;
+}
+.call-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent2), var(--accent));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1rem;
+  animation: ring 1.5s infinite;
+}
+@keyframes ring {
+  0%,100%{ box-shadow: 0 0 0 0 rgba(0,245,255,0.5); }
+  50%{ box-shadow: 0 0 0 16px rgba(0,245,255,0); }
+}
+.call-name { font-family: 'Orbitron', monospace; font-size: 1rem; color: var(--text); margin-bottom: 0.3rem; }
+.call-subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 2rem; }
+.call-timer { font-family: 'Orbitron', monospace; font-size: 1.4rem; color: var(--accent); margin-bottom: 1.5rem; display: none; }
+.call-btns { display: flex; gap: 1.5rem; justify-content: center; }
+.call-btn {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+.call-btn.accept { background: #16a34a; }
+.call-btn.reject { background: #dc2626; }
+.call-btn:hover { transform: scale(1.1); }
+.call-note {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background: rgba(245,158,11,0.1);
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: var(--accent3);
+  text-align: center;
+}
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: 16px;
+  padding: 2.5rem;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 0 60px rgba(0,245,255,0.2);
+  position: relative;
+}
+.modal h2 {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.modal p { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+.modal input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 2px;
+  outline: none;
+  margin-bottom: 1rem;
+}
+.modal input:focus { border-color: var(--accent); }
+.modal-btns { display: flex; gap: 0.75rem; }
+.btn-confirm {
+  flex: 1;
+  padding: 0.75rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-cancel {
+  padding: 0.75rem 1.2rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: 'Rajdhani', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.modal-error { color: #f87171; font-size: 0.8rem; margin-top: -0.5rem; margin-bottom: 0.75rem; display: none; }
+
+/* CALL LOG PAGE */
+#call-log-page { padding: 3rem 2rem; max-width: 780px; margin: 0 auto; }
+.log-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+.log-table th {
+  padding: 0.75rem 1rem;
+  background: var(--surface2);
+  color: var(--accent);
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 1.5px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.log-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-size: 0.9rem;
+  color: var(--text);
+}
+.log-table tr:hover td { background: rgba(0,245,255,0.03); }
+.status-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 0.5px;
+}
+.status-badge.answered { background: rgba(22,163,74,0.2); color: #4ade80; border: 1px solid rgba(22,163,74,0.3); }
+.status-badge.missed { background: rgba(220,38,38,0.2); color: #f87171; border: 1px solid rgba(220,38,38,0.3); }
+.status-badge.live {
+  background: rgba(0,245,255,0.15);
+  color: var(--accent);
+  border: 1px solid rgba(0,245,255,0.4);
+  animation: pulseBadge 1s infinite;
+}
+@keyframes pulseBadge { 0%,100%{opacity:1} 50%{opacity:0.5} }
+.log-empty { text-align: center; padding: 3rem; color: var(--muted); }
+.live-call-banner {
+  display: none;
+  background: rgba(0,245,255,0.1);
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.live-call-banner.show { display: flex; animation: fadeIn 0.3s ease; }
+.live-call-banner .live-info { font-size: 0.9rem; color: var(--text); }
+.live-call-banner .live-info strong { color: var(--accent); font-family: 'Orbitron', monospace; font-size: 0.8rem; display: block; margin-bottom: 2px; }
+.live-btns { display: flex; gap: 0.5rem; }
+.live-accept {
+  padding: 0.5rem 1rem;
+  background: #16a34a;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+.live-reject {
+  padding: 0.5rem 1rem;
+  background: #dc2626;
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+/* NAV BREADCRUMB */
+.breadcrumb {
+  font-size: 0.75rem;
+  color: var(--muted);
+  font-family: 'Orbitron', monospace;
+  letter-spacing: 1px;
+  padding: 0.6rem 2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  background: rgba(12,17,32,0.6);
+}
+.breadcrumb span { color: var(--accent); }
+```
+
+  </style>
 </head>
-<body class="cyber-bg text-white min-h-screen">
-    <!-- HEADER -->
-    <header class="border-b border-white/10 backdrop-blur-lg sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 bg-emerald-500 rounded-2xl flex items-center justify-center text-2xl font-bold">🔥</div>
-                <h1 class="title-font text-4xl tracking-tighter">WR HACKS</h1>
-            </div>
-            
-            <!-- URL actual (se actualiza automáticamente) -->
-            <div class="hidden md:flex items-center gap-2 text-sm text-emerald-400 font-mono bg-black/50 px-4 py-2 rounded-3xl border border-emerald-500/30">
-                <span id="current-url" class="text-white/70">https://tudominio.vercel.app/</span>
-            </div>
-            
-            <div class="flex items-center gap-4">
-                <button onclick="navigateTo('home')" 
-                        class="px-6 py-2.5 bg-white/10 hover:bg-white/20 rounded-3xl text-sm font-medium transition-all">
-                    Inicio
-                </button>
-            </div>
+<body>
+
+  <!-- HEADER -->
+
+  <header>
+    <div class="logo" onclick="goHome()" style="cursor:pointer">WR<span>.</span>HACKS</div>
+    <div class="header-right">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('es')" id="btn-es">ES</button>
+        <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
+      </div>
+      <button class="secret-btn" onclick="openSecretModal()" title="*">✦</button>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+
+  <div class="breadcrumb" id="breadcrumb">
+    <span data-i18n="home">INICIO</span>
+  </div>
+
+  <!-- MAIN -->
+
+  <main>
+
+```
+<!-- HOME -->
+<div class="page active" id="home">
+  <div class="hero-badge" data-i18n="badge">HERRAMIENTAS DE HACKING PROFESIONAL</div>
+  <h1 class="hero-title">WR HACKS</h1>
+  <p class="hero-sub" data-i18n="heroSub">Accede a las mejores herramientas de seguridad y hacking ético. Potencia tus capacidades al máximo nivel.</p>
+  <div class="btn-group">
+    <button class="btn-primary" onclick="goTo('premium')" data-i18n="btnPremium">VER PLANES PREMIUM</button>
+    <button class="btn-secondary" onclick="goTo('demo')" data-i18n="btnDemo">DEMO</button>
+  </div>
+</div>
+
+<!-- PREMIUM -->
+<div class="page" id="premium">
+  <div class="page-header">
+    <h1 data-i18n="premiumTitle">⚡ PLAN PREMIUM</h1>
+    <p data-i18n="premiumSub">Acceso completo a todas las herramientas avanzadas</p>
+  </div>
+  <div class="plan-card">
+    <div class="plan-top">
+      <div class="plan-name">
+        WR HACKS PRO
+        <span data-i18n="planType">PLAN COMPLETO · ACCESO TOTAL</span>
+      </div>
+      <div class="plan-price">
+        <div class="amount">4,99€</div>
+        <div class="period" data-i18n="perMonth">/ mes</div>
+      </div>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-item">
+        <span class="feature-icon">🔐</span>
+        <div class="feature-text"><strong data-i18n="f1t">Seguridad Avanzada</strong><span data-i18n="f1d">Suite completa de auditoría y pentesting</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">⚡</span>
+        <div class="feature-text"><strong data-i18n="f2t">Hacks Premium</strong><span data-i18n="f2d">Scripts exclusivos y exploits actualizados</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🌐</span>
+        <div class="feature-text"><strong data-i18n="f3t">Red Analysis</strong><span data-i18n="f3d">Escáner de redes WiFi y análisis de tráfico</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🕵️</span>
+        <div class="feature-text"><strong data-i18n="f4t">OSINT Tools</strong><span data-i18n="f4d">Rastreo de información pública avanzado</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">💻</span>
+        <div class="feature-text"><strong data-i18n="f5t">Keyloggers & RAT</strong><span data-i18n="f5d">Herramientas de monitorización remota</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🔓</span>
+        <div class="feature-text"><strong data-i18n="f6t">Cracking Suite</strong><span data-i18n="f6d">Brute force, diccionarios y rainbow tables</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">📱</span>
+        <div class="feature-text"><strong data-i18n="f7t">Mobile Hacking</strong><span data-i18n="f7d">Android & iOS exploits y bypass tools</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🛡️</span>
+        <div class="feature-text"><strong data-i18n="f8t">Soporte 24/7</strong><span data-i18n="f8d">Acceso directo a nuestro equipo experto</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🔄</span>
+        <div class="feature-text"><strong data-i18n="f9t">Updates Semanales</strong><span data-i18n="f9d">Nuevas herramientas cada semana</span></div>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🎯</span>
+        <div class="feature-text"><strong data-i18n="f10t">SQL Injection Kit</strong><span data-i18n="f10d">Bypass de bases de datos y extracciones</span></div>
+      </div>
+    </div>
+
+    <hr class="divider"/>
+    <button class="btn-buy" onclick="openPaypal()" data-i18n="btnBuy">💳 COMPRAR PLAN — 4,99€/MES</button>
+    <button class="btn-back" onclick="goHome()" data-i18n="btnBack">← Volver</button>
+
+    <div id="paypal-embed">
+      <iframe src="https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE" title="PayPal" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation-by-user-activation" referrerpolicy="no-referrer"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- DEMO -->
+<div class="page" id="demo">
+  <div class="page-header">
+    <h1 style="font-family:'Orbitron',monospace;font-size:2rem;color:var(--accent)" data-i18n="demoTitle">DEMO</h1>
+    <p data-i18n="demoSub">¿Cómo quieres contactar con el dueño?</p>
+  </div>
+  <div class="demo-options">
+    <div class="demo-card" onclick="openEmail()">
+      <div class="icon">📧</div>
+      <h3 data-i18n="emailOption">ENVIAR MENSAJE</h3>
+      <p data-i18n="emailOptionSub">Envía un correo al dueño directamente desde aquí</p>
+    </div>
+    <div class="demo-card" onclick="openCall()">
+      <div class="icon">📞</div>
+      <h3 data-i18n="callOption">LLAMAR AL DUEÑO</h3>
+      <p data-i18n="callOptionSub">Inicia una llamada de voz en tiempo real</p>
+    </div>
+  </div>
+
+  <!-- EMAIL PANEL -->
+  <div id="email-panel">
+    <div class="panel-box">
+      <h3>📧 <span data-i18n="emailTitle">ENVIAR EMAIL</span> → contactnotifieralex@gmail.com</h3>
+      <div class="form-group">
+        <label data-i18n="yourName">TU NOMBRE</label>
+        <input type="text" id="sender-name" placeholder="John Doe"/>
+      </div>
+      <div class="form-group">
+        <label data-i18n="yourEmail">TU EMAIL</label>
+        <input type="email" id="sender-email" placeholder="tu@email.com"/>
+      </div>
+      <div class="form-group">
+        <label data-i18n="subject">ASUNTO</label>
+        <input type="text" id="email-subject" placeholder="Consulta sobre WR Hacks..."/>
+      </div>
+      <div class="form-group">
+        <label data-i18n="message">MENSAJE</label>
+        <textarea id="email-body" placeholder="Escribe tu mensaje aquí..."></textarea>
+      </div>
+      <button class="btn-send" onclick="sendEmail()" data-i18n="send">ENVIAR MENSAJE</button>
+      <div class="success-msg" id="email-success" data-i18n="emailSent">✅ ¡Mensaje enviado correctamente! Te responderemos pronto.</div>
+    </div>
+  </div>
+
+  <!-- CALL PANEL -->
+  <div id="call-panel">
+    <div class="panel-box">
+      <div class="call-status">
+        <div class="call-avatar" id="call-avatar">👤</div>
+        <div class="call-name">Alex — WR HACKS</div>
+        <div class="call-subtitle" id="call-subtitle-text" data-i18n="callRinging">Llamando... Por favor espera</div>
+        <div class="call-timer" id="call-timer">00:00</div>
+        <div class="call-btns">
+          <button class="call-btn accept" id="btn-accept" onclick="acceptCall()" title="Aceptar">📞</button>
+          <button class="call-btn reject" id="btn-reject" onclick="rejectCall()" title="Rechazar">📵</button>
         </div>
-    </header>
+      </div>
+      <div class="call-note" data-i18n="callNote">⚠️ Esta llamada usa WebRTC. Tu micrófono puede ser solicitado. La llamada se registra en el log del administrador.</div>
+    </div>
+  </div>
 
-    <main class="max-w-6xl mx-auto px-6 py-12">
-        
-        <!-- BOTONES PRINCIPALES -->
-        <div id="home-section" class="section flex flex-col items-center justify-center min-h-[60vh] gap-8">
-            <div class="text-center max-w-2xl">
-                <h2 class="title-font text-7xl leading-none tracking-tighter mb-6">
-                    HACKS QUE <span class="text-emerald-400">CAMBIAN</span> EL JUEGO
-                </h2>
-                <p class="text-2xl text-white/70">Seguridad avanzada • Hacks reales • Todo en una sola página</p>
-            </div>
-            
-            <div class="flex flex-col sm:flex-row gap-6 w-full max-w-2xl">
-                <!-- BOTÓN PREMIUM -->
-                <button onclick="navigateTo('premium')" 
-                        class="group flex-1 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-black font-semibold text-2xl py-8 px-10 rounded-3xl transition-all duration-300 flex flex-col items-center gap-3 shadow-2xl shadow-emerald-500/50">
-                    <span class="text-4xl">💎</span>
-                    <span>Ver planes premium</span>
-                    <span class="text-sm opacity-75 font-normal">Accede a los mejores hacks de seguridad</span>
-                </button>
-                
-                <!-- BOTÓN DEMO -->
-                <button onclick="navigateTo('demo')" 
-                        class="group flex-1 bg-white/10 hover:bg-white/20 border border-white/30 font-semibold text-2xl py-8 px-10 rounded-3xl transition-all duration-300 flex flex-col items-center gap-3">
-                    <span class="text-4xl">🚀</span>
-                    <span>Demo</span>
-                    <span class="text-sm opacity-75 font-normal">Prueba ahora sin compromiso</span>
-                </button>
-            </div>
-        </div>
+  <div style="margin-top:1.5rem">
+    <button class="btn-back" onclick="goHome()" data-i18n="btnBack">← Volver</button>
+  </div>
+</div>
 
-        <!-- SECCIÓN PREMIUM -->
-        <div id="premium-section" class="section hidden">
-            <div class="max-w-4xl mx-auto">
-                <div class="flex justify-between items-end mb-8">
-                    <div>
-                        <span class="px-4 py-1 bg-emerald-500 text-black text-sm font-bold rounded-3xl">PREMIUM</span>
-                        <h2 class="title-font text-6xl tracking-tighter mt-3">Plan de Seguridad Total</h2>
-                        <p class="text-emerald-400 text-xl">Los mejores hacks + protección profesional</p>
-                    </div>
-                    <div class="text-right">
-                        <div class="text-6xl font-bold text-emerald-400">4,99€</div>
-                        <div class="text-sm text-white/60">/mes • Cancelación cuando quieras</div>
-                    </div>
-                </div>
+<!-- CALL LOG (admin) -->
+<div class="page" id="call-log-page">
+  <div class="page-header">
+    <h1 style="font-family:'Orbitron',monospace;font-size:2rem;color:var(--accent)">🔒 <span data-i18n="logTitle">REGISTRO DE LLAMADAS</span></h1>
+    <p data-i18n="logSub">Panel administrativo — acceso restringido</p>
+  </div>
 
-                <!-- DETALLES DEL PLAN -->
-                <div class="grid md:grid-cols-2 gap-8 bg-white/5 border border-white/10 rounded-3xl p-8">
-                    <div>
-                        <h3 class="text-xl font-semibold mb-6 flex items-center gap-3">
-                            <span class="text-3xl">🛡️</span> Lo que incluye
-                        </h3>
-                        <ul class="space-y-5 text-lg">
-                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Acceso ilimitado a +150 hacks de ciberseguridad</li>
-                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Herramientas de hacking ético avanzadas (actualizadas semanalmente)</li>
-                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Protección premium contra phishing, ransomware y malware</li>
-                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Tutoriales en vídeo exclusivos (más de 40 horas)</li>
-                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Comunidad privada de hackers y expertos</li>
-                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Soporte 24/7 por chat y videollamada</li>
-                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Certificado de seguridad digital personal</li>
-                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Garantía de devolución de 30 días</li>
-                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Actualizaciones en tiempo real de exploits zero-day</li>
-                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Acceso a la Dark Web monitorizada para ti</li>
-                        </ul>
-                    </div>
-                    <div class="bg-black/50 rounded-3xl p-8 flex flex-col justify-between">
-                        <div>
-                            <h4 class="font-semibold mb-4">¿Por qué elegir Premium?</h4>
-                            <p class="text-white/80 leading-relaxed">
-                                No solo hacks. Te damos la seguridad real que necesitas en 2026. 
-                                Protege tu identidad, tu negocio y tus datos con las técnicas más avanzadas del mercado.
-                            </p>
-                        </div>
-                        
-                        <!-- BOTÓN COMPRAR -->
-                        <a href="https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE" 
-                           target="_self"
-                           onclick="document.getElementById('paypal-loading').classList.remove('hidden')"
-                           class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-2xl py-7 rounded-3xl mt-8 transition-all active:scale-95">
-                            💳 COMPRAR PLAN POR 4,99€
-                        </a>
-                        <div id="paypal-loading" class="hidden text-center text-emerald-400 text-sm mt-3">Abriendo pasarela de pago segura en esta misma página...</div>
-                        
-                        <p class="text-xs text-center text-white/40 mt-6">El enlace se abre en esta misma pestaña • Pago 100% seguro vía PayPal</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="live-call-banner" id="live-banner">
+    <div class="live-info">
+      <strong>📞 LLAMADA EN VIVO</strong>
+      <span id="live-caller-info">Entrante ahora mismo...</span>
+    </div>
+    <div class="live-btns">
+      <button class="live-accept" onclick="acceptLiveCall()" data-i18n="accept">COGER</button>
+      <button class="live-reject" onclick="rejectLiveCall()" data-i18n="reject">RECHAZAR</button>
+    </div>
+  </div>
 
-        <!-- SECCIÓN DEMO -->
-        <div id="demo-section" class="section hidden">
-            <h2 class="title-font text-5xl tracking-tighter text-center mb-10">Demo en vivo</h2>
-            
-            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                
-                <!-- OPCIÓN 1: MENSAJE POR GMAIL -->
-                <div class="bg-white/5 border border-white/10 rounded-3xl p-8 hover:border-emerald-400/50 transition-all">
-                    <div class="flex items-center gap-4 mb-6">
-                        <span class="text-4xl">✉️</span>
-                        <h3 class="text-2xl font-semibold">Enviar mensaje al dueño</h3>
-                    </div>
-                    <p class="text-white/70 mb-8">Contacta directamente con el creador de WR Hacks por Gmail. Se abre en esta misma página.</p>
-                    
-                    <a href="mailto:contactnotifieralex@gmail.com?subject=Demo%20WR%20Hacks%20-%20Consulta&body=Hola%2C%20quiero%20saber%20m%C3%A1s%20sobre%20los%20hacks%20y%20la%20seguridad..."
-                       class="block w-full text-center bg-white text-black font-semibold py-6 rounded-3xl text-xl hover:scale-105 transition-transform">
-                        📧 Enviar mensaje por Gmail ahora
-                    </a>
-                    <p class="text-xs text-center mt-4 text-white/50">Se abrirá tu cliente de correo (Gmail) sin salir de la web</p>
-                </div>
-                
-                <!-- OPCIÓN 2: LLAMADA WEB -->
-                <div class="bg-white/5 border border-white/10 rounded-3xl p-8 hover:border-emerald-400/50 transition-all">
-                    <div class="flex items-center gap-4 mb-6">
-                        <span class="text-4xl">📞</span>
-                        <h3 class="text-2xl font-semibold">Llamar al dueño por la web</h3>
-                    </div>
-                    <p class="text-white/70 mb-6">Videollamada o llamada de voz directa en esta misma página. Sin pestañas nuevas. Tú inicias y el dueño puede contestar o rechazar.</p>
-                    
-                    <button onclick="iniciarLlamadaDemo()" 
-                            class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold py-6 rounded-3xl text-2xl flex items-center justify-center gap-3 transition-all">
-                        <span>📲 Iniciar llamada ahora</span>
-                    </button>
-                    
-                    <!-- INTERFAZ DE LLAMADA (aparece al clic) -->
-                    <div id="call-interface" class="hidden mt-8">
-                        <div class="video-container mx-auto w-full max-w-md aspect-video flex items-center justify-center relative">
-                            <!-- Vídeo local -->
-                            <video id="localVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
-                            <!-- Vídeo remoto (cuando se conecte) -->
-                            <video id="remoteVideo" autoplay playsinline class="w-full h-full object-cover absolute top-0 left-0 hidden"></video>
-                            
-                            <!-- Overlay de llamada -->
-                            <div id="call-overlay" class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-center">
-                                <div class="text-emerald-400 animate-pulse text-xl mb-4">🔴 Llamando al dueño...</div>
-                                <div class="flex gap-6">
-                                    <button onclick="rechazarLlamada()" 
-                                            class="bg-red-500 hover:bg-red-600 w-14 h-14 rounded-full flex items-center justify-center text-3xl">✕</button>
-                                    <button onclick="finalizarLlamada()" 
-                                            class="bg-white/90 hover:bg-white text-black w-14 h-14 rounded-full flex items-center justify-center text-3xl">📴</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <p class="text-center text-xs text-white/60 mt-4">Usando WebRTC • Llamada 100% en esta página • Sin instalar nada</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+  <table class="log-table" id="log-table">
+    <thead>
+      <tr>
+        <th data-i18n="colDate">FECHA</th>
+        <th data-i18n="colTime">HORA</th>
+        <th data-i18n="colCountry">PAÍS</th>
+        <th data-i18n="colDuration">DURACIÓN</th>
+        <th data-i18n="colStatus">ESTADO</th>
+      </tr>
+    </thead>
+    <tbody id="log-body"></tbody>
+  </table>
+  <div class="log-empty" id="log-empty" style="display:none" data-i18n="noLogs">No hay registros de llamadas todavía.</div>
 
-    <footer class="text-center py-8 text-white/40 text-sm border-t border-white/10">
-        © WR Hacks 2026 • Hecho en una sola página HTML • Desplegado en Vercel
-    </footer>
+  <div style="margin-top:2rem">
+    <button class="btn-back" onclick="goHome()" data-i18n="btnBack">← Volver</button>
+  </div>
+</div>
+```
 
-    <script>
-        // Configuración Tailwind
-        function initTailwind() {
-            tailwind.config = {
-                content: [],
-                theme: { extend: {} }
-            }
-        }
-        
-        // NAVEGACIÓN CON URL (SPA)
-        function navigateTo(section) {
-            // Ocultar todas las secciones
-            document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
-            
-            // Mostrar la seleccionada
-            const target = document.getElementById(section + '-section');
-            if (target) target.classList.remove('hidden');
-            
-            // Actualizar URL en la barra (sin recargar)
-            let path = '';
-            if (section === 'premium') path = '/PREMIUM';
-            else if (section === 'demo') path = '/DEMO';
-            else path = '/';
-            
-            history.pushState({ section }, '', path);
-            
-            // Actualizar el texto de la URL en el header
-            document.getElementById('current-url').textContent = `https://tudominio.vercel.app${path}`;
-            
-            // Cambiar título de página
-            if (section === 'premium') document.title = 'WR Hacks - Plan Premium';
-            else if (section === 'demo') document.title = 'WR Hacks - Demo';
-            else document.title = 'WR Hacks';
-        }
-        
-        // Manejar botón atrás del navegador
-        window.onpopstate = function(event) {
-            if (event.state && event.state.section) {
-                navigateTo(event.state.section);
-            } else {
-                navigateTo('home');
-            }
-        };
-        
-        // === WEBRTC - LLAMADA REAL EN LA MISMA PÁGINA ===
-        let localStream = null;
-        let peerConnection = null;
-        
-        async function iniciarLlamadaDemo() {
-            const interface = document.getElementById('call-interface');
-            interface.classList.remove('hidden');
-            
-            try {
-                // Obtener cámara y micrófono
-                localStream = await navigator.mediaDevices.getUserMedia({
-                    video: true,
-                    audio: true
-                });
-                
-                const localVideo = document.getElementById('localVideo');
-                localVideo.srcObject = localStream;
-                
-                // Crear conexión WebRTC
-                peerConnection = new RTCPeerConnection({
-                    iceServers: [
-                        { urls: 'stun:stun.l.google.com:19302' },
-                        { urls: 'stun:stun1.l.google.com:19302' }
-                    ]
-                });
-                
-                // Añadir pistas de audio y vídeo
-                localStream.getTracks().forEach(track => {
-                    peerConnection.addTrack(track, localStream);
-                });
-                
-                // Mostrar vídeo remoto cuando llegue
-                peerConnection.ontrack = (event) => {
-                    const remoteVideo = document.getElementById('remoteVideo');
-                    remoteVideo.srcObject = event.streams[0];
-                    remoteVideo.classList.remove('hidden');
-                    document.getElementById('call-overlay').classList.add('hidden');
-                };
-                
-                // Crear oferta (el dueño la recibe automáticamente en producción con signaling)
-                const offer = await peerConnection.createOffer();
-                await peerConnection.setLocalDescription(offer);
-                
-                console.log('%c✅ Oferta WebRTC creada - En producción se envía automáticamente al dueño', 'color:#00ff9d; font-weight:bold');
-                // Aquí en una versión real con backend se enviaría vía WebSocket
-                
-            } catch (err) {
-                console.error(err);
-                alert('No se pudo acceder a la cámara/micrófono. Permite el acceso para la llamada.');
-                finalizarLlamada();
-            }
-        }
-        
-        function rechazarLlamada() {
-            finalizarLlamada();
-            alert('✅ Has rechazado la llamada (como dueño). El usuario verá que no contestaste.');
-        }
-        
-        function finalizarLlamada() {
-            const interface = document.getElementById('call-interface');
-            interface.classList.add('hidden');
-            
-            if (localStream) {
-                localStream.getTracks().forEach(track => track.stop());
-                localStream = null;
-            }
-            
-            if (peerConnection) {
-                peerConnection.close();
-                peerConnection = null;
-            }
-            
-            // Limpiar vídeos
-            document.getElementById('localVideo').srcObject = null;
-            const remote = document.getElementById('remoteVideo');
-            remote.srcObject = null;
-            remote.classList.add('hidden');
-        }
-        
-        // INICIO AUTOMÁTICO
-        window.onload = function() {
-            initTailwind();
-            
-            // Detectar sección por URL al cargar (para Vercel /PREMIUM, /DEMO)
-            const path = window.location.pathname.toLowerCase();
-            
-            if (path.includes('/premium')) {
-                navigateTo('premium');
-            } else if (path.includes('/demo')) {
-                navigateTo('demo');
-            } else {
-                // Por defecto mostrar home
-                document.getElementById('home-section').classList.remove('hidden');
-            }
-            
-            console.log('%c🚀 WR Hacks - Página completa lista en un solo index.html', 'color:#00ff9d; font-size:16px');
-        };
-    </script>
+  </main>
+
+  <!-- SECRET PASSWORD MODAL -->
+
+  <div class="modal-overlay" id="secret-modal">
+    <div class="modal">
+      <h2>🔒 <span data-i18n="secretTitle">ACCESO RESTRINGIDO</span></h2>
+      <p data-i18n="secretDesc">Introduce la contraseña de administrador para acceder al registro de llamadas.</p>
+      <input type="password" id="secret-input" placeholder="••••••••••" onkeydown="if(event.key==='Enter')checkSecret()"/>
+      <div class="modal-error" id="secret-error" data-i18n="wrongPass">❌ Contraseña incorrecta. Intenta de nuevo.</div>
+      <div class="modal-btns">
+        <button class="btn-confirm" onclick="checkSecret()" data-i18n="confirm">CONFIRMAR</button>
+        <button class="btn-cancel" onclick="closeModal('secret-modal')" data-i18n="cancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ─── TRANSLATIONS ───────────────────────────────────────────────
+    const i18n = {
+      es: {
+        home: "INICIO", badge: "HERRAMIENTAS DE HACKING PROFESIONAL",
+        heroSub: "Accede a las mejores herramientas de seguridad y hacking ético. Potencia tus capacidades al máximo nivel.",
+        btnPremium: "VER PLANES PREMIUM", btnDemo: "DEMO",
+        premiumTitle: "⚡ PLAN PREMIUM", premiumSub: "Acceso completo a todas las herramientas avanzadas",
+        planType: "PLAN COMPLETO · ACCESO TOTAL", perMonth: "/ mes",
+        f1t:"Seguridad Avanzada",f1d:"Suite completa de auditoría y pentesting",
+        f2t:"Hacks Premium",f2d:"Scripts exclusivos y exploits actualizados",
+        f3t:"Red Analysis",f3d:"Escáner de redes WiFi y análisis de tráfico",
+        f4t:"OSINT Tools",f4d:"Rastreo de información pública avanzado",
+        f5t:"Keyloggers & RAT",f5d:"Herramientas de monitorización remota",
+        f6t:"Cracking Suite",f6d:"Brute force, diccionarios y rainbow tables",
+        f7t:"Mobile Hacking",f7d:"Android & iOS exploits y bypass tools",
+        f8t:"Soporte 24/7",f8d:"Acceso directo a nuestro equipo experto",
+        f9t:"Updates Semanales",f9d:"Nuevas herramientas cada semana",
+        f10t:"SQL Injection Kit",f10d:"Bypass de bases de datos y extracciones",
+        btnBuy: "💳 COMPRAR PLAN — 4,99€/MES", btnBack: "← Volver",
+        demoTitle: "DEMO", demoSub: "¿Cómo quieres contactar con el dueño?",
+        emailOption: "ENVIAR MENSAJE", emailOptionSub: "Envía un correo al dueño directamente desde aquí",
+        callOption: "LLAMAR AL DUEÑO", callOptionSub: "Inicia una llamada de voz en tiempo real",
+        emailTitle: "ENVIAR EMAIL",
+        yourName: "TU NOMBRE", yourEmail: "TU EMAIL", subject: "ASUNTO", message: "MENSAJE",
+        send: "ENVIAR MENSAJE", emailSent: "✅ ¡Mensaje enviado correctamente! Te responderemos pronto.",
+        callRinging: "Llamando... Por favor espera",
+        callNote: "⚠️ Esta llamada usa WebRTC. Tu micrófono puede ser solicitado.",
+        logTitle: "REGISTRO DE LLAMADAS", logSub: "Panel administrativo — acceso restringido",
+        colDate:"FECHA",colTime:"HORA",colCountry:"PAÍS",colDuration:"DURACIÓN",colStatus:"ESTADO",
+        noLogs: "No hay registros de llamadas todavía.",
+        accept: "COGER", reject: "RECHAZAR",
+        secretTitle: "ACCESO RESTRINGIDO",
+        secretDesc: "Introduce la contraseña de administrador para acceder al registro de llamadas.",
+        wrongPass: "❌ Contraseña incorrecta. Intenta de nuevo.",
+        confirm: "CONFIRMAR", cancel: "Cancelar"
+      },
+      en: {
+        home: "HOME", badge: "PROFESSIONAL HACKING TOOLS",
+        heroSub: "Access the best security and ethical hacking tools. Boost your capabilities to the max level.",
+        btnPremium: "VIEW PREMIUM PLANS", btnDemo: "DEMO",
+        premiumTitle: "⚡ PREMIUM PLAN", premiumSub: "Full access to all advanced tools",
+        planType: "FULL PLAN · TOTAL ACCESS", perMonth: "/ month",
+        f1t:"Advanced Security",f1d:"Full audit and pentesting suite",
+        f2t:"Premium Hacks",f2d:"Exclusive scripts and updated exploits",
+        f3t:"Network Analysis",f3d:"WiFi network scanner and traffic analysis",
+        f4t:"OSINT Tools",f4d:"Advanced public information tracking",
+        f5t:"Keyloggers & RAT",f5d:"Remote monitoring tools",
+        f6t:"Cracking Suite",f6d:"Brute force, dictionaries and rainbow tables",
+        f7t:"Mobile Hacking",f7d:"Android & iOS exploits and bypass tools",
+        f8t:"24/7 Support",f8d:"Direct access to our expert team",
+        f9t:"Weekly Updates",f9d:"New tools every week",
+        f10t:"SQL Injection Kit",f10d:"Database bypass and extractions",
+        btnBuy: "💳 BUY PLAN — €4.99/MONTH", btnBack: "← Back",
+        demoTitle: "DEMO", demoSub: "How do you want to contact the owner?",
+        emailOption: "SEND MESSAGE", emailOptionSub: "Send an email to the owner directly from here",
+        callOption: "CALL THE OWNER", callOptionSub: "Start a real-time voice call",
+        emailTitle: "SEND EMAIL",
+        yourName: "YOUR NAME", yourEmail: "YOUR EMAIL", subject: "SUBJECT", message: "MESSAGE",
+        send: "SEND MESSAGE", emailSent: "✅ Message sent successfully! We'll reply soon.",
+        callRinging: "Calling... Please wait",
+        callNote: "⚠️ This call uses WebRTC. Your microphone may be requested.",
+        logTitle: "CALL LOG", logSub: "Admin panel — restricted access",
+        colDate:"DATE",colTime:"TIME",colCountry:"COUNTRY",colDuration:"DURATION",colStatus:"STATUS",
+        noLogs: "No call records yet.",
+        accept: "ANSWER", reject: "DECLINE",
+        secretTitle: "RESTRICTED ACCESS",
+        secretDesc: "Enter the admin password to access the call log.",
+        wrongPass: "❌ Wrong password. Try again.",
+        confirm: "CONFIRM", cancel: "Cancel"
+      }
+    };
+
+    let currentLang = 'es';
+
+    function setLang(lang) {
+      currentLang = lang;
+      document.getElementById('btn-es').classList.toggle('active', lang==='es');
+      document.getElementById('btn-en').classList.toggle('active', lang==='en');
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (i18n[lang][key]) el.textContent = i18n[lang][key];
+      });
+    }
+
+    // ─── ROUTING ────────────────────────────────────────────────────
+    const routes = { home:'/', premium:'/premium', demo:'/demo', 'call-log-page':'/admin/calls' };
+    const crumbs = { home:['home'], premium:['home','premiumTitle'], demo:['home','demoTitle'], 'call-log-page':['home','logTitle'] };
+
+    function goTo(page) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      const el = document.getElementById(page);
+      if(el) {
+        el.classList.add('active');
+        const path = routes[page] || '/';
+        const base = window.location.origin;
+        history.pushState({page}, '', base + path);
+        updateBreadcrumb(page);
+        // hide sub-panels when switching
+        document.getElementById('email-panel').classList.remove('open');
+        document.getElementById('call-panel').classList.remove('open');
+        document.getElementById('paypal-embed').classList.remove('open');
+      }
+    }
+
+    function goHome() { goTo('home'); }
+
+    function updateBreadcrumb(page) {
+      const keys = crumbs[page] || ['home'];
+      const parts = keys.map((k,i) => {
+        const label = i18n[currentLang][k] || k.toUpperCase();
+        return i < keys.length - 1
+          ? `<span onclick="goHome()" style="cursor:pointer;opacity:0.6">${label}</span>`
+          : `<span>${label}</span>`;
+      });
+      document.getElementById('breadcrumb').innerHTML = parts.join(' <span style="opacity:0.3;margin:0 6px">/</span> ');
+    }
+
+    // ─── PAYPAL EMBED ────────────────────────────────────────────────
+    function openPaypal() {
+      const el = document.getElementById('paypal-embed');
+      el.classList.toggle('open');
+      if (el.classList.contains('open')) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    // ─── EMAIL ───────────────────────────────────────────────────────
+    function openEmail() {
+      document.getElementById('call-panel').classList.remove('open');
+      const ep = document.getElementById('email-panel');
+      ep.classList.toggle('open');
+      if(ep.classList.contains('open')) ep.scrollIntoView({behavior:'smooth'});
+    }
+
+    function sendEmail() {
+      const name = document.getElementById('sender-name').value.trim();
+      const email = document.getElementById('sender-email').value.trim();
+      const subject = document.getElementById('email-subject').value.trim();
+      const body = document.getElementById('email-body').value.trim();
+      if(!name || !email || !subject || !body) return;
+
+      const to = 'contactnotifieralex@gmail.com';
+      const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('De: '+name+' ('+email+')\n\n'+body)}`;
+
+      // Create hidden link and click to open mail client within same context
+      const a = document.createElement('a');
+      a.href = mailtoLink;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      document.getElementById('email-success').style.display = 'block';
+      setTimeout(() => document.getElementById('email-success').style.display = 'none', 5000);
+    }
+
+    // ─── CALL SYSTEM ────────────────────────────────────────────────
+    let callActive = false;
+    let callInterval = null;
+    let callSeconds = 0;
+    let liveCallPending = false;
+
+    function openCall() {
+      document.getElementById('email-panel').classList.remove('open');
+      const cp = document.getElementById('call-panel');
+      cp.classList.toggle('open');
+      if(cp.classList.contains('open')) {
+        cp.scrollIntoView({behavior:'smooth'});
+        startCallRinging();
+      } else {
+        endCall();
+      }
+    }
+
+    function startCallRinging() {
+      callActive = true;
+      callSeconds = 0;
+      document.getElementById('call-timer').style.display = 'none';
+      document.getElementById('call-subtitle-text').textContent = i18n[currentLang].callRinging;
+      document.getElementById('call-avatar').style.animation = 'ring 1.5s infinite';
+      document.getElementById('btn-accept').style.display = 'flex';
+      document.getElementById('btn-reject').style.display = 'flex';
+
+      // Log the call attempt
+      const callData = {
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString(),
+        country: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown',
+        duration: '--',
+        status: 'live'
+      };
+      addCallLog(callData);
+      liveCallPending = true;
+
+      // Notify admin log if open
+      showLiveBanner();
+    }
+
+    function acceptCall() {
+      if(!callActive) return;
+      document.getElementById('call-subtitle-text').textContent = currentLang==='es' ? 'Conectado...' : 'Connected...';
+      document.getElementById('call-timer').style.display = 'block';
+      document.getElementById('call-avatar').style.animation = 'none';
+      document.getElementById('call-avatar').style.background = 'linear-gradient(135deg,#16a34a,#4ade80)';
+      document.getElementById('btn-accept').style.display = 'none';
+
+      callInterval = setInterval(() => {
+        callSeconds++;
+        const m = String(Math.floor(callSeconds/60)).padStart(2,'0');
+        const s = String(callSeconds%60).padStart(2,'0');
+        document.getElementById('call-timer').textContent = m+':'+s;
+      }, 1000);
+
+      updateLastCallStatus('answered');
+      liveCallPending = false;
+      hideLiveBanner();
+
+      // Request microphone (WebRTC basic)
+      if(navigator.mediaDevices) {
+        navigator.mediaDevices.getUserMedia({audio:true}).then(stream => {
+          window._localStream = stream;
+        }).catch(()=>{});
+      }
+    }
+
+    function rejectCall() {
+      endCall();
+      updateLastCallStatus('missed');
+      document.getElementById('call-subtitle-text').textContent = currentLang==='es' ? 'Llamada rechazada' : 'Call declined';
+      document.getElementById('call-avatar').style.animation = 'none';
+      document.getElementById('call-avatar').style.background = '#7f1d1d';
+      liveCallPending = false;
+      hideLiveBanner();
+    }
+
+    function endCall() {
+      callActive = false;
+      if(callInterval) { clearInterval(callInterval); callInterval = null; }
+      if(window._localStream) { window._localStream.getTracks().forEach(t=>t.stop()); window._localStream = null; }
+    }
+
+    // ─── CALL LOG ────────────────────────────────────────────────────
+    let callLogs = JSON.parse(localStorage.getItem('wrh_call_logs') || '[]');
+
+    function addCallLog(data) {
+      callLogs.unshift(data);
+      if(callLogs.length > 100) callLogs.pop();
+      localStorage.setItem('wrh_call_logs', JSON.stringify(callLogs));
+      renderCallLog();
+    }
+
+    function updateLastCallStatus(status) {
+      if(callLogs.length > 0) {
+        callLogs[0].status = status;
+        callLogs[0].duration = callSeconds > 0 ?
+          String(Math.floor(callSeconds/60)).padStart(2,'0')+':'+String(callSeconds%60).padStart(2,'0')
+          : '00:00';
+        localStorage.setItem('wrh_call_logs', JSON.stringify(callLogs));
+        renderCallLog();
+      }
+    }
+
+    function renderCallLog() {
+      const tbody = document.getElementById('log-body');
+      const empty = document.getElementById('log-empty');
+      if(!callLogs.length) {
+        empty.style.display = 'block';
+        tbody.innerHTML = '';
+        return;
+      }
+      empty.style.display = 'none';
+      tbody.innerHTML = callLogs.map(c => `
+        <tr>
+          <td>${c.date}</td>
+          <td>${c.time}</td>
+          <td>🌍 ${c.country}</td>
+          <td>${c.duration}</td>
+          <td><span class="status-badge ${c.status}">${c.status==='live'?'● EN VIVO':c.status==='answered'?(currentLang==='es'?'CONTESTADA':'ANSWERED'):(currentLang==='es'?'PERDIDA':'MISSED')}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function showLiveBanner() {
+      const b = document.getElementById('live-banner');
+      document.getElementById('live-caller-info').textContent =
+        new Date().toLocaleTimeString() + ' — ' + (Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown');
+      b.classList.add('show');
+    }
+    function hideLiveBanner() { document.getElementById('live-banner').classList.remove('show'); }
+
+    function acceptLiveCall() {
+      acceptCall();
+      hideLiveBanner();
+      // Switch to demo/call view
+      goTo('demo');
+      setTimeout(() => {
+        document.getElementById('call-panel').classList.add('open');
+      }, 200);
+    }
+    function rejectLiveCall() {
+      rejectCall();
+      hideLiveBanner();
+    }
+
+    // ─── SECRET MODAL ────────────────────────────────────────────────
+    function openSecretModal() {
+      document.getElementById('secret-input').value = '';
+      document.getElementById('secret-error').style.display = 'none';
+      document.getElementById('secret-modal').classList.add('open');
+      setTimeout(() => document.getElementById('secret-input').focus(), 100);
+    }
+
+    function checkSecret() {
+      const val = document.getElementById('secret-input').value;
+      if(val === 'Alex27Junio') {
+        closeModal('secret-modal');
+        renderCallLog();
+        goTo('call-log-page');
+      } else {
+        const err = document.getElementById('secret-error');
+        err.style.display = 'block';
+        document.getElementById('secret-input').value = '';
+        setTimeout(() => err.style.display = 'none', 3000);
+      }
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    // Close modal on overlay click
+    document.getElementById('secret-modal').addEventListener('click', function(e) {
+      if(e.target === this) closeModal('secret-modal');
+    });
+
+    // ─── INIT ────────────────────────────────────────────────────────
+    // Handle URL routing on load
+    window.addEventListener('load', () => {
+      const path = window.location.pathname;
+      if(path.includes('/premium')) goTo('premium');
+      else if(path.includes('/demo')) goTo('demo');
+      else goTo('home');
+    });
+
+    window.addEventListener('popstate', (e) => {
+      if(e.state && e.state.page) goTo(e.state.page);
+    });
+
+    // Init breadcrumb
+    updateBreadcrumb('home');
+  </script>
+
 </body>
 </html>
