@@ -1,760 +1,1225 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>WR Hacks · Seguridad & Hacks</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WR Hacks</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet"/>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    :root {
+      --bg: #050810;
+      --surface: #0d1117;
+      --card: #111827;
+      --border: #1e2d3d;
+      --accent: #00f5ff;
+      --accent2: #7c3aed;
+      --accent3: #10b981;
+      --danger: #ef4444;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --gold: #f59e0b;
     }
-    body {
-      background: linear-gradient(145deg, #0b0e14 0%, #141a24 100%);
-      min-height: 100vh;
-      color: #eef2fb;
-      padding: 1rem 1.5rem 2.5rem;
-    }
-    /* Barra superior */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-    h1 {
-      font-weight: 700;
-      font-size: 2.2rem;
-      letter-spacing: 2px;
-      background: linear-gradient(135deg, #c0e0ff, #a0d0ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 12px rgba(0,160,255,0.5);
-    }
-    .lang-switch {
-      display: flex;
-      gap: 8px;
-      background: #1e2632;
-      padding: 4px;
-      border-radius: 40px;
-      border: 1px solid #2e3a4a;
-    }
-    .lang-btn {
-      background: transparent;
-      border: none;
-      color: #9aabbf;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: all 0.15s;
-      font-size: 0.9rem;
-    }
-    .lang-btn.active {
-      background: #2a6df4;
-      color: white;
-      box-shadow: 0 4px 10px rgba(42,109,244,0.4);
-    }
-    .star-btn {
-      background: #1f2a38;
-      border: 2px solid #3e4f62;
-      color: #f5e37a;
-      font-size: 2rem;
-      line-height: 1;
-      width: 52px;
-      height: 52px;
-      border-radius: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 10px #ffd96655;
-      transition: 0.2s;
-      font-weight: bold;
-    }
-    .star-btn:hover {
-      background: #2f3e52;
-      border-color: #f3c26b;
-      transform: scale(1.02);
-    }
-    /* contenedor principal */
-    .view-container {
-      background: rgba(18, 26, 36, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-radius: 36px;
-      padding: 2rem 2rem 2.5rem;
-      border: 1px solid #2e4058;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      margin-top: 0.5rem;
-    }
-    /* botones principales */
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      justify-content: center;
-      margin: 2.5rem 0 1rem;
-    }
-    .main-btn {
-      background: #1f2c3c;
-      border: 1.5px solid #3e5f7a;
-      color: white;
-      font-weight: 700;
-      font-size: 1.5rem;
-      padding: 1.2rem 2.5rem;
-      border-radius: 60px;
-      cursor: pointer;
-      box-shadow: 0 10px 0 #0e151e;
-      transition: all 0.1s ease;
-      min-width: 240px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-    .main-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 13px 0 #0e151e;
-      background: #27425c;
-      border-color: #5a8ab9;
-    }
-    .main-btn.premium {
-      background: #b8860b20;
-      border-color: #e5b83c;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 10px 0 #7a5c1a;
-      color: #ffdf8c;
-    }
-    .main-btn.demo {
-      background: #1e3a4d;
-      border-color: #4f9bc2;
-    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
 
-    /* cards / planes */
-    .plan-card {
-      background: #0e1a26;
-      border-radius: 32px;
-      padding: 2rem;
-      border: 1px solid #2f5777;
-      margin: 2rem 0;
-    }
-    .price-tag {
-      font-size: 3.2rem;
-      font-weight: 800;
-      color: #f5d371;
-    }
-    .feature-list {
-      list-style: none;
-      margin: 1.8rem 0;
-    }
-    .feature-list li {
-      padding: 0.5rem 0;
-      border-bottom: 1px dashed #304a60;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .buy-btn {
-      background: #ffb347;
-      border: none;
-      color: #0b1219;
-      font-weight: bold;
-      font-size: 1.5rem;
-      padding: 1rem 2.5rem;
-      border-radius: 60px;
-      cursor: pointer;
-      box-shadow: 0 6px 0 #b16f1a;
-      transition: 0.1s;
-      width: fit-content;
-      margin-top: 1.5rem;
-    }
-    .buy-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 0 #b16f1a;
-      background: #ffc86b;
-    }
+```
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-    /* demo options */
-    .demo-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin: 2rem 0;
-    }
-    .demo-panel {
-      background: #101e2b;
-      border-radius: 24px;
-      padding: 1.8rem;
-      border: 1px solid #2d4b64;
-    }
-    .input-group {
-      margin: 1rem 0;
-    }
-    input, textarea, select {
-      width: 100%;
-      padding: 12px 16px;
-      background: #1d2c3b;
-      border: 1px solid #3c607a;
-      border-radius: 20px;
-      color: white;
-      font-size: 1rem;
-    }
-    .action-btn {
-      background: #26648b;
-      border: none;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 40px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 10px;
-      width: 100%;
-      transition: 0.1s;
-    }
-    .action-btn.call {
-      background: #1b7a4a;
-    }
+/* GRID BG */
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
 
-    /* modal admin */
-    .modal-overlay {
-      position: fixed;
-      top:0; left:0; width:100%; height:100%;
-      background: #000000c0;
-      backdrop-filter: blur(6px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    .admin-panel {
-      background: #132433;
-      border-radius: 32px;
-      padding: 1.8rem 2rem;
-      max-width: 800px;
-      width: 95%;
-      max-height: 85vh;
-      overflow-y: auto;
-      border: 2px solid #4a779e;
-      box-shadow: 0 0 40px #00000080;
-    }
-    .password-input {
-      background: #1a2c3f;
-      border: 1px solid #bc9b4a;
-      padding: 14px;
-      border-radius: 30px;
-      width: 70%;
-      color: white;
-    }
-    .close-icon {
-      float: right;
-      font-size: 28px;
-      cursor: pointer;
-    }
-    .record-item {
-      background: #1c3143;
-      border-radius: 18px;
-      padding: 12px;
-      margin: 10px 0;
-    }
-    .flex-row {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .badge {
-      background: #3a6282;
-      padding: 4px 12px;
-      border-radius: 30px;
-      font-size: 0.8rem;
-    }
-    .back-home {
-      margin-top: 30px;
-      background: none;
-      border: 1px solid #557c9a;
-      color: #bdd4e6;
-      padding: 10px 22px;
-      border-radius: 30px;
-      cursor: pointer;
-    }
-    .url-indicator {
-      font-size: 0.9rem;
-      opacity: 0.7;
-      margin-top: 16px;
-    }
+/* LANG SELECTOR */
+#lang-bar {
+  position:fixed; top:12px; right:60px; z-index:999;
+  display:flex; gap:6px;
+}
+.lang-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 4px 12px; border-radius:20px;
+  cursor:pointer; font-size:12px; font-family:'Exo 2',sans-serif;
+  transition:all .2s;
+}
+.lang-btn.active { border-color:var(--accent); color:var(--accent); }
+
+/* ADMIN BUTTON */
+#admin-btn {
+  position:fixed; top:12px; right:12px; z-index:999;
+  width:36px; height:36px; border-radius:50%;
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--accent); font-size:18px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .3s;
+}
+#admin-btn:hover { border-color:var(--accent); box-shadow:0 0 12px var(--accent); }
+
+/* HEADER */
+header {
+  position:relative; z-index:10;
+  text-align:center; padding:80px 20px 40px;
+}
+.logo {
+  font-family:'Orbitron',monospace;
+  font-size:clamp(2.5rem,8vw,5rem);
+  font-weight:900;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  letter-spacing:6px;
+  text-shadow:none;
+  animation: glitch 4s infinite;
+}
+@keyframes glitch {
+  0%,90%,100% { filter: none; }
+  92% { filter: hue-rotate(90deg) brightness(1.5); transform:translateX(2px); }
+  94% { filter: hue-rotate(-90deg); transform:translateX(-2px); }
+  96% { filter: none; transform:translateX(0); }
+}
+.tagline {
+  color:var(--muted); font-size:14px; letter-spacing:4px;
+  margin-top:8px; text-transform:uppercase;
+}
+
+/* NAV BUTTONS */
+.nav-buttons {
+  display:flex; gap:16px; justify-content:center;
+  margin:40px auto; flex-wrap:wrap;
+  position:relative; z-index:10;
+}
+.nav-btn {
+  padding:14px 36px; border-radius:4px;
+  font-family:'Orbitron',monospace; font-size:13px; font-weight:700;
+  letter-spacing:2px; cursor:pointer; border:none;
+  transition:all .3s; text-transform:uppercase;
+  position:relative; overflow:hidden;
+}
+.nav-btn::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+  transform:translateX(-100%); transition:transform .4s;
+}
+.nav-btn:hover::before { transform:translateX(100%); }
+.btn-premium {
+  background:linear-gradient(135deg,#7c3aed,#4f46e5);
+  color:#fff; box-shadow:0 0 20px rgba(124,58,237,0.4);
+}
+.btn-premium:hover { box-shadow:0 0 35px rgba(124,58,237,0.7); transform:translateY(-2px); }
+.btn-demo {
+  background:transparent; color:var(--accent);
+  border:1px solid var(--accent); box-shadow:0 0 15px rgba(0,245,255,0.2);
+}
+.btn-demo:hover { background:rgba(0,245,255,0.08); box-shadow:0 0 30px rgba(0,245,255,0.4); transform:translateY(-2px); }
+
+/* SECTIONS */
+.section {
+  display:none; max-width:900px; margin:0 auto;
+  padding:20px 20px 60px; position:relative; z-index:10;
+  animation: fadeIn .4s ease;
+}
+.section.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+/* URL BAR SIMULATION */
+.url-bar {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:6px; padding:8px 16px; margin-bottom:24px;
+  font-family:monospace; font-size:13px; color:var(--muted);
+  display:flex; align-items:center; gap:8px;
+}
+.url-dot { width:8px; height:8px; border-radius:50%; background:var(--accent3); }
+
+/* PREMIUM PLAN */
+.plan-card {
+  background:var(--card);
+  border:1px solid var(--accent2);
+  border-radius:12px; padding:36px;
+  box-shadow:0 0 40px rgba(124,58,237,0.2);
+  position:relative; overflow:hidden;
+}
+.plan-card::before {
+  content:'PREMIUM';
+  position:absolute; top:16px; right:-28px;
+  background:var(--gold); color:#000;
+  font-family:'Orbitron',monospace; font-size:10px; font-weight:900;
+  padding:4px 48px; transform:rotate(35deg);
+  letter-spacing:2px;
+}
+.plan-title {
+  font-family:'Orbitron',monospace; font-size:1.6rem;
+  color:var(--accent2); margin-bottom:8px;
+}
+.plan-price {
+  font-family:'Orbitron',monospace; font-size:3rem;
+  font-weight:900; color:var(--text);
+  margin:16px 0;
+}
+.plan-price span { font-size:1.2rem; color:var(--muted); }
+.features-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:12px; margin:28px 0;
+}
+@media(max-width:580px){ .features-grid{grid-template-columns:1fr;} }
+.feature-item {
+  background:rgba(0,245,255,0.04);
+  border:1px solid var(--border); border-radius:8px;
+  padding:14px 16px; display:flex; gap:10px; align-items:flex-start;
+}
+.feature-icon { font-size:20px; flex-shrink:0; margin-top:2px; }
+.feature-name { font-weight:600; font-size:14px; color:var(--text); }
+.feature-desc { font-size:12px; color:var(--muted); margin-top:3px; }
+
+.buy-btn {
+  width:100%; padding:18px; margin-top:20px;
+  background:linear-gradient(135deg,#7c3aed,#4f46e5);
+  color:#fff; border:none; border-radius:8px;
+  font-family:'Orbitron',monospace; font-size:15px; font-weight:700;
+  letter-spacing:2px; cursor:pointer;
+  box-shadow:0 0 25px rgba(124,58,237,0.5);
+  transition:all .3s;
+}
+.buy-btn:hover { box-shadow:0 0 45px rgba(124,58,237,0.8); transform:translateY(-2px); }
+
+/* IFRAME OVERLAY */
+#iframe-overlay {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:rgba(5,8,16,0.95);
+  flex-direction:column;
+}
+#iframe-overlay.active { display:flex; }
+#iframe-header {
+  display:flex; align-items:center; gap:12px;
+  padding:10px 16px;
+  background:var(--surface); border-bottom:1px solid var(--border);
+}
+#iframe-url {
+  flex:1; background:var(--bg); border:1px solid var(--border);
+  border-radius:4px; padding:6px 12px; color:var(--muted);
+  font-family:monospace; font-size:13px;
+}
+#iframe-close {
+  background:var(--danger); border:none; color:#fff;
+  width:32px; height:32px; border-radius:4px; cursor:pointer;
+  font-size:16px; display:flex; align-items:center; justify-content:center;
+}
+#iframe-frame {
+  flex:1; border:none; width:100%;
+}
+
+/* DEMO SECTION */
+.demo-options {
+  display:grid; gap:16px;
+}
+.demo-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:10px; padding:28px; cursor:pointer;
+  transition:all .3s; display:flex; gap:18px; align-items:center;
+}
+.demo-card:hover { border-color:var(--accent); box-shadow:0 0 20px rgba(0,245,255,0.15); }
+.demo-icon { font-size:2.2rem; }
+.demo-label { font-family:'Orbitron',monospace; font-size:15px; font-weight:700; margin-bottom:5px; }
+.demo-sublabel { font-size:13px; color:var(--muted); }
+
+/* GMAIL FORM */
+#gmail-form-wrap, #call-wrap, #calendar-wrap {
+  display:none; margin-top:20px;
+  animation:fadeIn .3s ease;
+}
+#gmail-form-wrap.show, #call-wrap.show, #calendar-wrap.show { display:block; }
+
+.form-group { margin-bottom:16px; }
+.form-label { font-size:13px; color:var(--muted); margin-bottom:6px; display:block; }
+.form-input, .form-textarea {
+  width:100%; background:var(--surface);
+  border:1px solid var(--border); border-radius:6px;
+  padding:12px 14px; color:var(--text);
+  font-family:'Exo 2',sans-serif; font-size:14px;
+  transition:border-color .2s;
+}
+.form-input:focus, .form-textarea:focus {
+  outline:none; border-color:var(--accent);
+}
+.form-textarea { min-height:100px; resize:vertical; }
+.send-btn {
+  padding:12px 32px; background:var(--accent3);
+  border:none; border-radius:6px; color:#000;
+  font-family:'Orbitron',monospace; font-size:13px; font-weight:700;
+  cursor:pointer; transition:all .3s;
+}
+.send-btn:hover { box-shadow:0 0 20px rgba(16,185,129,0.5); transform:translateY(-1px); }
+
+/* GMAIL IFRAME */
+#gmail-iframe-wrap {
+  display:none; margin-top:20px;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:8px; overflow:hidden;
+}
+#gmail-iframe-wrap.show { display:block; }
+#gmail-iframe-wrap iframe { width:100%; height:500px; border:none; }
+
+/* CALL */
+.call-card {
+  background:var(--card); border:1px solid var(--accent3);
+  border-radius:12px; padding:32px; text-align:center;
+  box-shadow:0 0 30px rgba(16,185,129,0.1);
+}
+.call-status { font-size:13px; color:var(--muted); margin-bottom:20px; }
+.call-btn-ring {
+  width:80px; height:80px; border-radius:50%;
+  background:linear-gradient(135deg,var(--accent3),#059669);
+  border:none; color:#fff; font-size:32px; cursor:pointer;
+  margin:0 auto 20px; display:flex; align-items:center; justify-content:center;
+  box-shadow:0 0 0 0 rgba(16,185,129,0.6);
+  animation:none; transition:transform .2s;
+}
+.call-btn-ring.ringing {
+  animation:ring-pulse 1.2s infinite;
+}
+@keyframes ring-pulse {
+  0% { box-shadow:0 0 0 0 rgba(16,185,129,0.6); }
+  70% { box-shadow:0 0 0 20px rgba(16,185,129,0); }
+  100% { box-shadow:0 0 0 0 rgba(16,185,129,0); }
+}
+#call-log { font-size:13px; color:var(--muted); min-height:24px; }
+
+/* CALENDAR SCHEDULE */
+.cal-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; padding:28px;
+}
+.cal-title { font-family:'Orbitron',monospace; font-size:1rem; color:var(--accent); margin-bottom:20px; }
+.cal-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+@media(max-width:500px){ .cal-grid{grid-template-columns:1fr;} }
+
+/* MODAL */
+.modal-bg {
+  display:none; position:fixed; inset:0; z-index:800;
+  background:rgba(5,8,16,0.92); align-items:center; justify-content:center;
+}
+.modal-bg.active { display:flex; }
+.modal {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:12px; padding:36px; width:90%; max-width:420px;
+  animation:fadeIn .3s ease;
+}
+.modal-title {
+  font-family:'Orbitron',monospace; font-size:1rem;
+  color:var(--accent); margin-bottom:20px; text-align:center;
+}
+.modal-input {
+  width:100%; background:var(--surface);
+  border:1px solid var(--border); border-radius:6px;
+  padding:12px 14px; color:var(--text); font-size:14px;
+  font-family:'Exo 2',sans-serif; margin-bottom:16px;
+  letter-spacing:4px; text-align:center;
+}
+.modal-input:focus { outline:none; border-color:var(--accent); }
+.modal-actions { display:flex; gap:10px; }
+.modal-ok {
+  flex:1; padding:12px; background:var(--accent);
+  border:none; border-radius:6px; color:#000;
+  font-family:'Orbitron',monospace; font-size:12px; font-weight:700;
+  cursor:pointer; letter-spacing:1px;
+}
+.modal-cancel {
+  flex:1; padding:12px; background:transparent;
+  border:1px solid var(--border); border-radius:6px; color:var(--muted);
+  font-family:'Exo 2',sans-serif; font-size:14px; cursor:pointer;
+}
+.modal-err { color:var(--danger); font-size:13px; text-align:center; margin-top:10px; display:none; }
+
+/* ADMIN PANEL */
+#admin-panel {
+  display:none; max-width:900px; margin:0 auto;
+  padding:20px 20px 60px; position:relative; z-index:10;
+  animation:fadeIn .4s ease;
+}
+#admin-panel.active { display:block; }
+.admin-title {
+  font-family:'Orbitron',monospace; font-size:1.4rem;
+  color:var(--accent); margin-bottom:24px;
+  display:flex; align-items:center; gap:12px;
+}
+.admin-tabs {
+  display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap;
+}
+.admin-tab {
+  padding:8px 20px; border-radius:4px;
+  background:var(--surface); border:1px solid var(--border);
+  color:var(--muted); cursor:pointer; font-size:13px;
+  transition:all .2s;
+}
+.admin-tab.active { border-color:var(--accent); color:var(--accent); }
+
+.admin-section { display:none; }
+.admin-section.active { display:block; }
+
+/* CALL LOGS TABLE */
+.log-table { width:100%; border-collapse:collapse; font-size:13px; }
+.log-table th {
+  text-align:left; padding:10px 14px;
+  border-bottom:1px solid var(--border);
+  color:var(--muted); font-weight:600;
+  font-family:'Orbitron',monospace; font-size:11px; letter-spacing:1px;
+}
+.log-table td {
+  padding:12px 14px; border-bottom:1px solid rgba(30,45,61,0.5);
+}
+.log-table tr:hover td { background:rgba(0,245,255,0.03); }
+.badge {
+  display:inline-block; padding:3px 10px; border-radius:20px;
+  font-size:11px; font-weight:600;
+}
+.badge-live { background:rgba(16,185,129,0.15); color:var(--accent3); border:1px solid var(--accent3); }
+.badge-missed { background:rgba(239,68,68,0.1); color:var(--danger); border:1px solid var(--danger); }
+.badge-ended { background:rgba(100,116,139,0.1); color:var(--muted); border:1px solid var(--muted); }
+
+/* CALENDAR REQUESTS */
+.cal-request-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:8px; padding:20px; margin-bottom:12px;
+}
+.cal-request-info { margin-bottom:14px; }
+.cal-request-info b { color:var(--text); }
+.cal-request-info span { color:var(--muted); font-size:13px; }
+.cal-actions { display:flex; gap:8px; }
+.cal-accept {
+  padding:8px 20px; background:var(--accent3);
+  border:none; border-radius:4px; color:#000;
+  font-weight:700; cursor:pointer; font-size:13px;
+}
+.cal-reject {
+  padding:8px 20px; background:transparent;
+  border:1px solid var(--danger); border-radius:4px;
+  color:var(--danger); cursor:pointer; font-size:13px;
+}
+.status-badge {
+  display:inline-block; padding:4px 14px; border-radius:20px;
+  font-size:11px; font-weight:700; margin-left:8px;
+}
+.status-pending { background:rgba(245,158,11,0.15); color:var(--gold); border:1px solid var(--gold); }
+.status-accepted { background:rgba(16,185,129,0.15); color:var(--accent3); border:1px solid var(--accent3); }
+.status-rejected { background:rgba(239,68,68,0.1); color:var(--danger); border:1px solid var(--danger); }
+
+/* LIVE CALL INDICATOR */
+#live-call-banner {
+  display:none; position:fixed; bottom:20px; right:20px;
+  background:var(--card); border:1px solid var(--accent3);
+  border-radius:12px; padding:16px 20px; z-index:700;
+  box-shadow:0 0 30px rgba(16,185,129,0.3);
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1} }
+#live-call-banner.show { display:block; }
+.live-call-title { font-family:'Orbitron',monospace; font-size:12px; color:var(--accent3); margin-bottom:8px; }
+.live-call-actions { display:flex; gap:8px; margin-top:12px; }
+.pick-btn {
+  padding:8px 18px; background:var(--accent3);
+  border:none; border-radius:4px; color:#000;
+  font-weight:700; cursor:pointer; font-size:13px;
+}
+.reject-btn {
+  padding:8px 18px; background:var(--danger);
+  border:none; border-radius:4px; color:#fff;
+  font-weight:700; cursor:pointer; font-size:13px;
+}
+
+/* TOAST */
+#toast {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background:var(--card); border:1px solid var(--accent3);
+  border-radius:8px; padding:12px 24px;
+  color:var(--text); font-size:14px; z-index:900;
+  display:none; animation:fadeIn .3s ease;
+}
+#toast.show { display:block; }
+
+.section-head {
+  font-family:'Orbitron',monospace; font-size:1.1rem;
+  color:var(--text); margin-bottom:20px;
+}
+.back-btn {
+  background:transparent; border:1px solid var(--border);
+  color:var(--muted); padding:8px 18px; border-radius:4px;
+  cursor:pointer; font-size:13px; margin-bottom:20px;
+  display:inline-flex; align-items:center; gap:6px;
+}
+.back-btn:hover { border-color:var(--accent); color:var(--accent); }
+
+.divider { border:none; border-top:1px solid var(--border); margin:28px 0; }
+
+.empty-state { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
+```
+
   </style>
 </head>
 <body>
 
-<!-- Barra fija superior -->
-<div class="top-bar">
-  <h1>⚡ WR HACKS</h1>
-  <div style="display: flex; gap: 15px; align-items: center;">
-    <div class="lang-switch" id="langSwitch">
-      <button class="lang-btn active" data-lang="es">🇪🇸 ES</button>
-      <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
-    </div>
-    <div class="star-btn" id="starAdminBtn" title="Panel Admin">✱</div>
+<!-- LANGUAGE BAR -->
+
+<div id="lang-bar">
+  <button class="lang-btn active" onclick="setLang('es')">🇪🇸 ES</button>
+  <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
+</div>
+
+<!-- ADMIN BUTTON -->
+
+<button id="admin-btn" title="Admin" onclick="openAdminModal()">✱</button>
+
+<!-- HEADER -->
+
+<header>
+  <div class="logo">WR HACKS</div>
+  <div class="tagline" data-i18n="tagline">Sistema de seguridad avanzado</div>
+</header>
+
+<!-- NAV BUTTONS -->
+
+<div class="nav-buttons">
+  <button class="nav-btn btn-premium" onclick="showSection('premium')" data-i18n="btn_premium">Ver Planes Premium</button>
+  <button class="nav-btn btn-demo" onclick="showSection('demo')" data-i18n="btn_demo">Demo</button>
+</div>
+
+<!-- PREMIUM SECTION -->
+
+<div class="section" id="section-premium">
+  <div class="url-bar">
+    <div class="url-dot"></div>
+    <span>https://wrhacks.vercel.app/premium</span>
   </div>
-</div>
-
-<!-- CONTENEDOR DINÁMICO DE VISTAS -->
-<div class="view-container" id="viewContainer">
-  <!-- Se rellena vía JS según ruta -->
-</div>
-
-<!-- MODAL ADMIN (oculto por defecto) -->
-<div id="adminModal" style="display: none;" class="modal-overlay">
-  <div class="admin-panel">
-    <div style="display: flex; justify-content: space-between;">
-      <h2 style="color: #efc56b;">🔐 Admin WR Hacks</h2>
-      <span class="close-icon" id="closeAdminModal">&times;</span>
-    </div>
-    <div id="adminLoginSection">
-      <p style="margin: 20px 0 8px;">🔑 Introduce contraseña:</p>
-      <div class="flex-row">
-        <input type="password" id="adminPassInput" class="password-input" placeholder="••••••••">
-        <button id="submitPassBtn" style="background:#c9a53b; border:none; padding:12px 22px; border-radius:40px; font-weight:bold;">Acceder</button>
-      </div>
-      <p id="passError" style="color:#ff8888; margin-top:8px;"></p>
-    </div>
-    <div id="adminContentArea" style="display: none;">
-      <!-- Contenido tras login correcto -->
-      <div style="margin: 20px 0;">
-        <h3>📞 Registro de llamadas</h3>
-        <div id="callLogList"></div>
-        <h3 style="margin-top:25px;">📅 Solicitudes de llamada (Google Calendar)</h3>
-        <div id="appointmentList"></div>
-        <h3 style="margin-top:25px;">🔴 Llamada en directo</h3>
-        <div id="liveCallPanel" style="background:#1a2e40; border-radius:20px; padding:18px;">
-          <span id="noLiveCallMsg">No hay llamada entrante.</span>
-          <div id="activeCallActions" style="display:none;">
-            <p><span id="liveCallerInfo"></span></p>
-            <button id="acceptCallAdminBtn" style="background:#1e7e4a; border:none; padding:10px 20px; border-radius:30px; margin-right:15px;">✅ Aceptar</button>
-            <button id="rejectCallAdminBtn" style="background:#9e3b3b; border:none; padding:10px 20px; border-radius:30px;">❌ Rechazar</button>
-          </div>
+  <button class="back-btn" onclick="showSection(null)">← <span data-i18n="back">Volver</span></button>
+  <div class="plan-card">
+    <div class="plan-title" data-i18n="plan_title">Plan de Seguridad Élite</div>
+    <div style="color:var(--muted);font-size:14px;" data-i18n="plan_sub">Acceso completo a todas las herramientas</div>
+    <div class="plan-price">4,99€ <span data-i18n="per_month">/ mes</span></div>
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">🛡️</div>
+        <div>
+          <div class="feature-name" data-i18n="f1_name">Firewall Inteligente</div>
+          <div class="feature-desc" data-i18n="f1_desc">Protección en tiempo real contra intrusiones y ataques DDoS avanzados</div>
         </div>
-        <p style="margin-top:20px;"><i>Admin: Alex27Junio</i></p>
       </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔑</div>
+        <div>
+          <div class="feature-name" data-i18n="f2_name">Hacks Exclusivos</div>
+          <div class="feature-desc" data-i18n="f2_desc">Acceso a las mejores técnicas de hacking ético y exploits verificados</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🕵️</div>
+        <div>
+          <div class="feature-name" data-i18n="f3_name">Modo Sigiloso</div>
+          <div class="feature-desc" data-i18n="f3_desc">Enmascaramiento total de IP y navegación anónima sin rastros</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <div>
+          <div class="feature-name" data-i18n="f4_name">Ataques Ultra-Rápidos</div>
+          <div class="feature-desc" data-i18n="f4_desc">Scripts optimizados para máxima velocidad y menor detección</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🌐</div>
+        <div>
+          <div class="feature-name" data-i18n="f5_name">Red VPN Global</div>
+          <div class="feature-desc" data-i18n="f5_desc">Más de 50 servidores en 30 países con cifrado AES-256</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">💬</div>
+        <div>
+          <div class="feature-name" data-i18n="f6_name">Soporte 24/7</div>
+          <div class="feature-desc" data-i18n="f6_desc">Canal privado con el equipo, respuesta en menos de 30 minutos</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📊</div>
+        <div>
+          <div class="feature-name" data-i18n="f7_name">Dashboard Analítico</div>
+          <div class="feature-desc" data-i18n="f7_desc">Monitoreo en vivo de amenazas, logs y estadísticas detalladas</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔄</div>
+        <div>
+          <div class="feature-name" data-i18n="f8_name">Actualizaciones Automáticas</div>
+          <div class="feature-desc" data-i18n="f8_desc">Nuevas herramientas y exploits añadidos semanalmente</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🧰</div>
+        <div>
+          <div class="feature-name" data-i18n="f9_name">Toolkit Completo</div>
+          <div class="feature-desc" data-i18n="f9_desc">+200 herramientas preconfiguradas: SQLi, XSS, OSINT, fuzzing...</div>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🎓</div>
+        <div>
+          <div class="feature-name" data-i18n="f10_name">Tutoriales Privados</div>
+          <div class="feature-desc" data-i18n="f10_desc">Guías paso a paso grabadas en vídeo acceso exclusivo Premium</div>
+        </div>
+      </div>
+    </div>
+    <button class="buy-btn" onclick="openPaypal()" data-i18n="buy_btn">💳 Comprar Plan Premium — 4,99€/mes</button>
+  </div>
+</div>
+
+<!-- DEMO SECTION -->
+
+<div class="section" id="section-demo">
+  <div class="url-bar">
+    <div class="url-dot"></div>
+    <span>https://wrhacks.vercel.app/demo</span>
+  </div>
+  <button class="back-btn" onclick="showSection(null)">← <span data-i18n="back">Volver</span></button>
+  <div class="section-head" data-i18n="demo_title">Área de Demo</div>
+  <div class="demo-options">
+    <div class="demo-card" onclick="toggleGmailSection()">
+      <div class="demo-icon">📧</div>
+      <div>
+        <div class="demo-label" data-i18n="demo_gmail">Enviar mensaje al dueño</div>
+        <div class="demo-sublabel" data-i18n="demo_gmail_sub">Contactar vía Gmail · contactnotifieralex@gmail.com</div>
+      </div>
+    </div>
+
+```
+<!-- GMAIL IFRAME EMBED -->
+<div id="gmail-iframe-wrap">
+  <iframe
+    src="https://mail.google.com/mail/?view=cm&to=contactnotifieralex@gmail.com"
+    title="Gmail Compose"
+    sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-top-navigation">
+  </iframe>
+  <div style="padding:12px 16px;background:var(--surface);border-top:1px solid var(--border);font-size:12px;color:var(--muted);">
+    <span data-i18n="gmail_note">Si Gmail no carga directamente, usa el formulario abajo ↓</span>
+  </div>
+</div>
+
+<!-- FALLBACK FORM -->
+<div id="gmail-form-wrap">
+  <div class="cal-card">
+    <div class="cal-title" data-i18n="contact_form">Formulario de contacto</div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="form_name">Tu nombre</label>
+      <input class="form-input" id="f-name" type="text" placeholder="Alex..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="form_email">Tu email</label>
+      <input class="form-input" id="f-email" type="email" placeholder="tu@email.com"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="form_subject">Asunto</label>
+      <input class="form-input" id="f-subject" type="text" placeholder="Consulta sobre WR Hacks..."/>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="form_msg">Mensaje</label>
+      <textarea class="form-textarea" id="f-msg" placeholder="Escribe tu mensaje aquí..."></textarea>
+    </div>
+    <button class="send-btn" onclick="sendGmail()" data-i18n="form_send">📨 Enviar Gmail</button>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- CALL OPTION -->
+<div class="demo-card" onclick="toggleCallSection()">
+  <div class="demo-icon">📞</div>
+  <div>
+    <div class="demo-label" data-i18n="demo_call">Llamar al dueño</div>
+    <div class="demo-sublabel" data-i18n="demo_call_sub">Llamada por la web · Primero programa una cita</div>
+  </div>
+</div>
+
+<!-- CALENDAR SCHEDULING -->
+<div id="calendar-wrap">
+  <div class="cal-card">
+    <div class="cal-title">📅 <span data-i18n="cal_title">Programar llamada vía Google Calendar</span></div>
+    <div class="cal-grid">
+      <div class="form-group">
+        <label class="form-label" data-i18n="cal_name">Tu nombre completo</label>
+        <input class="form-input" id="cal-name" type="text" placeholder="Alex García"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="cal_email">Tu email</label>
+        <input class="form-input" id="cal-email" type="email" placeholder="tu@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="cal_date">Fecha preferida</label>
+        <input class="form-input" id="cal-date" type="date"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="cal_time">Hora preferida</label>
+        <input class="form-input" id="cal-time" type="time"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="cal_duration">Duración</label>
+        <select class="form-input" id="cal-duration">
+          <option value="15">15 min</option>
+          <option value="30" selected>30 min</option>
+          <option value="60">1 hora</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="cal_topic">Tema de la llamada</label>
+        <input class="form-input" id="cal-topic" type="text" placeholder="Consulta Premium..."/>
+      </div>
+    </div>
+    <div class="form-group" style="margin-top:4px;">
+      <label class="form-label" data-i18n="cal_notes">Notas adicionales</label>
+      <textarea class="form-textarea" id="cal-notes" placeholder="Cualquier detalle extra..." style="min-height:70px;"></textarea>
+    </div>
+    <button class="send-btn" onclick="submitCalRequest()" data-i18n="cal_submit">📅 Solicitar cita</button>
+  </div>
+
+  <!-- CALL PANEL (after booking) -->
+  <div id="call-wrap">
+    <div class="call-card" style="margin-top:20px;">
+      <div class="call-status" id="call-status-text" data-i18n="call_ready">Cita pendiente de aprobación. Cuando sea aceptada podrás iniciar la llamada.</div>
+      <div style="display:flex;justify-content:center;">
+        <button class="call-btn-ring" id="main-call-btn" onclick="startCall()" disabled style="opacity:0.4;cursor:not-allowed;">📞</button>
+      </div>
+      <div id="call-log"></div>
     </div>
   </div>
 </div>
+```
+
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+
+<div id="admin-panel">
+  <div class="admin-title">
+    ✱ <span data-i18n="admin_title">Panel de Administración</span>
+    <button class="back-btn" style="margin:0 0 0 auto;" onclick="closeAdmin()">✕ <span data-i18n="close">Cerrar</span></button>
+  </div>
+  <div class="admin-tabs">
+    <button class="admin-tab active" onclick="switchAdminTab('calls')" data-i18n="tab_calls">Registro de Llamadas</button>
+    <button class="admin-tab" onclick="switchAdminTab('calendar')" data-i18n="tab_calendar">Solicitudes de Cita</button>
+  </div>
+
+  <!-- CALLS TAB -->
+
+  <div class="admin-section active" id="admin-calls">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div class="section-head" style="margin:0" data-i18n="calls_title">Historial de Llamadas</div>
+      <span id="live-indicator" style="display:none;" class="badge badge-live">● LIVE</span>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th data-i18n="th_date">Fecha</th>
+            <th data-i18n="th_time">Hora</th>
+            <th data-i18n="th_country">País</th>
+            <th data-i18n="th_caller">Nombre</th>
+            <th data-i18n="th_status">Estado</th>
+            <th data-i18n="th_action">Acción</th>
+          </tr>
+        </thead>
+        <tbody id="calls-tbody"></tbody>
+      </table>
+    </div>
+    <div id="calls-empty" class="empty-state" data-i18n="no_calls">Sin llamadas registradas aún.</div>
+  </div>
+
+  <!-- CALENDAR TAB -->
+
+  <div class="admin-section" id="admin-calendar">
+    <div class="section-head" data-i18n="cal_requests">Solicitudes de Cita</div>
+    <div id="cal-requests-list"></div>
+    <div id="cal-empty" class="empty-state" data-i18n="no_cal">Sin solicitudes de cita aún.</div>
+  </div>
+</div>
+
+<!-- PAYPAL IFRAME OVERLAY -->
+
+<div id="iframe-overlay">
+  <div id="iframe-header">
+    <div style="width:12px;height:12px;border-radius:50%;background:#ef4444;margin-right:4px;"></div>
+    <div style="width:12px;height:12px;border-radius:50%;background:var(--gold);margin-right:4px;"></div>
+    <div style="width:12px;height:12px;border-radius:50%;background:var(--accent3);margin-right:12px;"></div>
+    <input id="iframe-url" readonly value="https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE"/>
+    <button id="iframe-close" onclick="closePaypal()">✕</button>
+  </div>
+  <iframe id="iframe-frame" src="" title="PayPal Payment" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+</div>
+
+<!-- ADMIN PASSWORD MODAL -->
+
+<div class="modal-bg" id="admin-modal">
+  <div class="modal">
+    <div class="modal-title">✱ <span data-i18n="admin_password">Contraseña de administrador</span></div>
+    <input type="password" class="modal-input" id="admin-pass" placeholder="••••••••••" onkeydown="if(event.key==='Enter')checkAdminPass()"/>
+    <div class="modal-actions">
+      <button class="modal-ok" onclick="checkAdminPass()" data-i18n="enter">Entrar</button>
+      <button class="modal-cancel" onclick="closeAdminModal()" data-i18n="cancel">Cancelar</button>
+    </div>
+    <div class="modal-err" id="pass-err" data-i18n="wrong_pass">Contraseña incorrecta</div>
+  </div>
+</div>
+
+<!-- LIVE CALL BANNER (for admin) -->
+
+<div id="live-call-banner">
+  <div class="live-call-title">📞 <span data-i18n="incoming_call">LLAMADA ENTRANTE</span></div>
+  <div id="live-caller-info" style="font-size:13px;color:var(--muted);"></div>
+  <div class="live-call-actions">
+    <button class="pick-btn" onclick="pickCall()" data-i18n="pick_up">Coger</button>
+    <button class="reject-btn" onclick="rejectCall()" data-i18n="reject">Rechazar</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+
+<div id="toast"></div>
 
 <script>
-  (function(){
-    "use strict";
+// ============================================================
+// TRANSLATIONS
+// ============================================================
+const TRANSLATIONS = {
+  es: {
+    tagline: "Sistema de seguridad avanzado",
+    btn_premium: "Ver Planes Premium",
+    btn_demo: "Demo",
+    back: "Volver",
+    plan_title: "Plan de Seguridad Élite",
+    plan_sub: "Acceso completo a todas las herramientas",
+    per_month: "/ mes",
+    f1_name:"Firewall Inteligente", f1_desc:"Protección en tiempo real contra intrusiones y ataques DDoS avanzados",
+    f2_name:"Hacks Exclusivos", f2_desc:"Acceso a las mejores técnicas de hacking ético y exploits verificados",
+    f3_name:"Modo Sigiloso", f3_desc:"Enmascaramiento total de IP y navegación anónima sin rastros",
+    f4_name:"Ataques Ultra-Rápidos", f4_desc:"Scripts optimizados para máxima velocidad y menor detección",
+    f5_name:"Red VPN Global", f5_desc:"Más de 50 servidores en 30 países con cifrado AES-256",
+    f6_name:"Soporte 24/7", f6_desc:"Canal privado con el equipo, respuesta en menos de 30 minutos",
+    f7_name:"Dashboard Analítico", f7_desc:"Monitoreo en vivo de amenazas, logs y estadísticas detalladas",
+    f8_name:"Actualizaciones Automáticas", f8_desc:"Nuevas herramientas y exploits añadidos semanalmente",
+    f9_name:"Toolkit Completo", f9_desc:"+200 herramientas preconfiguradas: SQLi, XSS, OSINT, fuzzing...",
+    f10_name:"Tutoriales Privados", f10_desc:"Guías paso a paso grabadas en vídeo acceso exclusivo Premium",
+    buy_btn:"💳 Comprar Plan Premium — 4,99€/mes",
+    demo_title:"Área de Demo",
+    demo_gmail:"Enviar mensaje al dueño",
+    demo_gmail_sub:"Contactar vía Gmail · contactnotifieralex@gmail.com",
+    gmail_note:"Si Gmail no carga directamente, usa el formulario abajo ↓",
+    contact_form:"Formulario de contacto",
+    form_name:"Tu nombre", form_email:"Tu email", form_subject:"Asunto", form_msg:"Mensaje", form_send:"📨 Enviar Gmail",
+    demo_call:"Llamar al dueño",
+    demo_call_sub:"Llamada por la web · Primero programa una cita",
+    cal_title:"Programar llamada vía Google Calendar",
+    cal_name:"Tu nombre completo", cal_email:"Tu email", cal_date:"Fecha preferida",
+    cal_time:"Hora preferida", cal_duration:"Duración", cal_topic:"Tema de la llamada",
+    cal_notes:"Notas adicionales", cal_submit:"📅 Solicitar cita",
+    call_ready:"Cita pendiente de aprobación. Cuando sea aceptada podrás iniciar la llamada.",
+    admin_title:"Panel de Administración",
+    close:"Cerrar",
+    tab_calls:"Registro de Llamadas", tab_calendar:"Solicitudes de Cita",
+    calls_title:"Historial de Llamadas",
+    th_date:"Fecha", th_time:"Hora", th_country:"País", th_caller:"Nombre", th_status:"Estado", th_action:"Acción",
+    no_calls:"Sin llamadas registradas aún.",
+    cal_requests:"Solicitudes de Cita",
+    no_cal:"Sin solicitudes de cita aún.",
+    admin_password:"Contraseña de administrador",
+    enter:"Entrar", cancel:"Cancelar",
+    wrong_pass:"Contraseña incorrecta",
+    incoming_call:"LLAMADA ENTRANTE",
+    pick_up:"Coger", reject:"Rechazar",
+  },
+  en: {
+    tagline: "Advanced security system",
+    btn_premium: "View Premium Plans",
+    btn_demo: "Demo",
+    back: "Back",
+    plan_title: "Elite Security Plan",
+    plan_sub: "Full access to all tools",
+    per_month: "/ month",
+    f1_name:"Smart Firewall", f1_desc:"Real-time protection against intrusions and advanced DDoS attacks",
+    f2_name:"Exclusive Hacks", f2_desc:"Access to top ethical hacking techniques and verified exploits",
+    f3_name:"Stealth Mode", f3_desc:"Full IP masking and anonymous browsing without traces",
+    f4_name:"Ultra-Fast Attacks", f4_desc:"Optimized scripts for maximum speed and minimum detection",
+    f5_name:"Global VPN Network", f5_desc:"50+ servers in 30 countries with AES-256 encryption",
+    f6_name:"24/7 Support", f6_desc:"Private team channel, response in under 30 minutes",
+    f7_name:"Analytics Dashboard", f7_desc:"Live monitoring of threats, logs and detailed stats",
+    f8_name:"Auto Updates", f8_desc:"New tools and exploits added weekly",
+    f9_name:"Complete Toolkit", f9_desc:"200+ pre-configured tools: SQLi, XSS, OSINT, fuzzing...",
+    f10_name:"Private Tutorials", f10_desc:"Step-by-step video guides, exclusive Premium access",
+    buy_btn:"💳 Buy Premium Plan — €4.99/month",
+    demo_title:"Demo Area",
+    demo_gmail:"Send message to owner",
+    demo_gmail_sub:"Contact via Gmail · contactnotifieralex@gmail.com",
+    gmail_note:"If Gmail doesn't load directly, use the form below ↓",
+    contact_form:"Contact form",
+    form_name:"Your name", form_email:"Your email", form_subject:"Subject", form_msg:"Message", form_send:"📨 Send Gmail",
+    demo_call:"Call the owner",
+    demo_call_sub:"Web call · Schedule an appointment first",
+    cal_title:"Schedule call via Google Calendar",
+    cal_name:"Your full name", cal_email:"Your email", cal_date:"Preferred date",
+    cal_time:"Preferred time", cal_duration:"Duration", cal_topic:"Call topic",
+    cal_notes:"Additional notes", cal_submit:"📅 Request appointment",
+    call_ready:"Appointment pending approval. Once accepted you can start the call.",
+    admin_title:"Administration Panel",
+    close:"Close",
+    tab_calls:"Call Log", tab_calendar:"Appointment Requests",
+    calls_title:"Call History",
+    th_date:"Date", th_time:"Time", th_country:"Country", th_caller:"Name", th_status:"Status", th_action:"Action",
+    no_calls:"No calls logged yet.",
+    cal_requests:"Appointment Requests",
+    no_cal:"No appointment requests yet.",
+    admin_password:"Administrator password",
+    enter:"Enter", cancel:"Cancel",
+    wrong_pass:"Incorrect password",
+    incoming_call:"INCOMING CALL",
+    pick_up:"Answer", reject:"Reject",
+  }
+};
 
-    // ---------- ESTADO GLOBAL ----------
-    let currentLang = 'es';
-    let currentView = 'home';        // home, premium, demo
-    let adminAuthorized = false;
-    
-    // Datos simulados
-    let callRecords = [
-      { id: 1, timestamp: '2026-04-20 14:23', country: 'España', status: 'perdida' },
-      { id: 2, timestamp: '2026-04-21 09:07', country: 'México', status: 'atendida' },
-    ];
-    let appointments = [
-      { id: 'apt1', name: 'Carlos', datetime: '2026-04-22T15:30', email: 'carlos@mail.com', status: 'pendiente' }
-    ];
-    let pendingLiveCall = null;       // { callerName, timestamp, id }
-    let callInterval = null;
+let currentLang = 'es';
+function setLang(l) {
+  currentLang = l;
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.textContent.includes(l.toUpperCase())));
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (TRANSLATIONS[l][key]) el.textContent = TRANSLATIONS[l][key];
+  });
+}
 
-    // i18n textos
-    const texts = {
-      es: {
-        homeTitle: 'Protección élite · Hacks avanzados',
-        premiumBtn: '🔒 VER PLANES PREMIUM',
-        demoBtn: '🧪 DEMO',
-        premiumTitle: 'Plan WR Hacks Ultimate',
-        price: '4,99€',
-        features: [
-          '✅ Seguridad de grado militar (WAF + Zero-Day)',
-          '✅ Acceso a mejores Hacks 2026 (exploits privados)',
-          '✅ Análisis de vulnerabilidades ilimitado',
-          '✅ Soporte prioritario 24/7',
-          '✅ Herramientas de anonimato y OSINT',
-          '✅ Actualizaciones semanales de 0days'
-        ],
-        buy: '💳 COMPRAR PLAN · 4,99€',
-        back: '⬅ Volver al inicio',
-        demoMsg: 'Enviar mensaje al dueño',
-        callOwner: '📞 Llamar al dueño',
-        scheduleCall: 'Programar llamada (Google Calendar)',
-        yourName: 'Tu nombre',
-        datetime: 'Fecha y hora',
-        sendMsg: 'Enviar mensaje',
-        callNow: 'Llamar ahora',
-        gmailContact: 'contactnotifieralex@gmail.com',
-        urlPremiumNote: 'https://WRHacks.vercel.app/premium',
-        urlDemoNote: 'https://WRHacks.vercel.app/demo',
-        calling: 'Llamando...',
-      },
-      en: {
-        homeTitle: 'Elite protection · Advanced Hacks',
-        premiumBtn: '🔒 VIEW PREMIUM PLANS',
-        demoBtn: '🧪 DEMO',
-        premiumTitle: 'WR Hacks Ultimate Plan',
-        price: '€4.99',
-        features: [
-          '✅ Military-grade security (WAF + Zero-Day)',
-          '✅ Access to best 2026 Hacks (private exploits)',
-          '✅ Unlimited vulnerability analysis',
-          '✅ 24/7 priority support',
-          '✅ Anonymity & OSINT tools',
-          '✅ Weekly 0day updates'
-        ],
-        buy: '💳 BUY PLAN · €4.99',
-        back: '⬅ Back to home',
-        demoMsg: 'Send message to owner',
-        callOwner: '📞 Call owner',
-        scheduleCall: 'Schedule call (Google Calendar)',
-        yourName: 'Your name',
-        datetime: 'Date & time',
-        sendMsg: 'Send message',
-        callNow: 'Call now',
-        gmailContact: 'contactnotifieralex@gmail.com',
-        urlPremiumNote: 'https://WRHacks.vercel.app/premium',
-        urlDemoNote: 'https://WRHacks.vercel.app/demo',
-        calling: 'Calling...',
-      }
-    };
+// ============================================================
+// SECTION ROUTING
+// ============================================================
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('admin-panel').classList.remove('active');
+  if (name) {
+    const el = document.getElementById('section-' + name);
+    if (el) el.classList.add('active');
+  }
+}
 
-    // ---------- HELPERS ----------
-    function t(key) {
-      return texts[currentLang][key] || key;
+// ============================================================
+// PAYPAL IFRAME
+// ============================================================
+function openPaypal() {
+  const overlay = document.getElementById('iframe-overlay');
+  overlay.classList.add('active');
+  document.getElementById('iframe-frame').src = 'https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE';
+}
+function closePaypal() {
+  document.getElementById('iframe-overlay').classList.remove('active');
+  document.getElementById('iframe-frame').src = '';
+}
+
+// ============================================================
+// GMAIL / DEMO
+// ============================================================
+function toggleGmailSection() {
+  const iframeWrap = document.getElementById('gmail-iframe-wrap');
+  const formWrap = document.getElementById('gmail-form-wrap');
+  const isOpen = iframeWrap.classList.contains('show');
+  if (isOpen) {
+    iframeWrap.classList.remove('show');
+    formWrap.classList.remove('show');
+  } else {
+    iframeWrap.classList.add('show');
+    formWrap.classList.add('show');
+  }
+}
+
+function sendGmail() {
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const subject = encodeURIComponent(document.getElementById('f-subject').value.trim() || 'Mensaje WR Hacks');
+  const body = encodeURIComponent(
+    `De: ${name} (${email})\n\n${document.getElementById('f-msg').value.trim()}`
+  );
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&to=contactnotifieralex@gmail.com&su=${subject}&body=${body}`;
+  document.getElementById('iframe-url').value = gmailUrl;
+  document.getElementById('iframe-frame').src = gmailUrl;
+  document.getElementById('iframe-overlay').classList.add('active');
+}
+
+// ============================================================
+// CALL + CALENDAR
+// ============================================================
+let calRequests = [];
+let callLog = [];
+let activeCall = null;
+let approvedSlot = null;
+
+function toggleCallSection() {
+  const wrap = document.getElementById('calendar-wrap');
+  wrap.classList.toggle('show');
+}
+
+function submitCalRequest() {
+  const name = document.getElementById('cal-name').value.trim();
+  const email = document.getElementById('cal-email').value.trim();
+  const date = document.getElementById('cal-date').value;
+  const time = document.getElementById('cal-time').value;
+  const duration = document.getElementById('cal-duration').value;
+  const topic = document.getElementById('cal-topic').value.trim();
+  const notes = document.getElementById('cal-notes').value.trim();
+
+  if (!name || !email || !date || !time) {
+    showToast('⚠️ ' + (currentLang === 'es' ? 'Rellena los campos obligatorios' : 'Fill in required fields'));
+    return;
+  }
+
+  const req = {
+    id: Date.now(),
+    name, email, date, time, duration, topic, notes,
+    status: 'pending',
+    country: 'España' // simulated
+  };
+  calRequests.push(req);
+  showToast('✅ ' + (currentLang === 'es' ? 'Solicitud enviada. Esperando aprobación.' : 'Request sent. Awaiting approval.'));
+
+  // show call panel
+  document.getElementById('call-wrap').classList.add('show');
+  document.getElementById('call-status-text').textContent =
+    currentLang === 'es'
+      ? 'Cita pendiente de aprobación. Cuando sea aceptada podrás iniciar la llamada.'
+      : 'Appointment pending approval. Once accepted you can start the call.';
+  document.getElementById('main-call-btn').disabled = true;
+  document.getElementById('main-call-btn').style.opacity = '0.4';
+  document.getElementById('main-call-btn').style.cursor = 'not-allowed';
+
+  renderCalRequests();
+}
+
+function enableCallBtn(reqId) {
+  approvedSlot = reqId;
+  const btn = document.getElementById('main-call-btn');
+  if (btn) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+    document.getElementById('call-status-text').textContent =
+      currentLang === 'es' ? '¡Cita aprobada! Pulsa el botón para llamar.' : 'Appointment approved! Press button to call.';
+  }
+}
+
+function startCall() {
+  if (!approvedSlot) return;
+  const btn = document.getElementById('main-call-btn');
+  btn.classList.add('ringing');
+  document.getElementById('call-log').textContent =
+    currentLang === 'es' ? 'Llamando...' : 'Calling...';
+  document.getElementById('call-status-text').textContent =
+    currentLang === 'es' ? 'Llamada en curso...' : 'Call in progress...';
+
+  const req = calRequests.find(r => r.id === approvedSlot);
+  const now = new Date();
+  activeCall = {
+    id: Date.now(),
+    date: now.toLocaleDateString(),
+    time: now.toLocaleTimeString(),
+    country: req ? (req.country || 'España') : 'España',
+    name: req ? req.name : 'Visitante',
+    status: 'live'
+  };
+  callLog.unshift(activeCall);
+
+  // Notify admin
+  showLiveCallBanner(activeCall);
+  renderCallLogs();
+}
+
+function showLiveCallBanner(call) {
+  const banner = document.getElementById('live-call-banner');
+  document.getElementById('live-caller-info').textContent =
+    `${call.name} · ${call.country} · ${call.time}`;
+  banner.classList.add('show');
+  document.getElementById('live-indicator').style.display = 'inline';
+}
+
+function pickCall() {
+  document.getElementById('live-call-banner').classList.remove('show');
+  document.getElementById('live-indicator').style.display = 'none';
+  if (activeCall) activeCall.status = 'answered';
+  showToast('📞 ' + (currentLang === 'es' ? 'Llamada contestada' : 'Call answered'));
+  renderCallLogs();
+}
+
+function rejectCall() {
+  document.getElementById('live-call-banner').classList.remove('show');
+  document.getElementById('live-indicator').style.display = 'none';
+  if (activeCall) activeCall.status = 'missed';
+  const btn = document.getElementById('main-call-btn');
+  btn.classList.remove('ringing');
+  document.getElementById('call-log').textContent =
+    currentLang === 'es' ? 'Llamada rechazada.' : 'Call rejected.';
+  showToast('❌ ' + (currentLang === 'es' ? 'Llamada rechazada' : 'Call rejected'));
+  renderCallLogs();
+  activeCall = null;
+}
+
+// ============================================================
+// ADMIN PANEL
+// ============================================================
+const ADMIN_PASS = 'Alex27Junio';
+
+function openAdminModal() {
+  document.getElementById('admin-modal').classList.add('active');
+  document.getElementById('admin-pass').value = '';
+  document.getElementById('pass-err').style.display = 'none';
+  setTimeout(() => document.getElementById('admin-pass').focus(), 100);
+}
+function closeAdminModal() {
+  document.getElementById('admin-modal').classList.remove('active');
+}
+
+function checkAdminPass() {
+  const val = document.getElementById('admin-pass').value;
+  if (val === ADMIN_PASS) {
+    closeAdminModal();
+    openAdmin();
+  } else {
+    document.getElementById('pass-err').style.display = 'block';
+    document.getElementById('admin-pass').value = '';
+  }
+}
+
+function openAdmin() {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('admin-panel').classList.add('active');
+  renderCallLogs();
+  renderCalRequests();
+}
+
+function closeAdmin() {
+  document.getElementById('admin-panel').classList.remove('active');
+}
+
+function switchAdminTab(tab) {
+  document.querySelectorAll('.admin-tab').forEach((t,i) => {
+    const tabs = ['calls','calendar'];
+    t.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('admin-' + tab).classList.add('active');
+}
+
+function renderCallLogs() {
+  const tbody = document.getElementById('calls-tbody');
+  const empty = document.getElementById('calls-empty');
+  if (!callLog.length) {
+    tbody.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  tbody.innerHTML = callLog.map(c => {
+    let badge = '';
+    if (c.status === 'live') badge = `<span class="badge badge-live">● LIVE</span>`;
+    else if (c.status === 'missed') badge = `<span class="badge badge-missed">Perdida</span>`;
+    else badge = `<span class="badge badge-ended">Contestada</span>`;
+
+    let action = '';
+    if (c.status === 'live') {
+      action = `<button class="pick-btn" style="font-size:12px;padding:5px 12px;" onclick="pickCall()">Coger</button>
+                <button class="reject-btn" style="font-size:12px;padding:5px 12px;margin-left:6px;" onclick="rejectCall()">Rechazar</button>`;
     }
+    return `<tr>
+      <td>${c.date}</td>
+      <td>${c.time}</td>
+      <td>${c.country}</td>
+      <td>${c.name}</td>
+      <td>${badge}</td>
+      <td>${action}</td>
+    </tr>`;
+  }).join('');
+}
 
-    // Actualizar UI según idioma
-    function updateLangUI() {
-      document.querySelectorAll('[data-lang]').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === currentLang);
-      });
-      renderView(); // re-renderiza vista actual
+function renderCalRequests() {
+  const list = document.getElementById('cal-requests-list');
+  const empty = document.getElementById('cal-empty');
+  if (!calRequests.length) {
+    list.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.innerHTML = calRequests.map(r => {
+    let statusBadge = '';
+    let actions = '';
+    if (r.status === 'pending') {
+      statusBadge = `<span class="status-badge status-pending">${currentLang==='es'?'Pendiente':'Pending'}</span>`;
+      actions = `<button class="cal-accept" onclick="acceptCalReq(${r.id})">${currentLang==='es'?'✓ Aceptar':'✓ Accept'}</button>
+                 <button class="cal-reject" onclick="rejectCalReq(${r.id})">${currentLang==='es'?'✕ Rechazar':'✕ Reject'}</button>`;
+    } else if (r.status === 'accepted') {
+      statusBadge = `<span class="status-badge status-accepted">${currentLang==='es'?'Aceptada':'Accepted'}</span>`;
+    } else {
+      statusBadge = `<span class="status-badge status-rejected">${currentLang==='es'?'Rechazada':'Rejected'}</span>`;
     }
+    return `<div class="cal-request-card">
+      <div class="cal-request-info">
+        <b>${r.name}</b> ${statusBadge}<br/>
+        <span>${r.email}</span><br/>
+        <span>📅 ${r.date} · ⏰ ${r.time} · ⏱ ${r.duration} min</span><br/>
+        <span>📌 ${r.topic || '—'}</span>
+        ${r.notes ? `<br/><span>📝 ${r.notes}</span>` : ''}
+      </div>
+      <div class="cal-actions">${actions}</div>
+    </div>`;
+  }).join('');
+}
 
-    // Router simple basado en pushState + popstate
-    function navigateTo(view) {
-      currentView = view;
-      let path = view === 'home' ? '/' : '/' + view;
-      window.history.pushState({ view }, '', path);
-      renderView();
-    }
+function acceptCalReq(id) {
+  const req = calRequests.find(r => r.id === id);
+  if (req) {
+    req.status = 'accepted';
+    showToast('✅ ' + (currentLang==='es'?'Cita aceptada':'Appointment accepted'));
+    enableCallBtn(id);
+    renderCalRequests();
+  }
+}
 
-    function renderView() {
-      const container = document.getElementById('viewContainer');
-      if (currentView === 'home') {
-        container.innerHTML = renderHome();
-      } else if (currentView === 'premium') {
-        container.innerHTML = renderPremium();
-      } else if (currentView === 'demo') {
-        container.innerHTML = renderDemo();
-      }
-      // Actualizar indicador de URL
-      const urlNote = document.querySelector('.url-indicator');
-      if (!urlNote) {
-        const note = document.createElement('div');
-        note.className = 'url-indicator';
-        container.appendChild(note);
-      }
-      const noteDiv = container.querySelector('.url-indicator');
-      if (noteDiv) {
-        noteDiv.textContent = `📍 ${window.location.origin}${window.location.pathname}`;
-      }
-    }
+function rejectCalReq(id) {
+  const req = calRequests.find(r => r.id === id);
+  if (req) {
+    req.status = 'rejected';
+    showToast('❌ ' + (currentLang==='es'?'Cita rechazada':'Appointment rejected'));
+    renderCalRequests();
+  }
+}
 
-    // HOME
-    function renderHome() {
-      return `
-        <div style="text-align:center;">
-          <h2 style="font-size:2rem; margin-bottom:1.2rem;">${t('homeTitle')}</h2>
-          <div class="hero-actions">
-            <button class="main-btn premium" id="goPremiumBtn">${t('premiumBtn')}</button>
-            <button class="main-btn demo" id="goDemoBtn">${t('demoBtn')}</button>
-          </div>
-          <p style="margin-top:30px; opacity:0.8;">WR Hacks · seguridad ofensiva</p>
-        </div>
-      `;
-    }
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimeout;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 3000);
+}
 
-    // PREMIUM
-    function renderPremium() {
-      const featuresHtml = texts[currentLang].features.map(f => `<li>${f}</li>`).join('');
-      return `
-        <div>
-          <h2 style="font-size:2.2rem;">⚡ ${t('premiumTitle')}</h2>
-          <div class="plan-card">
-            <div class="price-tag">${t('price')} <span style="font-size:1.2rem;">/único</span></div>
-            <ul class="feature-list">${featuresHtml}</ul>
-            <button class="buy-btn" id="buyPlanBtn">${t('buy')}</button>
-            <p style="margin-top:16px; font-size:0.9rem;">Pago seguro · Acceso inmediato</p>
-          </div>
-          <button class="back-home" id="backHomeBtn">${t('back')}</button>
-          <div class="url-indicator"></div>
-        </div>
-      `;
-    }
-
-    // DEMO
-    function renderDemo() {
-      return `
-        <div>
-          <h2>🧪 ${t('demoBtn')} · WR Hacks</h2>
-          <div class="demo-grid">
-            <div class="demo-panel">
-              <h3>✉️ ${t('demoMsg')}</h3>
-              <p style="margin:5px 0">📧 ${t('gmailContact')}</p>
-              <div class="input-group">
-                <input type="text" id="msgSubject" placeholder="${currentLang==='es'?'Asunto':'Subject'}" value="Consulta WR Hacks">
-              </div>
-              <div class="input-group">
-                <textarea id="msgBody" rows="3" placeholder="${currentLang==='es'?'Escribe tu mensaje...':'Write your message...'}"></textarea>
-              </div>
-              <button class="action-btn" id="sendMsgBtn">📨 ${t('sendMsg')}</button>
-              <p id="msgFeedback" style="margin-top:8px;"></p>
-            </div>
-            <div class="demo-panel">
-              <h3>📞 ${t('callOwner')}</h3>
-              <p style="font-size:0.9rem;">${currentLang==='es'?'Llamada directa dentro de la web':'Direct call inside the page'}</p>
-              <button class="action-btn call" id="instantCallBtn">📞 ${t('callNow')}</button>
-              <div style="margin: 25px 0 10px;"><strong>📅 ${t('scheduleCall')}</strong></div>
-              <div class="input-group">
-                <input type="text" id="callerNameInput" placeholder="${t('yourName')}">
-              </div>
-              <div class="input-group">
-                <input type="datetime-local" id="callDateTime">
-              </div>
-              <button class="action-btn" id="scheduleCallBtn">📆 ${currentLang==='es'?'Solicitar llamada':'Request call'}</button>
-              <p id="scheduleFeedback" style="margin-top:8px;"></p>
-            </div>
-          </div>
-          <button class="back-home" id="backHomeFromDemo">${t('back')}</button>
-          <div class="url-indicator"></div>
-        </div>
-      `;
-    }
-
-    // ---------- LÓGICA DE EVENTOS (delegación) ----------
-    function attachGlobalListeners() {
-      document.addEventListener('click', async (e) => {
-        // Botones de navegación
-        if (e.target.id === 'goPremiumBtn') navigateTo('premium');
-        if (e.target.id === 'goDemoBtn') navigateTo('demo');
-        if (e.target.id === 'backHomeBtn' || e.target.id === 'backHomeFromDemo') navigateTo('home');
-        
-        // Compra plan premium -> abre PayPal en misma pestaña
-        if (e.target.id === 'buyPlanBtn') {
-          window.location.href = 'https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE';
-        }
-
-        // Enviar mensaje (simulación)
-        if (e.target.id === 'sendMsgBtn') {
-          const subject = document.getElementById('msgSubject')?.value || '';
-          const body = document.getElementById('msgBody')?.value || '';
-          const feedback = document.getElementById('msgFeedback');
-          if (feedback) {
-            feedback.textContent = currentLang==='es'? `✅ Mensaje simulado enviado a ${t('gmailContact')}` : `✅ Simulated message sent to ${t('gmailContact')}`;
-          }
-          // Mailto opcional, pero lo dejamos como simulación en web
-        }
-
-        // Llamada instantánea
-        if (e.target.id === 'instantCallBtn') {
-          triggerIncomingCall('Usuario Demo');
-        }
-
-        // Programar llamada
-        if (e.target.id === 'scheduleCallBtn') {
-          const name = document.getElementById('callerNameInput')?.value || 'Anónimo';
-          const datetime = document.getElementById('callDateTime')?.value;
-          if (!datetime) {
-            alert(currentLang==='es'?'Selecciona fecha y hora':'Select date & time');
-            return;
-          }
-          appointments.push({
-            id: 'apt'+Date.now(),
-            name: name,
-            datetime: datetime,
-            email: 'usuario@demo.com',
-            status: 'pendiente'
-          });
-          const fb = document.getElementById('scheduleFeedback');
-          fb.textContent = currentLang==='es'?'✅ Solicitud enviada. Admin la revisará.':'✅ Request sent. Admin will review.';
-          updateAdminPanelIfOpen();
-        }
-      });
-
-      // Lang switch
-      document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          currentLang = btn.dataset.lang;
-          updateLangUI();
-        });
-      });
-
-      // Admin modal *
-      document.getElementById('starAdminBtn').addEventListener('click', openAdminModal);
-      document.getElementById('closeAdminModal').addEventListener('click', closeAdminModal);
-      document.getElementById('submitPassBtn').addEventListener('click', checkPassword);
-      document.getElementById('adminPassInput').addEventListener('keypress', (e) => { if(e.key==='Enter') checkPassword(); });
-
-      // Admin actions delegadas
-      document.addEventListener('click', (e) => {
-        if (e.target.id === 'acceptCallAdminBtn') handleAdminAcceptCall();
-        if (e.target.id === 'rejectCallAdminBtn') handleAdminRejectCall();
-        if (e.target.classList.contains('accept-apt-btn')) {
-          const id = e.target.dataset.id;
-          const apt = appointments.find(a => a.id === id);
-          if (apt) apt.status = 'aceptada';
-          updateAdminPanelIfOpen();
-        }
-        if (e.target.classList.contains('reject-apt-btn')) {
-          const id = e.target.dataset.id;
-          const apt = appointments.find(a => a.id === id);
-          if (apt) apt.status = 'rechazada';
-          updateAdminPanelIfOpen();
-        }
-      });
-
-      window.addEventListener('popstate', (e) => {
-        if (e.state && e.state.view) {
-          currentView = e.state.view;
-        } else {
-          const path = window.location.pathname;
-          if (path.includes('premium')) currentView = 'premium';
-          else if (path.includes('demo')) currentView = 'demo';
-          else currentView = 'home';
-        }
-        renderView();
-      });
-    }
-
-    // Funciones admin
-    function openAdminModal() {
-      document.getElementById('adminModal').style.display = 'flex';
-      document.getElementById('adminLoginSection').style.display = 'block';
-      document.getElementById('adminContentArea').style.display = 'none';
-      document.getElementById('adminPassInput').value = '';
-      adminAuthorized = false;
-    }
-    function closeAdminModal() {
-      document.getElementById('adminModal').style.display = 'none';
-    }
-    function checkPassword() {
-      const pass = document.getElementById('adminPassInput').value;
-      if (pass === 'Alex27Junio') {
-        adminAuthorized = true;
-        document.getElementById('adminLoginSection').style.display = 'none';
-        document.getElementById('adminContentArea').style.display = 'block';
-        document.getElementById('passError').textContent = '';
-        updateAdminPanel();
-      } else {
-        document.getElementById('passError').textContent = 'Contraseña incorrecta';
-      }
-    }
-
-    function updateAdminPanelIfOpen() {
-      if (adminAuthorized && document.getElementById('adminModal').style.display === 'flex') {
-        updateAdminPanel();
-      }
-    }
-
-    function updateAdminPanel() {
-      renderCallLog();
-      renderAppointments();
-      updateLiveCallUI();
-    }
-
-    function renderCallLog() {
-      const container = document.getElementById('callLogList');
-      if (!container) return;
-      container.innerHTML = callRecords.map(c => `
-        <div class="record-item">
-          <span>📅 ${c.timestamp} · ${c.country} · ${c.status}</span>
-        </div>`).join('') || '<p>Sin registros</p>';
-    }
-
-    function renderAppointments() {
-      const cont = document.getElementById('appointmentList');
-      if (!cont) return;
-      cont.innerHTML = appointments.map(apt => `
-        <div class="record-item flex-row" style="justify-content:space-between;">
-          <div><strong>${apt.name}</strong> · ${apt.datetime.replace('T',' ')} · ${apt.status}</div>
-          <div>
-            ${apt.status === 'pendiente' ? `
-              <button class="badge accept-apt-btn" data-id="${apt.id}" style="background:#2e7d5e;border:none;cursor:pointer;">✅ Aceptar</button>
-              <button class="badge reject-apt-btn" data-id="${apt.id}" style="background:#9e4a4a;border:none;cursor:pointer;">❌ Rechazar</button>
-            ` : ''}
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function updateLiveCallUI() {
-      const noLive = document.getElementById('noLiveCallMsg');
-      const actions = document.getElementById('activeCallActions');
-      const info = document.getElementById('liveCallerInfo');
-      if (pendingLiveCall) {
-        noLive.style.display = 'none';
-        actions.style.display = 'block';
-        info.textContent = `📲 ${pendingLiveCall.callerName} · ${pendingLiveCall.timestamp}`;
-      } else {
-        noLive.style.display = 'block';
-        actions.style.display = 'none';
-      }
-    }
-
-    function triggerIncomingCall(callerName = 'Usuario') {
-      const now = new Date();
-      const timestamp = now.toLocaleString('es-ES');
-      const country = 'España'; // simulado
-      const callId = Date.now();
-      pendingLiveCall = { callerName, timestamp, country, id: callId };
-      // Agregar a registro
-      callRecords.push({ id: callId, timestamp, country, status: 'entrante' });
-      
-      // Si admin está abierto, actualizar
-      updateAdminPanelIfOpen();
-      
-      // Notificación simple
-      alert(`📞 ${t('calling')} ${callerName} ... El dueño puede responder.`);
-    }
-
-    function handleAdminAcceptCall() {
-      if (!pendingLiveCall) return;
-      const rec = callRecords.find(r => r.id === pendingLiveCall.id);
-      if (rec) rec.status = 'atendida';
-      alert(`✅ Llamada aceptada (simulación) con ${pendingLiveCall.callerName}`);
-      pendingLiveCall = null;
-      updateAdminPanelIfOpen();
-    }
-    function handleAdminRejectCall() {
-      if (!pendingLiveCall) return;
-      const rec = callRecords.find(r => r.id === pendingLiveCall.id);
-      if (rec) rec.status = 'rechazada';
-      alert(`❌ Llamada rechazada`);
-      pendingLiveCall = null;
-      updateAdminPanelIfOpen();
-    }
-
-    // Inicializar
-    function init() {
-      // Establecer ruta inicial
-      const path = window.location.pathname;
-      if (path.includes('premium')) currentView = 'premium';
-      else if (path.includes('demo')) currentView = 'demo';
-      else currentView = 'home';
-      renderView();
-      attachGlobalListeners();
-      window.history.replaceState({ view: currentView }, '', currentView==='home'?'/':'/'+currentView);
-    }
-
-    init();
-  })();
+// Set today as min date for calendar
+const today = new Date().toISOString().split('T')[0];
+const dateInput = document.getElementById('cal-date');
+if (dateInput) dateInput.min = today;
 </script>
+
 </body>
 </html>
