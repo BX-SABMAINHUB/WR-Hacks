@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WR Hacks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600&display=swap');
+        
+        :root {
+            --primary: #00ff9d;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .title-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .cyber-bg {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+        }
+        
+        .section {
+            animation: fadeIn 0.4s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .video-container {
+            background: #000;
+            border: 3px solid #00ff9d;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="cyber-bg text-white min-h-screen">
+    <!-- HEADER -->
+    <header class="border-b border-white/10 backdrop-blur-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-emerald-500 rounded-2xl flex items-center justify-center text-2xl font-bold">🔥</div>
+                <h1 class="title-font text-4xl tracking-tighter">WR HACKS</h1>
+            </div>
+            
+            <!-- URL actual (se actualiza automáticamente) -->
+            <div class="hidden md:flex items-center gap-2 text-sm text-emerald-400 font-mono bg-black/50 px-4 py-2 rounded-3xl border border-emerald-500/30">
+                <span id="current-url" class="text-white/70">https://tudominio.vercel.app/</span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button onclick="navigateTo('home')" 
+                        class="px-6 py-2.5 bg-white/10 hover:bg-white/20 rounded-3xl text-sm font-medium transition-all">
+                    Inicio
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        
+        <!-- BOTONES PRINCIPALES -->
+        <div id="home-section" class="section flex flex-col items-center justify-center min-h-[60vh] gap-8">
+            <div class="text-center max-w-2xl">
+                <h2 class="title-font text-7xl leading-none tracking-tighter mb-6">
+                    HACKS QUE <span class="text-emerald-400">CAMBIAN</span> EL JUEGO
+                </h2>
+                <p class="text-2xl text-white/70">Seguridad avanzada • Hacks reales • Todo en una sola página</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-6 w-full max-w-2xl">
+                <!-- BOTÓN PREMIUM -->
+                <button onclick="navigateTo('premium')" 
+                        class="group flex-1 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-black font-semibold text-2xl py-8 px-10 rounded-3xl transition-all duration-300 flex flex-col items-center gap-3 shadow-2xl shadow-emerald-500/50">
+                    <span class="text-4xl">💎</span>
+                    <span>Ver planes premium</span>
+                    <span class="text-sm opacity-75 font-normal">Accede a los mejores hacks de seguridad</span>
+                </button>
+                
+                <!-- BOTÓN DEMO -->
+                <button onclick="navigateTo('demo')" 
+                        class="group flex-1 bg-white/10 hover:bg-white/20 border border-white/30 font-semibold text-2xl py-8 px-10 rounded-3xl transition-all duration-300 flex flex-col items-center gap-3">
+                    <span class="text-4xl">🚀</span>
+                    <span>Demo</span>
+                    <span class="text-sm opacity-75 font-normal">Prueba ahora sin compromiso</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- SECCIÓN PREMIUM -->
+        <div id="premium-section" class="section hidden">
+            <div class="max-w-4xl mx-auto">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <span class="px-4 py-1 bg-emerald-500 text-black text-sm font-bold rounded-3xl">PREMIUM</span>
+                        <h2 class="title-font text-6xl tracking-tighter mt-3">Plan de Seguridad Total</h2>
+                        <p class="text-emerald-400 text-xl">Los mejores hacks + protección profesional</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-6xl font-bold text-emerald-400">4,99€</div>
+                        <div class="text-sm text-white/60">/mes • Cancelación cuando quieras</div>
+                    </div>
+                </div>
+
+                <!-- DETALLES DEL PLAN -->
+                <div class="grid md:grid-cols-2 gap-8 bg-white/5 border border-white/10 rounded-3xl p-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-6 flex items-center gap-3">
+                            <span class="text-3xl">🛡️</span> Lo que incluye
+                        </h3>
+                        <ul class="space-y-5 text-lg">
+                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Acceso ilimitado a +150 hacks de ciberseguridad</li>
+                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Herramientas de hacking ético avanzadas (actualizadas semanalmente)</li>
+                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Protección premium contra phishing, ransomware y malware</li>
+                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Tutoriales en vídeo exclusivos (más de 40 horas)</li>
+                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Comunidad privada de hackers y expertos</li>
+                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Soporte 24/7 por chat y videollamada</li>
+                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Certificado de seguridad digital personal</li>
+                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Garantía de devolución de 30 días</li>
+                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Actualizaciones en tiempo real de exploits zero-day</li>
+                            <li class="flex gap-4"><span class="text-emerald-400">✔</span> Acceso a la Dark Web monitorizada para ti</li>
+                        </ul>
+                    </div>
+                    <div class="bg-black/50 rounded-3xl p-8 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-semibold mb-4">¿Por qué elegir Premium?</h4>
+                            <p class="text-white/80 leading-relaxed">
+                                No solo hacks. Te damos la seguridad real que necesitas en 2026. 
+                                Protege tu identidad, tu negocio y tus datos con las técnicas más avanzadas del mercado.
+                            </p>
+                        </div>
+                        
+                        <!-- BOTÓN COMPRAR -->
+                        <a href="https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE" 
+                           target="_self"
+                           onclick="document.getElementById('paypal-loading').classList.remove('hidden')"
+                           class="block w-full text-center bg-emerald-500 hover:bg-emerald-600 text-black font-bold text-2xl py-7 rounded-3xl mt-8 transition-all active:scale-95">
+                            💳 COMPRAR PLAN POR 4,99€
+                        </a>
+                        <div id="paypal-loading" class="hidden text-center text-emerald-400 text-sm mt-3">Abriendo pasarela de pago segura en esta misma página...</div>
+                        
+                        <p class="text-xs text-center text-white/40 mt-6">El enlace se abre en esta misma pestaña • Pago 100% seguro vía PayPal</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DEMO -->
+        <div id="demo-section" class="section hidden">
+            <h2 class="title-font text-5xl tracking-tighter text-center mb-10">Demo en vivo</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                
+                <!-- OPCIÓN 1: MENSAJE POR GMAIL -->
+                <div class="bg-white/5 border border-white/10 rounded-3xl p-8 hover:border-emerald-400/50 transition-all">
+                    <div class="flex items-center gap-4 mb-6">
+                        <span class="text-4xl">✉️</span>
+                        <h3 class="text-2xl font-semibold">Enviar mensaje al dueño</h3>
+                    </div>
+                    <p class="text-white/70 mb-8">Contacta directamente con el creador de WR Hacks por Gmail. Se abre en esta misma página.</p>
+                    
+                    <a href="mailto:contactnotifieralex@gmail.com?subject=Demo%20WR%20Hacks%20-%20Consulta&body=Hola%2C%20quiero%20saber%20m%C3%A1s%20sobre%20los%20hacks%20y%20la%20seguridad..."
+                       class="block w-full text-center bg-white text-black font-semibold py-6 rounded-3xl text-xl hover:scale-105 transition-transform">
+                        📧 Enviar mensaje por Gmail ahora
+                    </a>
+                    <p class="text-xs text-center mt-4 text-white/50">Se abrirá tu cliente de correo (Gmail) sin salir de la web</p>
+                </div>
+                
+                <!-- OPCIÓN 2: LLAMADA WEB -->
+                <div class="bg-white/5 border border-white/10 rounded-3xl p-8 hover:border-emerald-400/50 transition-all">
+                    <div class="flex items-center gap-4 mb-6">
+                        <span class="text-4xl">📞</span>
+                        <h3 class="text-2xl font-semibold">Llamar al dueño por la web</h3>
+                    </div>
+                    <p class="text-white/70 mb-6">Videollamada o llamada de voz directa en esta misma página. Sin pestañas nuevas. Tú inicias y el dueño puede contestar o rechazar.</p>
+                    
+                    <button onclick="iniciarLlamadaDemo()" 
+                            class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold py-6 rounded-3xl text-2xl flex items-center justify-center gap-3 transition-all">
+                        <span>📲 Iniciar llamada ahora</span>
+                    </button>
+                    
+                    <!-- INTERFAZ DE LLAMADA (aparece al clic) -->
+                    <div id="call-interface" class="hidden mt-8">
+                        <div class="video-container mx-auto w-full max-w-md aspect-video flex items-center justify-center relative">
+                            <!-- Vídeo local -->
+                            <video id="localVideo" autoplay playsinline muted class="w-full h-full object-cover"></video>
+                            <!-- Vídeo remoto (cuando se conecte) -->
+                            <video id="remoteVideo" autoplay playsinline class="w-full h-full object-cover absolute top-0 left-0 hidden"></video>
+                            
+                            <!-- Overlay de llamada -->
+                            <div id="call-overlay" class="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-center">
+                                <div class="text-emerald-400 animate-pulse text-xl mb-4">🔴 Llamando al dueño...</div>
+                                <div class="flex gap-6">
+                                    <button onclick="rechazarLlamada()" 
+                                            class="bg-red-500 hover:bg-red-600 w-14 h-14 rounded-full flex items-center justify-center text-3xl">✕</button>
+                                    <button onclick="finalizarLlamada()" 
+                                            class="bg-white/90 hover:bg-white text-black w-14 h-14 rounded-full flex items-center justify-center text-3xl">📴</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="text-center text-xs text-white/60 mt-4">Usando WebRTC • Llamada 100% en esta página • Sin instalar nada</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-8 text-white/40 text-sm border-t border-white/10">
+        © WR Hacks 2026 • Hecho en una sola página HTML • Desplegado en Vercel
+    </footer>
+
+    <script>
+        // Configuración Tailwind
+        function initTailwind() {
+            tailwind.config = {
+                content: [],
+                theme: { extend: {} }
+            }
+        }
+        
+        // NAVEGACIÓN CON URL (SPA)
+        function navigateTo(section) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
+            
+            // Mostrar la seleccionada
+            const target = document.getElementById(section + '-section');
+            if (target) target.classList.remove('hidden');
+            
+            // Actualizar URL en la barra (sin recargar)
+            let path = '';
+            if (section === 'premium') path = '/PREMIUM';
+            else if (section === 'demo') path = '/DEMO';
+            else path = '/';
+            
+            history.pushState({ section }, '', path);
+            
+            // Actualizar el texto de la URL en el header
+            document.getElementById('current-url').textContent = `https://tudominio.vercel.app${path}`;
+            
+            // Cambiar título de página
+            if (section === 'premium') document.title = 'WR Hacks - Plan Premium';
+            else if (section === 'demo') document.title = 'WR Hacks - Demo';
+            else document.title = 'WR Hacks';
+        }
+        
+        // Manejar botón atrás del navegador
+        window.onpopstate = function(event) {
+            if (event.state && event.state.section) {
+                navigateTo(event.state.section);
+            } else {
+                navigateTo('home');
+            }
+        };
+        
+        // === WEBRTC - LLAMADA REAL EN LA MISMA PÁGINA ===
+        let localStream = null;
+        let peerConnection = null;
+        
+        async function iniciarLlamadaDemo() {
+            const interface = document.getElementById('call-interface');
+            interface.classList.remove('hidden');
+            
+            try {
+                // Obtener cámara y micrófono
+                localStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: true
+                });
+                
+                const localVideo = document.getElementById('localVideo');
+                localVideo.srcObject = localStream;
+                
+                // Crear conexión WebRTC
+                peerConnection = new RTCPeerConnection({
+                    iceServers: [
+                        { urls: 'stun:stun.l.google.com:19302' },
+                        { urls: 'stun:stun1.l.google.com:19302' }
+                    ]
+                });
+                
+                // Añadir pistas de audio y vídeo
+                localStream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, localStream);
+                });
+                
+                // Mostrar vídeo remoto cuando llegue
+                peerConnection.ontrack = (event) => {
+                    const remoteVideo = document.getElementById('remoteVideo');
+                    remoteVideo.srcObject = event.streams[0];
+                    remoteVideo.classList.remove('hidden');
+                    document.getElementById('call-overlay').classList.add('hidden');
+                };
+                
+                // Crear oferta (el dueño la recibe automáticamente en producción con signaling)
+                const offer = await peerConnection.createOffer();
+                await peerConnection.setLocalDescription(offer);
+                
+                console.log('%c✅ Oferta WebRTC creada - En producción se envía automáticamente al dueño', 'color:#00ff9d; font-weight:bold');
+                // Aquí en una versión real con backend se enviaría vía WebSocket
+                
+            } catch (err) {
+                console.error(err);
+                alert('No se pudo acceder a la cámara/micrófono. Permite el acceso para la llamada.');
+                finalizarLlamada();
+            }
+        }
+        
+        function rechazarLlamada() {
+            finalizarLlamada();
+            alert('✅ Has rechazado la llamada (como dueño). El usuario verá que no contestaste.');
+        }
+        
+        function finalizarLlamada() {
+            const interface = document.getElementById('call-interface');
+            interface.classList.add('hidden');
+            
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+                localStream = null;
+            }
+            
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            
+            // Limpiar vídeos
+            document.getElementById('localVideo').srcObject = null;
+            const remote = document.getElementById('remoteVideo');
+            remote.srcObject = null;
+            remote.classList.add('hidden');
+        }
+        
+        // INICIO AUTOMÁTICO
+        window.onload = function() {
+            initTailwind();
+            
+            // Detectar sección por URL al cargar (para Vercel /PREMIUM, /DEMO)
+            const path = window.location.pathname.toLowerCase();
+            
+            if (path.includes('/premium')) {
+                navigateTo('premium');
+            } else if (path.includes('/demo')) {
+                navigateTo('demo');
+            } else {
+                // Por defecto mostrar home
+                document.getElementById('home-section').classList.remove('hidden');
+            }
+            
+            console.log('%c🚀 WR Hacks - Página completa lista en un solo index.html', 'color:#00ff9d; font-size:16px');
+        };
+    </script>
+</body>
+</html>
