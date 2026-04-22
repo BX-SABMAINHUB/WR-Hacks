@@ -7,8 +7,7 @@
   <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, update, get, child, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getDatabase, ref, set, push, onValue, update, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD13N4-9MjTrmlPwGP7mves0Exje4v2ACw",
@@ -23,19 +22,19 @@
 
     const app = initializeApp(firebaseConfig);
     const database = getDatabase(app);
-    const analytics = getAnalytics(app);
     window.db = database;
     window.firebaseRef = ref;
     window.firebaseSet = set;
-    window.firebaseOnValue = onValue;
     window.firebasePush = push;
+    window.firebaseOnValue = onValue;
     window.firebaseUpdate = update;
+    window.firebaseRemove = remove;
     window.firebaseServerTimestamp = serverTimestamp;
   </script>
   <style>
-    * { box-sizing: border-box; margin: 0; font-family: system-ui, 'Segoe UI', Roboto, sans-serif; }
+    * { box-sizing: border-box; margin: 0; font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
     body {
-      background: #0b0f1a;
+      background: #0c111d;
       color: #eef2fb;
       min-height: 100vh;
       display: flex;
@@ -44,30 +43,30 @@
       padding: 1rem;
     }
     #app {
-      max-width: 900px;
+      max-width: 1000px;
       width: 100%;
-      background: #151e2c;
+      background: #121b28;
       border-radius: 2rem;
-      padding: 2rem 1.5rem;
+      padding: 2rem 1.8rem;
       box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      border: 1px solid #2e3a4e;
+      border: 1px solid #2e405b;
     }
     h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
+      font-size: 2.8rem;
+      font-weight: 800;
       letter-spacing: 2px;
-      background: linear-gradient(135deg, #b4e6ff, #9ac8ff);
+      background: linear-gradient(135deg, #aad0ff, #7aa9ff);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.5rem;
       text-align: center;
     }
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1.5rem;
     }
     .lang-switch {
       display: flex;
@@ -84,7 +83,7 @@
       transition: all 0.2s;
     }
     .lang-btn.active {
-      background: #2d6a9f;
+      background: #2a6eb0;
       border-color: #7ab7ef;
       color: white;
     }
@@ -92,95 +91,122 @@
       background: #1e2a3a;
       border: 1px solid #facc15;
       color: #facc15;
-      font-size: 1.8rem;
+      font-size: 2rem;
       line-height: 1;
-      width: 48px;
-      height: 48px;
-      border-radius: 48px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 0 10px #facc1540;
+      box-shadow: 0 0 12px #facc1540;
       transition: 0.2s;
     }
     .star-btn:hover { background: #2e405b; }
+    
     .main-buttons {
       display: flex;
-      flex-wrap: wrap;
-      gap: 1.5rem;
       justify-content: center;
-      margin: 2.5rem 0;
+      margin: 2.5rem 0 1.5rem;
     }
     .primary-btn {
-      background: #1f3a5f;
+      background: #1e3f66;
       border: none;
-      padding: 1.2rem 2.5rem;
+      padding: 1.3rem 3rem;
       border-radius: 60px;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       font-weight: bold;
       color: white;
-      box-shadow: 0 8px 0 #0e1a28;
+      box-shadow: 0 6px 0 #0e1a28;
       cursor: pointer;
       transition: 0.1s ease;
-      border: 1px solid #3d6b9c;
-      min-width: 220px;
+      border: 1px solid #3d7ab3;
+      min-width: 260px;
     }
-    .primary-btn:active { transform: translateY(4px); box-shadow: 0 4px 0 #0e1a28; }
+    .primary-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #0e1a28; }
     .secondary-btn {
-      background: #2c3a4e;
+      background: #26374d;
       border: 1px solid #5f7a9a;
-      padding: 1rem 2rem;
+      padding: 0.8rem 1.8rem;
       border-radius: 40px;
       color: white;
       font-weight: 600;
       cursor: pointer;
     }
     .card {
-      background: #101a26;
-      border-radius: 24px;
-      padding: 1.8rem;
+      background: #0f1a28;
+      border-radius: 28px;
+      padding: 2rem;
       margin: 1.5rem 0;
-      border: 1px solid #2b4057;
+      border: 1px solid #2e4a6a;
     }
-    .price-tag {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: #b7e4ff;
+    .plan-item {
+      background: #142433;
+      border-radius: 24px;
+      padding: 1.5rem;
+      margin-bottom: 1.2rem;
+      border-left: 6px solid #3f8cff;
     }
-    iframe {
-      width: 100%;
-      height: 600px;
-      border-radius: 20px;
-      border: 1px solid #2e4b6b;
+    .plan-title { font-size: 1.8rem; font-weight: 700; }
+    .plan-price { font-size: 2rem; font-weight: 800; color: #b7e4ff; margin: 0.3rem 0; }
+    .buy-plan-btn {
+      background: #2a5f9e;
+      border: none;
+      padding: 0.9rem 2rem;
+      border-radius: 50px;
+      color: white;
+      font-weight: bold;
       margin-top: 1rem;
-    }
-    .back-link {
-      margin-top: 1rem;
-      color: #8db5e0;
       cursor: pointer;
     }
-    .password-panel {
-      background: #0e1622;
-      padding: 1.5rem;
-      border-radius: 28px;
-      margin-top: 20px;
+    .back-link {
+      margin-top: 1.5rem;
+      color: #8db5e0;
+      cursor: pointer;
+      font-weight: 500;
     }
-    .call-log-entry {
-      background: #1b2636;
-      padding: 10px 15px;
-      border-radius: 16px;
-      margin: 8px 0;
+    /* Modal de pago */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.75);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
     }
-    .flex-row { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; }
-    .hidden { display: none !important; }
-    input, select, textarea {
-      background: #1b2738;
-      border: 1px solid #3d5a78;
+    .payment-modal {
+      background: #1a2637;
+      width: 460px;
+      max-width: 94%;
+      border-radius: 36px;
+      padding: 1.8rem;
+      box-shadow: 0 30px 50px #00000055;
+      border: 1px solid #4b6f92;
+    }
+    .payment-header {
+      display: flex; justify-content: space-between;
+      font-weight: 600; margin-bottom: 1.2rem;
+    }
+    .payment-field {
+      background: #0f1927;
+      border: 1px solid #395d7e;
+      border-radius: 20px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
       color: white;
-      padding: 10px 16px;
-      border-radius: 30px;
       width: 100%;
+      font-size: 1rem;
+    }
+    .payment-row { display: flex; gap: 12px; }
+    .pay-btn {
+      background: #1e88e5;
+      width: 100%; border: none; border-radius: 40px;
+      padding: 16px; font-size: 1.3rem; font-weight: bold;
+      color: white; margin: 15px 0 10px; cursor: pointer;
+    }
+    .hidden { display: none !important; }
+    input, textarea { outline: none; }
+    .admin-section {
+      background: #0e1a26; border-radius: 24px; padding: 1.5rem; margin-top: 1.5rem;
     }
   </style>
 </head>
@@ -195,331 +221,256 @@
   </div>
   <h1>WR Hacks</h1>
 
-  <!-- VISTA PRINCIPAL -->
+  <!-- VISTA PRINCIPAL (home) -->
   <div id="homeView">
     <div class="main-buttons">
       <button class="primary-btn" id="premiumBtn">🔒 Ver planes premium</button>
-      <button class="primary-btn" id="demoBtn">📞 Demo</button>
     </div>
-    <p style="text-align:center; opacity:0.8; margin-top:2rem;" id="homeFooter">Seguridad · Hacks avanzados · Soporte 24/7</p>
+    <p style="text-align:center; opacity:0.7; margin-top:2.5rem;" id="homeFooter">Herramientas de seguridad · Hacks exclusivos · Soporte prioritario</p>
   </div>
 
   <!-- VISTA PREMIUM -->
   <div id="premiumView" class="hidden">
-    <h2 style="margin-bottom: 0.5rem;">⚡ Plan WR Hacks Elite</h2>
-    <div class="card">
-      <ul style="list-style: none; padding-left: 0; font-size: 1.2rem; line-height: 2;">
-        <li>✅ Acceso a todos los hacks privados</li>
-        <li>✅ Protección DDoS avanzada</li>
-        <li>✅ Soporte prioritario 24/7</li>
-        <li>✅ Métodos de ingeniería social</li>
-        <li>✅ Actualizaciones mensuales exclusivas</li>
-        <li>✅ Curso de anonimato (PDF + vídeos)</li>
-        <li>✅ Asistencia remota segura</li>
-      </ul>
-      <div class="price-tag">4,99 € <span style="font-size:1rem;">/mes</span></div>
-      <button class="primary-btn" id="buyPlanBtn" style="margin-top:20px; padding:1rem 2rem;">💳 Comprar plan</button>
+    <h2 style="margin-bottom: 0.5rem;">⚡ Planes WR Hacks</h2>
+    <div id="plansListContainer" class="card">
+      <!-- Se llena dinámicamente desde Firebase -->
+      <p>Cargando planes...</p>
     </div>
-    <div id="paypalIframeContainer" class="hidden">
-      <iframe id="paypalFrame" src="" frameborder="0" allowpaymentrequest></iframe>
-      <button class="secondary-btn" id="closePaypalBtn" style="margin-top:10px;">Cerrar PayPal</button>
-    </div>
-    <div class="back-link" id="backFromPremium">← Volver</div>
-  </div>
-
-  <!-- VISTA DEMO -->
-  <div id="demoView" class="hidden">
-    <h2>📱 Demo interactiva</h2>
-    <div class="card">
-      <div style="display: flex; gap: 1.5rem; justify-content: center;">
-        <button class="secondary-btn" id="emailOwnerBtn">✉️ Enviar mensaje al dueño</button>
-        <button class="secondary-btn" id="callOwnerBtn">📞 Llamar al dueño</button>
-      </div>
-      <div id="emailPanel" class="hidden" style="margin-top:2rem;">
-        <p>Redacta tu mensaje (se enviará por Gmail en esta misma ventana):</p>
-        <textarea id="emailMessage" rows="3" placeholder="Escribe tu consulta..."></textarea>
-        <button class="secondary-btn" id="sendEmailBtn" style="margin-top:10px;">Enviar a contactnotifieralex@gmail.com</button>
-        <p style="font-size:0.9rem; opacity:0.8;">* Se abrirá el cliente de correo en un iframe (simulado)</p>
-      </div>
-      <div id="callPanel" class="hidden" style="margin-top:1.5rem;">
-        <p><strong>Programa tu llamada con Google Calendar</strong></p>
-        <input type="datetime-local" id="callDateTime" />
-        <button class="secondary-btn" id="scheduleCallBtn">📅 Solicitar llamada</button>
-        <div id="callStatus" style="margin-top:12px;"></div>
-        <button class="secondary-btn" id="startDirectCallBtn" style="margin-top:15px;">⚡ Iniciar llamada directa (WebRTC)</button>
-        <video id="localVideo" autoplay muted style="width:120px; border-radius:20px; margin-top:10px; background:#000;"></video>
-        <video id="remoteVideo" autoplay style="width:100%; max-width:300px; border-radius:20px; margin-top:10px; background:#111;"></video>
-      </div>
-    </div>
-    <div class="back-link" id="backFromDemo">← Volver</div>
+    <div class="back-link" id="backFromPremium">← Volver al inicio</div>
   </div>
 
   <!-- PANEL ADMIN (contraseña) -->
-  <div id="adminPanel" class="hidden password-panel">
+  <div id="adminPanel" class="hidden">
     <h3>🔐 Panel de administración</h3>
     <div id="adminLoginSection">
-      <input type="password" id="adminPassInput" placeholder="Contraseña" />
+      <input type="password" id="adminPassInput" placeholder="Contraseña" class="payment-field" style="width:auto;" />
       <button class="secondary-btn" id="adminLoginBtn">Acceder</button>
     </div>
     <div id="adminContent" class="hidden">
-      <h4>📋 Registro de llamadas</h4>
-      <div id="callLogsList"></div>
-      <h4 style="margin-top:20px;">📅 Solicitudes de llamada (Calendar)</h4>
-      <div id="scheduleRequests"></div>
-      <h4 style="margin-top:20px;">📞 Llamada entrante en directo</h4>
-      <div id="incomingCallSection">
-        <p id="incomingCallInfo">Esperando...</p>
-        <button class="secondary-btn" id="answerCallBtn" disabled>📞 Contestar</button>
-        <button class="secondary-btn" id="rejectCallBtn" disabled>❌ Rechazar</button>
-        <video id="adminRemoteVideo" autoplay style="width:200px; background:#000; border-radius:20px;"></video>
+      <h4>➕ Añadir nuevo plan</h4>
+      <div class="admin-section">
+        <input type="text" id="newPlanTitle" placeholder="Título del plan" class="payment-field" />
+        <textarea id="newPlanDesc" placeholder="Descripción (beneficios, separados por comas)" class="payment-field" rows="3"></textarea>
+        <input type="text" id="newPlanPrice" placeholder="Precio (ej. 4,99 €)" class="payment-field" />
+        <input type="text" id="newPlanLink" placeholder="Enlace de pago (PayPal u otro)" class="payment-field" value="https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE" />
+        <button class="secondary-btn" id="addPlanBtn">📤 Subir plan</button>
       </div>
-      <button class="secondary-btn" id="adminLogoutBtn">Cerrar panel</button>
+      <h4 style="margin-top:30px;">📋 Planes actuales (gestionar)</h4>
+      <div id="adminPlansList"></div>
+      <button class="secondary-btn" id="adminLogoutBtn" style="margin-top:20px;">Cerrar panel</button>
+    </div>
+  </div>
+
+  <!-- MODAL DE PAGO SIMULADO -->
+  <div id="paymentModal" class="modal-overlay hidden">
+    <div class="payment-modal">
+      <div class="payment-header">
+        <span>💳 Pago seguro</span>
+        <span style="cursor:pointer;" id="closePaymentModal">✕</span>
+      </div>
+      <div id="modalPlanDetails" style="margin-bottom:16px;">
+        <div style="font-size:1.4rem; font-weight:700;">Plan Elite</div>
+        <div style="font-size:1.8rem; color:#9bc5ff;" id="modalPlanPrice">4,99 €</div>
+      </div>
+      <div><input type="text" placeholder="Número de tarjeta" value="1234 1234 1234 1234" class="payment-field" /></div>
+      <div class="payment-row">
+        <input type="text" placeholder="MM/YY" value="12/28" class="payment-field" />
+        <input type="text" placeholder="CVV" value="123" class="payment-field" />
+      </div>
+      <div><input type="text" placeholder="Nombre en la tarjeta" value="Alex Hacker" class="payment-field" /></div>
+      <label style="display:flex; align-items:center; gap:8px; margin:12px 0;">
+        <input type="checkbox" checked /> Recordar esta tarjeta
+      </label>
+      <button class="pay-btn" id="simulatePaymentBtn">Pagar <span id="modalPayAmount">4,99 €</span></button>
+      <p style="font-size:0.7rem; opacity:0.6; text-align:center;">Al proceder aceptas los Términos de WR Hacks. Conexión segura.</p>
     </div>
   </div>
 </div>
 
 <script type="module">
-  // --- Configuración e i18n ---
+  // ---- i18n ----
   const i18n = {
-    es: {
-      premiumTitle: 'Plan WR Hacks Elite',
-      premiumDesc: 'Acceso a todos los hacks privados...',
-      buy: 'Comprar plan',
-      demo: 'Demo',
-      back: '← Volver',
-      call: 'Llamar al dueño',
-      email: 'Enviar mensaje'
-    },
-    en: {
-      premiumTitle: 'WR Hacks Elite Plan',
-      premiumDesc: 'Access all private hacks...',
-      buy: 'Buy plan',
-      demo: 'Demo',
-      back: '← Back',
-      call: 'Call owner',
-      email: 'Send message'
-    }
+    es: { premium: 'Ver planes premium', back: '← Volver al inicio', addPlan: 'Subir plan', buy: 'Comprar' },
+    en: { premium: 'View premium plans', back: '← Back to home', addPlan: 'Upload plan', buy: 'Buy' }
   };
   let currentLang = 'es';
-  function t(key) { return i18n[currentLang][key] || key; }
+  function t(key) { return i18n[currentLang]?.[key] || key; }
   function updateUITexts() {
-    document.querySelector('#premiumBtn').innerText = currentLang === 'es' ? '🔒 Ver planes premium' : '🔒 View premium plans';
-    document.querySelector('#demoBtn').innerText = currentLang === 'es' ? '📞 Demo' : '📞 Demo';
-    document.querySelector('#buyPlanBtn').innerText = currentLang === 'es' ? '💳 Comprar plan' : '💳 Buy plan';
-    // etc...
+    document.getElementById('premiumBtn').innerText = currentLang === 'es' ? '🔒 Ver planes premium' : '🔒 View premium plans';
+    document.getElementById('backFromPremium').innerText = currentLang === 'es' ? '← Volver al inicio' : '← Back to home';
   }
   document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', (e) => {
     currentLang = btn.dataset.lang;
     document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     updateUITexts();
+    loadPlansToUI(); // recargar con textos actualizados
   }));
 
-  // --- Navegación / Vistas ---
+  // ---- Vistas ----
   const homeView = document.getElementById('homeView');
   const premiumView = document.getElementById('premiumView');
-  const demoView = document.getElementById('demoView');
   const adminPanel = document.getElementById('adminPanel');
   function showView(view) {
     homeView.classList.add('hidden');
     premiumView.classList.add('hidden');
-    demoView.classList.add('hidden');
     adminPanel.classList.add('hidden');
     view.classList.remove('hidden');
-    // Actualizar URL
-    if (view === premiumView) history.pushState({view:'premium'}, '', '/premium');
-    else if (view === demoView) history.pushState({view:'demo'}, '', '/demo');
-    else if (view === adminPanel) history.pushState({view:'admin'}, '', '/admin');
-    else history.pushState({view:'home'}, '', '/');
+    if (view === premiumView) {
+      history.pushState({view:'premium'}, '', '/premium');
+      loadPlansToUI();
+    } else if (view === adminPanel) {
+      history.pushState({view:'admin'}, '', '/admin');
+    } else {
+      history.pushState({view:'home'}, '', '/');
+    }
   }
   document.getElementById('premiumBtn').addEventListener('click', ()=> showView(premiumView));
-  document.getElementById('demoBtn').addEventListener('click', ()=> showView(demoView));
   document.getElementById('backFromPremium').addEventListener('click', ()=> showView(homeView));
-  document.getElementById('backFromDemo').addEventListener('click', ()=> showView(homeView));
   window.addEventListener('popstate', (e) => {
     if(e.state?.view === 'premium') showView(premiumView);
-    else if(e.state?.view === 'demo') showView(demoView);
     else showView(homeView);
   });
 
-  // --- PayPal (misma página) ---
-  const paypalContainer = document.getElementById('paypalIframeContainer');
-  const paypalFrame = document.getElementById('paypalFrame');
-  document.getElementById('buyPlanBtn').addEventListener('click', ()=>{
-    paypalFrame.src = 'https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE';
-    paypalContainer.classList.remove('hidden');
-  });
-  document.getElementById('closePaypalBtn').addEventListener('click', ()=>{
-    paypalFrame.src = '';
-    paypalContainer.classList.add('hidden');
-  });
-
-  // --- Demo: Email y Call ---
-  document.getElementById('emailOwnerBtn').addEventListener('click', ()=>{
-    document.getElementById('emailPanel').classList.remove('hidden');
-    document.getElementById('callPanel').classList.add('hidden');
-  });
-  document.getElementById('callOwnerBtn').addEventListener('click', ()=>{
-    document.getElementById('callPanel').classList.remove('hidden');
-    document.getElementById('emailPanel').classList.add('hidden');
-    initializeCallFeatures();
-  });
-  document.getElementById('sendEmailBtn').addEventListener('click', ()=>{
-    const msg = document.getElementById('emailMessage').value;
-    // Simular envío en iframe (Gmail no permite iframe real)
-    alert(`[SIMULADO] Mensaje a contactnotifieralex@gmail.com: ${msg}`);
-    // En producción podrías usar EmailJS
-  });
-
-  // --- Firebase + WebRTC (simplificado pero funcional) ---
-  let localStream = null;
-  let peerConnection = null;
-  const servers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+  // ---- Firebase refs ----
   const db = window.db;
-  const callRef = (id) => window.firebaseRef(db, `calls/${id}`);
-  const logsRef = window.firebaseRef(db, 'callLogs');
-  const scheduleRef = window.firebaseRef(db, 'scheduleRequests');
+  const plansRef = window.firebaseRef(db, 'plans');
 
-  async function initializeCallFeatures() {
-    try {
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-      document.getElementById('localVideo').srcObject = localStream;
-    } catch(e) { console.warn('Sin permisos de cámara/mic'); }
-  }
-
-  // Crear llamada directa (WebRTC)
-  document.getElementById('startDirectCallBtn').addEventListener('click', async ()=>{
-    const callId = window.firebasePush(window.firebaseRef(db, 'calls')).key;
-    peerConnection = new RTCPeerConnection(servers);
-    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-    
-    // ICE candidates a Firebase
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        window.firebasePush(window.firebaseRef(db, `calls/${callId}/offerCandidates`), event.candidate.toJSON());
+  // ---- Cargar y mostrar planes ----
+  function loadPlansToUI() {
+    const container = document.getElementById('plansListContainer');
+    window.firebaseOnValue(plansRef, (snapshot) => {
+      container.innerHTML = '';
+      if (!snapshot.exists()) {
+        container.innerHTML = '<p>No hay planes disponibles. El administrador los añadirá pronto.</p>';
+        return;
       }
-    };
-    peerConnection.oniceconnectionstatechange = () => console.log('ICE state:', peerConnection.iceConnectionState);
-    
-    // Crear offer
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer);
-    await window.firebaseSet(window.firebaseRef(db, `calls/${callId}/offer`), {
-      type: offer.type,
-      sdp: offer.sdp
-    });
-    
-    // Escuchar answer
-    window.firebaseOnValue(window.firebaseRef(db, `calls/${callId}/answer`), async (snapshot) => {
-      const data = snapshot.val();
-      if (data && !peerConnection.currentRemoteDescription) {
-        await peerConnection.setRemoteDescription(new RTCSessionDescription(data));
-      }
-    });
-    window.firebaseOnValue(window.firebaseRef(db, `calls/${callId}/answerCandidates`), (snapshot) => {
-      snapshot.forEach(child => {
-        peerConnection.addIceCandidate(new RTCIceCandidate(child.val()));
+      const plans = snapshot.val();
+      Object.entries(plans).forEach(([id, plan]) => {
+        const div = document.createElement('div');
+        div.className = 'plan-item';
+        div.innerHTML = `
+          <div class="plan-title">${plan.title || 'Plan'}</div>
+          <div class="plan-price">${plan.price || 'Consultar'}</div>
+          <div style="margin:10px 0;">${(plan.desc || '').split(',').map(item => `✅ ${item.trim()}`).join('<br>')}</div>
+          <button class="buy-plan-btn" data-planid="${id}" data-title="${plan.title}" data-price="${plan.price}" data-link="${plan.paymentLink}">💳 ${t('buy')} ${plan.price}</button>
+        `;
+        container.appendChild(div);
+      });
+      // Eventos para comprar
+      document.querySelectorAll('.buy-plan-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const title = btn.dataset.title;
+          const price = btn.dataset.price;
+          const link = btn.dataset.link;
+          openPaymentModal(title, price, link);
+        });
       });
     });
-    
-    // Registrar log
-    const logEntry = {
-      timestamp: window.firebaseServerTimestamp(),
-      status: 'outgoing',
-      country: 'Desconocido' // Se podría obtener con IP API
-    };
-    window.firebasePush(logsRef, logEntry);
-    document.getElementById('callStatus').innerText = 'Llamando al dueño...';
-  });
+  }
 
-  // Admin: contestar
-  let currentCallId = null;
-  window.firebaseOnValue(window.firebaseRef(db, 'calls'), (snapshot) => {
-    snapshot.forEach(child => {
-      const call = child.val();
-      if (call.offer && !call.answer) {
-        currentCallId = child.key;
-        document.getElementById('incomingCallInfo').innerText = `Llamada entrante ID: ${currentCallId}`;
-        document.getElementById('answerCallBtn').disabled = false;
-        document.getElementById('rejectCallBtn').disabled = false;
-      }
+  // ---- Modal de pago simulado ----
+  const modal = document.getElementById('paymentModal');
+  const modalPlanPrice = document.getElementById('modalPlanPrice');
+  const modalPayAmount = document.getElementById('modalPayAmount');
+  let currentPaymentLink = '';
+
+  function openPaymentModal(title, price, link) {
+    document.getElementById('modalPlanDetails').innerHTML = `<div style="font-size:1.4rem; font-weight:700;">${title}</div>
+    <div style="font-size:1.8rem; color:#9bc5ff;">${price}</div>`;
+    modalPlanPrice.innerText = price;
+    modalPayAmount.innerText = price;
+    currentPaymentLink = link;
+    modal.classList.remove('hidden');
+  }
+
+  document.getElementById('closePaymentModal').addEventListener('click', ()=>{
+    modal.classList.add('hidden');
+  });
+  document.getElementById('simulatePaymentBtn').addEventListener('click', ()=>{
+    // Simulación: mostrar éxito y abrir enlace real en iframe oculto o redirigir? 
+    // Según requisito: "se abrirá en la propia página web no se abrirá ni una pestaña"
+    // Mostramos un pequeño iframe con el enlace dentro del modal o una confirmación.
+    alert(`✅ Pago simulado exitoso. Serás redirigido al checkout seguro.\n(Enlace: ${currentPaymentLink})`);
+    // Podemos abrir en un iframe pequeño en el modal
+    const iframe = document.createElement('iframe');
+    iframe.src = currentPaymentLink;
+    iframe.style.width = '100%';
+    iframe.style.height = '400px';
+    iframe.style.borderRadius = '20px';
+    iframe.style.marginTop = '15px';
+    const modalContent = document.querySelector('.payment-modal');
+    // Reemplazar contenido del modal temporalmente
+    modalContent.innerHTML = `<div style="text-align:center; padding:1rem;">Redirigiendo a PayPal seguro...<br>
+      <button class="secondary-btn" id="backFromPaypalFrame" style="margin:1rem;">Volver</button></div>`;
+    modalContent.appendChild(iframe);
+    document.getElementById('backFromPaypalFrame').addEventListener('click', ()=>{
+      modal.classList.add('hidden');
+      // restaurar modal para próximos usos (se recargará)
+      setTimeout(()=> location.reload(), 100); // manera simple
     });
   });
-  
-  document.getElementById('answerCallBtn').addEventListener('click', async ()=>{
-    if (!currentCallId) return;
-    peerConnection = new RTCPeerConnection(servers);
-    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-    document.getElementById('adminRemoteVideo').srcObject = localStream; // mostrar local?
-    const callOffer = await (await get(window.firebaseRef(db, `calls/${currentCallId}/offer`))).val();
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(callOffer));
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(answer);
-    await window.firebaseSet(window.firebaseRef(db, `calls/${currentCallId}/answer`), {
-      type: answer.type,
-      sdp: answer.sdp
-    });
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        window.firebasePush(window.firebaseRef(db, `calls/${currentCallId}/answerCandidates`), event.candidate.toJSON());
-      }
-    };
-    peerConnection.ontrack = (event) => {
-      document.getElementById('adminRemoteVideo').srcObject = event.streams[0];
-    };
-  });
 
-  // Admin password
+  // ---- Admin ----
   const correctPass = 'Alex27Junio';
-  document.getElementById('adminStarBtn').addEventListener('click', ()=>{
+  document.getElementById('adminStarBtn').addEventListener('click', ()=> {
     showView(adminPanel);
   });
   document.getElementById('adminLoginBtn').addEventListener('click', ()=>{
     if(document.getElementById('adminPassInput').value === correctPass) {
       document.getElementById('adminLoginSection').classList.add('hidden');
       document.getElementById('adminContent').classList.remove('hidden');
-      loadAdminLogs();
+      loadAdminPlansList();
     } else alert('Contraseña incorrecta');
   });
-  function loadAdminLogs() {
-    window.firebaseOnValue(logsRef, (snap) => {
-      const logsDiv = document.getElementById('callLogsList');
-      logsDiv.innerHTML = '';
-      snap.forEach(child => {
-        const log = child.val();
-        const date = log.timestamp ? new Date(log.timestamp).toLocaleString() : 'Ahora';
-        logsDiv.innerHTML += `<div class="call-log-entry">📅 ${date} | ${log.status} | 🌍 ${log.country || 'Desconocido'}</div>`;
-      });
-    });
-    window.firebaseOnValue(scheduleRef, (snap) => {
-      const reqDiv = document.getElementById('scheduleRequests');
-      reqDiv.innerHTML = '';
-      snap.forEach(child => {
-        const req = child.val();
-        reqDiv.innerHTML += `<div>🗓️ ${req.datetime} - Aceptar / Rechazar (simulado)</div>`;
-      });
-    });
-  }
   document.getElementById('adminLogoutBtn').addEventListener('click', ()=>{
     document.getElementById('adminContent').classList.add('hidden');
     document.getElementById('adminLoginSection').classList.remove('hidden');
     showView(homeView);
   });
 
-  // Calendar scheduling
-  document.getElementById('scheduleCallBtn').addEventListener('click', ()=>{
-    const dt = document.getElementById('callDateTime').value;
-    if(!dt) return;
-    window.firebasePush(scheduleRef, { datetime: dt, status: 'pending' });
-    alert('Solicitud enviada. El administrador la revisará.');
+  function loadAdminPlansList() {
+    const listDiv = document.getElementById('adminPlansList');
+    window.firebaseOnValue(plansRef, (snapshot) => {
+      listDiv.innerHTML = '';
+      if (!snapshot.exists()) { listDiv.innerHTML = '<p>No hay planes.</p>'; return; }
+      const plans = snapshot.val();
+      Object.entries(plans).forEach(([id, plan]) => {
+        const item = document.createElement('div');
+        item.style.background = '#1a2a3f'; item.style.padding = '10px 15px'; item.style.borderRadius = '20px'; item.style.marginBottom = '8px';
+        item.innerHTML = `<strong>${plan.title}</strong> - ${plan.price} 
+          <button class="secondary-btn" data-delid="${id}" style="margin-left:15px; padding:4px 12px;">🗑️ Eliminar</button>`;
+        listDiv.appendChild(item);
+      });
+      document.querySelectorAll('[data-delid]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const id = btn.dataset.delid;
+          window.firebaseRemove(window.firebaseRef(db, `plans/${id}`));
+        });
+      });
+    });
+  }
+
+  document.getElementById('addPlanBtn').addEventListener('click', ()=>{
+    const title = document.getElementById('newPlanTitle').value.trim();
+    const desc = document.getElementById('newPlanDesc').value.trim();
+    const price = document.getElementById('newPlanPrice').value.trim();
+    const link = document.getElementById('newPlanLink').value.trim();
+    if(!title || !price) { alert('Título y precio obligatorios'); return; }
+    const newPlanRef = window.firebasePush(plansRef);
+    window.firebaseSet(newPlanRef, {
+      title, desc, price, paymentLink: link || 'https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE',
+      createdAt: window.firebaseServerTimestamp()
+    });
+    document.getElementById('newPlanTitle').value = '';
+    document.getElementById('newPlanDesc').value = '';
+    document.getElementById('newPlanPrice').value = '';
+    alert('Plan subido');
   });
 
-  // Simulación país para logs
-  fetch('https://ipapi.co/json/').then(r=>r.json()).then(d=> window.userCountry = d.country_name);
-  
-  // Inicialización
+  // Inicializar
   updateUITexts();
-  console.log('WR Hacks — WebRTC + Firebase listo');
+  loadPlansToUI();
 </script>
 </body>
 </html>
