@@ -1,476 +1,498 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>WR Hacks</title>
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, update, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WR Hacks</title>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyD13N4-9MjTrmlPwGP7mves0Exje4v2ACw",
-      authDomain: "kahoot-8529e.firebaseapp.com",
-      databaseURL: "https://kahoot-8529e-default-rtdb.firebaseio.com",
-      projectId: "kahoot-8529e",
-      storageBucket: "kahoot-8529e.firebasestorage.app",
-      messagingSenderId: "313414356056",
-      appId: "1:313414356056:web:4aab4587f7df9393008e2d",
-      measurementId: "G-8T4CPC1BQ3"
-    };
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue, set, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+  const cfg = {
+    apiKey:"AIzaSyD13N4-9MjTrmlPwGP7mves0Exje4v2ACw",
+    authDomain:"kahoot-8529e.firebaseapp.com",
+    databaseURL:"https://kahoot-8529e-default-rtdb.firebaseio.com",
+    projectId:"kahoot-8529e",
+    storageBucket:"kahoot-8529e.firebasestorage.app",
+    messagingSenderId:"313414356056",
+    appId:"1:313414356056:web:4aab4587f7df9393008e2d",
+    measurementId:"G-8T4CPC1BQ3"
+  };
+  const app = initializeApp(cfg);
+  const db  = getDatabase(app);
+  window._db=db; window._ref=ref; window._push=push;
+  window._onValue=onValue; window._set=set; window._remove=remove;
+  document.dispatchEvent(new Event('fbReady'));
+</script>
 
-    const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
-    window.db = database;
-    window.firebaseRef = ref;
-    window.firebaseSet = set;
-    window.firebasePush = push;
-    window.firebaseOnValue = onValue;
-    window.firebaseUpdate = update;
-    window.firebaseRemove = remove;
-    window.firebaseServerTimestamp = serverTimestamp;
-  </script>
-  <style>
-    * { box-sizing: border-box; margin: 0; font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
-    body {
-      background: #0c111d;
-      color: #eef2fb;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1rem;
-    }
-    #app {
-      max-width: 1000px;
-      width: 100%;
-      background: #121b28;
-      border-radius: 2rem;
-      padding: 2rem 1.8rem;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-      border: 1px solid #2e405b;
-    }
-    h1 {
-      font-size: 2.8rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      background: linear-gradient(135deg, #aad0ff, #7aa9ff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 0.5rem;
-      text-align: center;
-    }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-    }
-    .lang-switch {
-      display: flex;
-      gap: 0.5rem;
-    }
-    .lang-btn {
-      background: #1f2a3c;
-      border: 1px solid #3a4a62;
-      color: #ccddf8;
-      padding: 0.4rem 1rem;
-      border-radius: 30px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-    .lang-btn.active {
-      background: #2a6eb0;
-      border-color: #7ab7ef;
-      color: white;
-    }
-    .star-btn {
-      background: #1e2a3a;
-      border: 1px solid #facc15;
-      color: #facc15;
-      font-size: 2rem;
-      line-height: 1;
-      width: 50px;
-      height: 50px;
-      border-radius: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 0 12px #facc1540;
-      transition: 0.2s;
-    }
-    .star-btn:hover { background: #2e405b; }
-    
-    .main-buttons {
-      display: flex;
-      justify-content: center;
-      margin: 2.5rem 0 1.5rem;
-    }
-    .primary-btn {
-      background: #1e3f66;
-      border: none;
-      padding: 1.3rem 3rem;
-      border-radius: 60px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: white;
-      box-shadow: 0 6px 0 #0e1a28;
-      cursor: pointer;
-      transition: 0.1s ease;
-      border: 1px solid #3d7ab3;
-      min-width: 260px;
-    }
-    .primary-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #0e1a28; }
-    .secondary-btn {
-      background: #26374d;
-      border: 1px solid #5f7a9a;
-      padding: 0.8rem 1.8rem;
-      border-radius: 40px;
-      color: white;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .card {
-      background: #0f1a28;
-      border-radius: 28px;
-      padding: 2rem;
-      margin: 1.5rem 0;
-      border: 1px solid #2e4a6a;
-    }
-    .plan-item {
-      background: #142433;
-      border-radius: 24px;
-      padding: 1.5rem;
-      margin-bottom: 1.2rem;
-      border-left: 6px solid #3f8cff;
-    }
-    .plan-title { font-size: 1.8rem; font-weight: 700; }
-    .plan-price { font-size: 2rem; font-weight: 800; color: #b7e4ff; margin: 0.3rem 0; }
-    .buy-plan-btn {
-      background: #2a5f9e;
-      border: none;
-      padding: 0.9rem 2rem;
-      border-radius: 50px;
-      color: white;
-      font-weight: bold;
-      margin-top: 1rem;
-      cursor: pointer;
-    }
-    .back-link {
-      margin-top: 1.5rem;
-      color: #8db5e0;
-      cursor: pointer;
-      font-weight: 500;
-    }
-    /* Modal de pago */
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.75);
-      display: flex; align-items: center; justify-content: center;
-      z-index: 1000;
-    }
-    .payment-modal {
-      background: #1a2637;
-      width: 460px;
-      max-width: 94%;
-      border-radius: 36px;
-      padding: 1.8rem;
-      box-shadow: 0 30px 50px #00000055;
-      border: 1px solid #4b6f92;
-    }
-    .payment-header {
-      display: flex; justify-content: space-between;
-      font-weight: 600; margin-bottom: 1.2rem;
-    }
-    .payment-field {
-      background: #0f1927;
-      border: 1px solid #395d7e;
-      border-radius: 20px;
-      padding: 14px 18px;
-      margin-bottom: 14px;
-      color: white;
-      width: 100%;
-      font-size: 1rem;
-    }
-    .payment-row { display: flex; gap: 12px; }
-    .pay-btn {
-      background: #1e88e5;
-      width: 100%; border: none; border-radius: 40px;
-      padding: 16px; font-size: 1.3rem; font-weight: bold;
-      color: white; margin: 15px 0 10px; cursor: pointer;
-    }
-    .hidden { display: none !important; }
-    input, textarea { outline: none; }
-    .admin-section {
-      background: #0e1a26; border-radius: 24px; padding: 1.5rem; margin-top: 1.5rem;
-    }
-  </style>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#040810;--s1:#0a1520;--s2:#0e1c2a;
+  --cyan:#00f5ff;--pink:#ff006e;--green:#39ff14;
+  --text:#d0e8f8;--muted:#3a6080;
+  --border:rgba(0,245,255,0.12);
+  --gcyan:0 0 24px rgba(0,245,255,0.45);
+  --gpink:0 0 24px rgba(255,0,110,0.45);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,245,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,.025) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px);pointer-events:none;z-index:0;}
+
+/* ── HEADER ── */
+#hdr{position:fixed;top:0;left:0;right:0;z-index:200;height:60px;background:rgba(4,8,16,.97);border-bottom:1px solid var(--border);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;}
+.logo{font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:900;letter-spacing:5px;color:var(--cyan);text-shadow:var(--gcyan);cursor:pointer;user-select:none;}
+.logo em{color:var(--pink);font-style:normal;}
+.hdr-r{display:flex;align-items:center;gap:.75rem;}
+#lang-btn{background:transparent;border:1px solid var(--border);color:var(--cyan);font-family:'Orbitron',monospace;font-size:.6rem;padding:5px 11px;cursor:pointer;letter-spacing:2px;transition:all .3s;}
+#lang-btn:hover{background:rgba(0,245,255,.08);box-shadow:var(--gcyan);}
+#star-btn{width:34px;height:34px;background:transparent;border:1px solid var(--pink);color:var(--pink);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+#star-btn:hover{background:rgba(255,0,110,.12);box-shadow:var(--gpink);}
+
+/* ── APP ── */
+#app{position:relative;z-index:1;padding-top:60px;min-height:100vh;}
+
+/* ── HOME ── */
+#pg-home{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 60px);text-align:center;padding:2rem;}
+.htag{font-family:'Share Tech Mono',monospace;font-size:.72rem;letter-spacing:6px;color:var(--green);margin-bottom:1rem;animation:blink 2s infinite;}
+.htitle{font-family:'Orbitron',monospace;font-size:clamp(2.8rem,10vw,6.5rem);font-weight:900;color:var(--cyan);text-shadow:0 0 40px rgba(0,245,255,.55),0 0 90px rgba(0,245,255,.18);letter-spacing:8px;animation:glitch 5s infinite;}
+.hsub{font-family:'Share Tech Mono',monospace;font-size:.85rem;color:var(--muted);letter-spacing:4px;margin:1rem 0 2.5rem;}
+.btnrow{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center;}
+.btn{font-family:'Orbitron',monospace;font-size:.75rem;letter-spacing:3px;padding:14px 36px;cursor:pointer;border:none;text-transform:uppercase;transition:all .3s;clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%);}
+.btn-c{background:var(--cyan);color:var(--bg);box-shadow:0 0 28px rgba(0,245,255,.5);}
+.btn-c:hover{background:#fff;box-shadow:0 0 55px rgba(0,245,255,.9);transform:translateY(-2px);}
+
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes glitch{0%,93%,100%{text-shadow:0 0 40px rgba(0,245,255,.55),0 0 90px rgba(0,245,255,.18);transform:none;}94%{text-shadow:-3px 0 var(--pink),3px 0 var(--green);transform:translate(-2px,1px);}95%{text-shadow:3px 0 var(--pink),-3px 0 var(--green);transform:translate(2px,-1px);}96%{text-shadow:none;transform:none;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── PAGES ── */
+.page{display:none;padding:2rem;max-width:900px;margin:0 auto;z-index:1;position:relative;min-height:calc(100vh - 60px);}
+.page.on{display:block;animation:fadeUp .4s ease;}
+.urlbar{font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--muted);background:var(--s1);border:1px solid var(--border);padding:5px 12px;display:inline-block;margin-bottom:1.5rem;}
+.phdr{display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
+.back{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:.75rem;padding:7px 14px;cursor:pointer;transition:all .3s;}
+.back:hover{color:var(--cyan);border-color:var(--cyan);}
+.ptitle{font-family:'Orbitron',monospace;font-size:1.3rem;font-weight:700;color:var(--cyan);letter-spacing:4px;}
+.slabel{font-family:'Orbitron',monospace;font-size:.6rem;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem;}
+.slabel::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── PLANS GRID (public) ── */
+#plans-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem;margin-top:.5rem;}
+.plan-card{background:var(--s1);border:1px solid rgba(0,245,255,.18);position:relative;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s,box-shadow .25s;}
+.plan-card:hover{transform:translateY(-4px);box-shadow:var(--gcyan);}
+.plan-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pink),var(--cyan),var(--green));}
+.plan-top{padding:1.6rem 1.4rem 1rem;text-align:center;border-bottom:1px solid var(--border);}
+.plan-title{font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--cyan);letter-spacing:3px;margin-bottom:.5rem;text-shadow:var(--gcyan);}
+.plan-price{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--pink);text-shadow:var(--gpink);}
+.plan-desc{padding:1rem 1.4rem;font-size:.85rem;color:var(--muted);line-height:1.55;flex:1;font-family:'Rajdhani',sans-serif;}
+.plan-buy{display:block;width:100%;padding:14px;font-family:'Orbitron',monospace;font-size:.72rem;font-weight:700;letter-spacing:3px;background:linear-gradient(135deg,var(--pink),#ff4400);color:#fff;border:none;cursor:pointer;transition:all .3s;box-shadow:0 0 20px rgba(255,0,110,.35);}
+.plan-buy:hover{box-shadow:0 0 50px rgba(255,0,110,.75);transform:translateY(-1px);}
+.no-plans{text-align:center;padding:3rem;font-family:'Share Tech Mono',monospace;color:var(--muted);font-size:.8rem;letter-spacing:2px;}
+
+/* ── PAYMENT POPUP ── */
+#pay-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+#pay-ov.on{display:flex;animation:fadeUp .3s ease;}
+#pay-box{background:var(--s1);border:1px solid rgba(0,245,255,.25);width:min(480px,92vw);max-height:90vh;overflow-y:auto;position:relative;box-shadow:var(--gcyan),0 0 80px rgba(0,245,255,.1);}
+#pay-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pink),var(--cyan),var(--green));}
+.pay-hdr{display:flex;justify-content:space-between;align-items:center;padding:.9rem 1.2rem;border-bottom:1px solid var(--border);}
+.pay-hdr-title{font-family:'Orbitron',monospace;font-size:.72rem;color:var(--cyan);letter-spacing:3px;}
+.pay-close{background:transparent;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .3s;}
+.pay-close:hover{border-color:var(--pink);color:var(--pink);}
+.pay-body{padding:1.5rem 1.2rem;}
+.pay-plan-name{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:var(--cyan);letter-spacing:3px;margin-bottom:.3rem;}
+.pay-plan-price{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--pink);text-shadow:var(--gpink);margin-bottom:1rem;}
+.pay-plan-desc{font-size:.85rem;color:var(--muted);line-height:1.55;margin-bottom:1.5rem;padding-bottom:1.2rem;border-bottom:1px solid var(--border);}
+#paypal-btn-container{min-height:48px;}
+.pay-or{text-align:center;font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:3px;margin:1rem 0;}
+.pay-direct-btn{display:block;width:100%;padding:14px;text-align:center;font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;letter-spacing:3px;background:linear-gradient(135deg,#0070ba,#003087);color:#fff;border:none;cursor:pointer;transition:all .3s;text-decoration:none;}
+.pay-direct-btn:hover{box-shadow:0 0 30px rgba(0,112,186,.6);transform:translateY(-1px);}
+.pay-note{font-family:'Share Tech Mono',monospace;font-size:.62rem;color:var(--muted);text-align:center;margin-top:.8rem;letter-spacing:1px;line-height:1.5;}
+
+/* ── PASSWORD MODAL ── */
+#pwd-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:900;align-items:center;justify-content:center;}
+#pwd-ov.on{display:flex;}
+.pwd-box{background:var(--s1);border:1px solid var(--pink);padding:2rem;min-width:300px;text-align:center;box-shadow:var(--gpink);}
+.pwd-box h3{font-family:'Orbitron',monospace;font-size:.85rem;letter-spacing:3px;color:var(--pink);margin-bottom:1.2rem;}
+.pwd-in{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:1rem;padding:11px;text-align:center;letter-spacing:4px;outline:none;margin-bottom:.8rem;}
+.pwd-in:focus{border-color:var(--cyan);}
+.pwd-err{font-family:'Share Tech Mono',monospace;font-size:.72rem;color:var(--pink);margin-bottom:.8rem;display:none;}
+.pwd-btns{display:flex;gap:.5rem;}
+
+/* ── ADMIN OVERLAY ── */
+#adm-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:800;overflow-y:auto;}
+#adm-ov.on{display:flex;flex-direction:column;align-items:center;}
+#adm-panel{background:var(--s1);border:1px solid var(--border);width:100%;max-width:760px;margin:auto;padding:2rem;}
+.admhdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
+.admtitle{font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--pink);letter-spacing:4px;}
+.xbtn{background:transparent;border:1px solid var(--pink);color:var(--pink);width:32px;height:32px;cursor:pointer;font-size:.9rem;transition:all .3s;}
+.xbtn:hover{background:rgba(255,0,110,.12);}
+
+/* ── PLAN FORM (admin) ── */
+.plan-form{background:var(--s2);border:1px solid var(--border);padding:1.4rem;margin-bottom:1.5rem;}
+.fg{margin-bottom:.9rem;}
+.fg label{display:block;font-family:'Share Tech Mono',monospace;font-size:.68rem;color:var(--muted);letter-spacing:2px;margin-bottom:5px;}
+.fg input,.fg textarea{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.83rem;padding:9px 13px;outline:none;transition:border-color .3s;}
+.fg input:focus,.fg textarea:focus{border-color:var(--cyan);}
+.fg textarea{resize:vertical;min-height:80px;}
+.abtn{font-family:'Orbitron',monospace;font-size:.72rem;letter-spacing:2px;padding:11px 24px;background:var(--cyan);color:var(--bg);border:none;cursor:pointer;font-weight:700;transition:all .3s;}
+.abtn:hover{box-shadow:var(--gcyan);transform:translateY(-1px);}
+
+/* ── ADMIN PLANS LIST ── */
+#admin-plans-list{margin-top:1.2rem;}
+.aplan-row{background:var(--s2);border:1px solid var(--border);padding:1rem 1.2rem;margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+.aplan-info{flex:1;min-width:0;}
+.aplan-title{font-family:'Orbitron',monospace;font-size:.75rem;color:var(--cyan);letter-spacing:2px;margin-bottom:.2rem;}
+.aplan-meta{font-family:'Share Tech Mono',monospace;font-size:.7rem;color:var(--muted);}
+.del-btn{font-family:'Orbitron',monospace;font-size:.55rem;padding:6px 12px;background:transparent;border:1px solid var(--pink);color:var(--pink);cursor:pointer;letter-spacing:1px;transition:all .3s;white-space:nowrap;}
+.del-btn:hover{background:rgba(255,0,110,.15);}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s1);border:1px solid var(--green);color:var(--green);font-family:'Share Tech Mono',monospace;font-size:.78rem;padding:10px 22px;z-index:9999;transition:transform .4s ease;letter-spacing:2px;pointer-events:none;}
+#toast.on{transform:translateX(-50%) translateY(0);}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--muted);}
+::-webkit-scrollbar-thumb:hover{background:var(--cyan);}
+</style>
+
 </head>
 <body>
+
+<!-- HEADER -->
+
+<header id="hdr">
+  <div class="logo" onclick="goHome()">WR<em>H</em>ACKS</div>
+  <div class="hdr-r">
+    <button id="lang-btn" onclick="toggleLang()">EN</button>
+    <button id="star-btn" onclick="openAdminPwd()" title="Admin">✦</button>
+  </div>
+</header>
+
 <div id="app">
-  <div class="top-bar">
-    <div class="lang-switch">
-      <button class="lang-btn active" data-lang="es">🇪🇸 ES</button>
-      <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
-    </div>
-    <div class="star-btn" id="adminStarBtn" title="Admin">✦</div>
-  </div>
-  <h1>WR Hacks</h1>
 
-  <!-- VISTA PRINCIPAL (home) -->
-  <div id="homeView">
-    <div class="main-buttons">
-      <button class="primary-btn" id="premiumBtn">🔒 Ver planes premium</button>
-    </div>
-    <p style="text-align:center; opacity:0.7; margin-top:2.5rem;" id="homeFooter">Herramientas de seguridad · Hacks exclusivos · Soporte prioritario</p>
-  </div>
+  <!-- HOME -->
 
-  <!-- VISTA PREMIUM -->
-  <div id="premiumView" class="hidden">
-    <h2 style="margin-bottom: 0.5rem;">⚡ Planes WR Hacks</h2>
-    <div id="plansListContainer" class="card">
-      <!-- Se llena dinámicamente desde Firebase -->
-      <p>Cargando planes...</p>
-    </div>
-    <div class="back-link" id="backFromPremium">← Volver al inicio</div>
-  </div>
-
-  <!-- PANEL ADMIN (contraseña) -->
-  <div id="adminPanel" class="hidden">
-    <h3>🔐 Panel de administración</h3>
-    <div id="adminLoginSection">
-      <input type="password" id="adminPassInput" placeholder="Contraseña" class="payment-field" style="width:auto;" />
-      <button class="secondary-btn" id="adminLoginBtn">Acceder</button>
-    </div>
-    <div id="adminContent" class="hidden">
-      <h4>➕ Añadir nuevo plan</h4>
-      <div class="admin-section">
-        <input type="text" id="newPlanTitle" placeholder="Título del plan" class="payment-field" />
-        <textarea id="newPlanDesc" placeholder="Descripción (beneficios, separados por comas)" class="payment-field" rows="3"></textarea>
-        <input type="text" id="newPlanPrice" placeholder="Precio (ej. 4,99 €)" class="payment-field" />
-        <input type="text" id="newPlanLink" placeholder="Enlace de pago (PayPal u otro)" class="payment-field" value="https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE" />
-        <button class="secondary-btn" id="addPlanBtn">📤 Subir plan</button>
-      </div>
-      <h4 style="margin-top:30px;">📋 Planes actuales (gestionar)</h4>
-      <div id="adminPlansList"></div>
-      <button class="secondary-btn" id="adminLogoutBtn" style="margin-top:20px;">Cerrar panel</button>
+  <div id="pg-home" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 60px);text-align:center;padding:2rem;">
+    <div class="htag" data-i="hero_tag">// SISTEMA ACTIVO — ACCESO AUTORIZADO</div>
+    <h1 class="htitle">WR HACKS</h1>
+    <p class="hsub" data-i="hero_sub">TOOLS · SECURITY · EXPLOITS</p>
+    <div class="btnrow">
+      <button class="btn btn-c" onclick="goPlans()" data-i="btn_plans">VER PLANES PREMIUM</button>
     </div>
   </div>
 
-  <!-- MODAL DE PAGO SIMULADO -->
-  <div id="paymentModal" class="modal-overlay hidden">
-    <div class="payment-modal">
-      <div class="payment-header">
-        <span>💳 Pago seguro</span>
-        <span style="cursor:pointer;" id="closePaymentModal">✕</span>
-      </div>
-      <div id="modalPlanDetails" style="margin-bottom:16px;">
-        <div style="font-size:1.4rem; font-weight:700;">Plan Elite</div>
-        <div style="font-size:1.8rem; color:#9bc5ff;" id="modalPlanPrice">4,99 €</div>
-      </div>
-      <div><input type="text" placeholder="Número de tarjeta" value="1234 1234 1234 1234" class="payment-field" /></div>
-      <div class="payment-row">
-        <input type="text" placeholder="MM/YY" value="12/28" class="payment-field" />
-        <input type="text" placeholder="CVV" value="123" class="payment-field" />
-      </div>
-      <div><input type="text" placeholder="Nombre en la tarjeta" value="Alex Hacker" class="payment-field" /></div>
-      <label style="display:flex; align-items:center; gap:8px; margin:12px 0;">
-        <input type="checkbox" checked /> Recordar esta tarjeta
-      </label>
-      <button class="pay-btn" id="simulatePaymentBtn">Pagar <span id="modalPayAmount">4,99 €</span></button>
-      <p style="font-size:0.7rem; opacity:0.6; text-align:center;">Al proceder aceptas los Términos de WR Hacks. Conexión segura.</p>
+  <!-- PLANS PAGE -->
+
+  <div id="pg-plans" class="page">
+    <div class="urlbar">https://nombredelaweb.vercel.app/premium</div>
+    <div class="phdr">
+      <button class="back" onclick="goHome()" data-i="back">← VOLVER</button>
+      <div class="ptitle" data-i="plans_title">PLANES PREMIUM</div>
+    </div>
+    <div class="slabel" data-i="available_plans">PLANES DISPONIBLES</div>
+    <div id="plans-grid">
+      <div class="no-plans" data-i="loading_plans">CARGANDO PLANES...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PAYMENT POPUP -->
+
+<div id="pay-ov">
+  <div id="pay-box">
+    <div class="pay-hdr">
+      <span class="pay-hdr-title" data-i="checkout_lbl">CHECKOUT</span>
+      <button class="pay-close" onclick="closePayment()">✕</button>
+    </div>
+    <div class="pay-body">
+      <div class="pay-plan-name" id="pop-plan-name"></div>
+      <div class="pay-plan-price" id="pop-plan-price"></div>
+      <div class="pay-plan-desc" id="pop-plan-desc"></div>
+      <div id="paypal-btn-container"></div>
+      <div class="pay-or" data-i="or_direct">— O PAGA DIRECTAMENTE —</div>
+      <a id="pay-direct-link" href="#" target="_blank" class="pay-direct-btn" data-i="pay_paypal_btn">
+        💳 PAGAR CON PAYPAL
+      </a>
+      <div class="pay-note" data-i="pay_note">Se abrirá en una nueva pestaña si tu navegador bloquea ventanas emergentes.</div>
     </div>
   </div>
 </div>
 
-<script type="module">
-  // ---- i18n ----
-  const i18n = {
-    es: { premium: 'Ver planes premium', back: '← Volver al inicio', addPlan: 'Subir plan', buy: 'Comprar' },
-    en: { premium: 'View premium plans', back: '← Back to home', addPlan: 'Upload plan', buy: 'Buy' }
-  };
-  let currentLang = 'es';
-  function t(key) { return i18n[currentLang]?.[key] || key; }
-  function updateUITexts() {
-    document.getElementById('premiumBtn').innerText = currentLang === 'es' ? '🔒 Ver planes premium' : '🔒 View premium plans';
-    document.getElementById('backFromPremium').innerText = currentLang === 'es' ? '← Volver al inicio' : '← Back to home';
-  }
-  document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', (e) => {
-    currentLang = btn.dataset.lang;
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    updateUITexts();
-    loadPlansToUI(); // recargar con textos actualizados
-  }));
+<!-- PASSWORD MODAL -->
 
-  // ---- Vistas ----
-  const homeView = document.getElementById('homeView');
-  const premiumView = document.getElementById('premiumView');
-  const adminPanel = document.getElementById('adminPanel');
-  function showView(view) {
-    homeView.classList.add('hidden');
-    premiumView.classList.add('hidden');
-    adminPanel.classList.add('hidden');
-    view.classList.remove('hidden');
-    if (view === premiumView) {
-      history.pushState({view:'premium'}, '', '/premium');
-      loadPlansToUI();
-    } else if (view === adminPanel) {
-      history.pushState({view:'admin'}, '', '/admin');
-    } else {
-      history.pushState({view:'home'}, '', '/');
+<div id="pwd-ov">
+  <div class="pwd-box">
+    <h3>✦ ACCESO ADMIN</h3>
+    <input class="pwd-in" type="password" id="pwd-in" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPwd()">
+    <div class="pwd-err" id="pwd-err">⚠ CONTRASEÑA INCORRECTA</div>
+    <div class="pwd-btns">
+      <button class="abtn" onclick="checkPwd()" style="flex:1" data-i="access_btn">ACCEDER</button>
+      <button class="abtn" onclick="closePwdModal()" style="flex:1;background:var(--muted);" data-i="cancel_btn">CANCELAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN OVERLAY -->
+
+<div id="adm-ov">
+  <div id="adm-panel">
+    <div class="admhdr">
+      <div class="admtitle">✦ GESTOR DE PLANES</div>
+      <button class="xbtn" onclick="closeAdmin()">✕</button>
+    </div>
+
+```
+<div class="slabel" data-i="new_plan_lbl">CREAR NUEVO PLAN</div>
+<div class="plan-form">
+  <div class="fg">
+    <label data-i="plan_title_lbl">TÍTULO DEL PLAN</label>
+    <input type="text" id="new-title" placeholder="Ej: Security Pro">
+  </div>
+  <div class="fg">
+    <label data-i="plan_price_lbl">PRECIO (texto libre)</label>
+    <input type="text" id="new-price" placeholder="Ej: €4,99/mes">
+  </div>
+  <div class="fg">
+    <label data-i="plan_link_lbl">ENLACE DE PAGO (PayPal u otro)</label>
+    <input type="url" id="new-link" placeholder="https://www.paypal.com/ncp/payment/XXXXXX">
+  </div>
+  <div class="fg">
+    <label data-i="plan_desc_lbl">DESCRIPCIÓN DEL PLAN</label>
+    <textarea id="new-desc" placeholder="Describe lo que incluye este plan..."></textarea>
+  </div>
+  <button class="abtn" onclick="savePlan()" data-i="save_plan_btn">+ GUARDAR PLAN</button>
+</div>
+
+<div class="slabel" data-i="my_plans_lbl">MIS PLANES</div>
+<div id="admin-plans-list">
+  <div class="no-plans" data-i="loading_plans">CARGANDO...</div>
+</div>
+```
+
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ── I18N ───────────────────────────────────────────── */
+const T={
+  es:{
+    hero_tag:"// SISTEMA ACTIVO — ACCESO AUTORIZADO",
+    hero_sub:"TOOLS · SECURITY · EXPLOITS",
+    btn_plans:"VER PLANES PREMIUM",
+    back:"← VOLVER",
+    plans_title:"PLANES PREMIUM",
+    available_plans:"PLANES DISPONIBLES",
+    loading_plans:"CARGANDO PLANES...",
+    checkout_lbl:"CHECKOUT",
+    or_direct:"— O PAGA DIRECTAMENTE —",
+    pay_paypal_btn:"💳 PAGAR CON PAYPAL",
+    pay_note:"Se abrirá en una nueva pestaña si tu navegador bloquea ventanas emergentes.",
+    access_btn:"ACCEDER",
+    cancel_btn:"CANCELAR",
+    new_plan_lbl:"CREAR NUEVO PLAN",
+    plan_title_lbl:"TÍTULO DEL PLAN",
+    plan_price_lbl:"PRECIO (texto libre)",
+    plan_link_lbl:"ENLACE DE PAGO (PayPal u otro)",
+    plan_desc_lbl:"DESCRIPCIÓN DEL PLAN",
+    save_plan_btn:"+ GUARDAR PLAN",
+    my_plans_lbl:"MIS PLANES",
+    buy_btn:"⚡ COMPRAR AHORA",
+    no_plans_msg:"AÚN NO HAY PLANES. CREA UNO DESDE EL PANEL ADMIN.",
+    delete_confirm:"¿Eliminar este plan?"
+  },
+  en:{
+    hero_tag:"// SYSTEM ACTIVE — ACCESS AUTHORIZED",
+    hero_sub:"TOOLS · SECURITY · EXPLOITS",
+    btn_plans:"VIEW PREMIUM PLANS",
+    back:"← BACK",
+    plans_title:"PREMIUM PLANS",
+    available_plans:"AVAILABLE PLANS",
+    loading_plans:"LOADING PLANS...",
+    checkout_lbl:"CHECKOUT",
+    or_direct:"— OR PAY DIRECTLY —",
+    pay_paypal_btn:"💳 PAY WITH PAYPAL",
+    pay_note:"Will open in a new tab if your browser blocks popups.",
+    access_btn:"ACCESS",
+    cancel_btn:"CANCEL",
+    new_plan_lbl:"CREATE NEW PLAN",
+    plan_title_lbl:"PLAN TITLE",
+    plan_price_lbl:"PRICE (free text)",
+    plan_link_lbl:"PAYMENT LINK (PayPal or other)",
+    plan_desc_lbl:"PLAN DESCRIPTION",
+    save_plan_btn:"+ SAVE PLAN",
+    my_plans_lbl:"MY PLANS",
+    buy_btn:"⚡ BUY NOW",
+    no_plans_msg:"NO PLANS YET. CREATE ONE FROM THE ADMIN PANEL.",
+    delete_confirm:"Delete this plan?"
+  }
+};
+let lang='es';
+function toggleLang(){lang=lang==='es'?'en':'es';document.getElementById('lang-btn').textContent=lang==='es'?'EN':'ES';applyLang();renderPublicPlans();}
+function applyLang(){document.querySelectorAll('[data-i]').forEach(el=>{const k=el.getAttribute('data-i');if(T[lang][k])el.textContent=T[lang][k];});}
+
+/* ── NAV ───────────────────────────────────────────── */
+function goHome(){
+  document.getElementById('pg-home').style.display='';
+  document.getElementById('pg-plans').classList.remove('on');
+  document.getElementById('pg-plans').style.display='none';
+  history.pushState({},'','#');
+}
+function goPlans(){
+  document.getElementById('pg-home').style.display='none';
+  document.getElementById('pg-plans').style.display='';
+  document.getElementById('pg-plans').classList.add('on');
+  history.pushState({},'','#premium');
+  renderPublicPlans();
+}
+
+/* ── PLANS (Firebase) ──────────────────────────────── */
+let plansCache={};
+
+function listenPlans(cb){
+  if(!window._db)return;
+  window._onValue(window._ref(window._db,'plans'),(snap)=>{
+    plansCache=snap.val()||{};
+    cb(plansCache);
+  });
+}
+
+function renderPublicPlans(){
+  const grid=document.getElementById('plans-grid');
+  const entries=Object.entries(plansCache);
+  if(!entries.length){
+    grid.innerHTML=`<div class="no-plans">${T[lang].no_plans_msg}</div>`;
+    return;
+  }
+  grid.innerHTML=entries.map(([id,p])=>`
+    <div class="plan-card">
+      <div class="plan-top">
+        <div class="plan-title">${esc(p.title)}</div>
+        <div class="plan-price">${esc(p.price)}</div>
+      </div>
+      <div class="plan-desc">${esc(p.desc).replace(/\n/g,'<br>')}</div>
+      <button class="plan-buy" onclick="openPayment('${id}')">${T[lang].buy_btn}</button>
+    </div>
+  `).join('');
+}
+
+function renderAdminPlans(){
+  const el=document.getElementById('admin-plans-list');
+  const entries=Object.entries(plansCache);
+  if(!entries.length){el.innerHTML=`<div class="no-plans">${T[lang].no_plans_msg}</div>`;return;}
+  el.innerHTML=entries.map(([id,p])=>`
+    <div class="aplan-row">
+      <div class="aplan-info">
+        <div class="aplan-title">${esc(p.title)} — <span style="color:var(--pink)">${esc(p.price)}</span></div>
+        <div class="aplan-meta">${esc(p.link)}</div>
+      </div>
+      <button class="del-btn" onclick="deletePlan('${id}')">✕ ELIMINAR</button>
+    </div>
+  `).join('');
+}
+
+async function savePlan(){
+  const title=document.getElementById('new-title').value.trim();
+  const price=document.getElementById('new-price').value.trim();
+  const link=document.getElementById('new-link').value.trim();
+  const desc=document.getElementById('new-desc').value.trim();
+  if(!title||!price||!link||!desc){toast('⚠ Rellena todos los campos');return;}
+  if(!window._push){toast('⚠ Firebase no listo');return;}
+  await window._push(window._ref(window._db,'plans'),{title,price,link,desc,createdAt:Date.now()});
+  document.getElementById('new-title').value='';
+  document.getElementById('new-price').value='';
+  document.getElementById('new-link').value='';
+  document.getElementById('new-desc').value='';
+  toast('✓ Plan guardado');
+}
+
+async function deletePlan(id){
+  if(!confirm(T[lang].delete_confirm))return;
+  await window._remove(window._ref(window._db,'plans/'+id));
+  toast('✕ Plan eliminado');
+}
+
+/* ── PAYMENT POPUP ─────────────────────────────────── */
+function openPayment(id){
+  const p=plansCache[id];
+  if(!p)return;
+  document.getElementById('pop-plan-name').textContent=p.title;
+  document.getElementById('pop-plan-price').textContent=p.price;
+  document.getElementById('pop-plan-desc').textContent=p.desc;
+  const link=p.link||'#';
+  document.getElementById('pay-direct-link').href=link;
+  // Try to open PayPal in a popup window centered on screen
+  document.querySelector('#pay-box .pay-or').style.display='';
+  document.querySelector('.pay-direct-btn').style.display='';
+  document.getElementById('paypal-btn-container').innerHTML='';
+  // Attempt popup
+  document.getElementById('pay-direct-link').onclick=function(e){
+    e.preventDefault();
+    const w=700,h=600;
+    const left=(screen.width-w)/2;
+    const top=(screen.height-h)/2;
+    const popup=window.open(link,'paypal_payment',`width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`);
+    if(!popup||popup.closed||typeof popup.closed==='undefined'){
+      // Popup blocked — fallback to new tab
+      window.open(link,'_blank');
     }
-  }
-  document.getElementById('premiumBtn').addEventListener('click', ()=> showView(premiumView));
-  document.getElementById('backFromPremium').addEventListener('click', ()=> showView(homeView));
-  window.addEventListener('popstate', (e) => {
-    if(e.state?.view === 'premium') showView(premiumView);
-    else showView(homeView);
-  });
+  };
+  document.getElementById('pay-ov').classList.add('on');
+  document.body.style.overflow='hidden';
+}
 
-  // ---- Firebase refs ----
-  const db = window.db;
-  const plansRef = window.firebaseRef(db, 'plans');
+function closePayment(){
+  document.getElementById('pay-ov').classList.remove('on');
+  document.body.style.overflow='';
+}
+// Close popup on backdrop click
+document.getElementById('pay-ov').addEventListener('click',function(e){if(e.target===this)closePayment();});
 
-  // ---- Cargar y mostrar planes ----
-  function loadPlansToUI() {
-    const container = document.getElementById('plansListContainer');
-    window.firebaseOnValue(plansRef, (snapshot) => {
-      container.innerHTML = '';
-      if (!snapshot.exists()) {
-        container.innerHTML = '<p>No hay planes disponibles. El administrador los añadirá pronto.</p>';
-        return;
-      }
-      const plans = snapshot.val();
-      Object.entries(plans).forEach(([id, plan]) => {
-        const div = document.createElement('div');
-        div.className = 'plan-item';
-        div.innerHTML = `
-          <div class="plan-title">${plan.title || 'Plan'}</div>
-          <div class="plan-price">${plan.price || 'Consultar'}</div>
-          <div style="margin:10px 0;">${(plan.desc || '').split(',').map(item => `✅ ${item.trim()}`).join('<br>')}</div>
-          <button class="buy-plan-btn" data-planid="${id}" data-title="${plan.title}" data-price="${plan.price}" data-link="${plan.paymentLink}">💳 ${t('buy')} ${plan.price}</button>
-        `;
-        container.appendChild(div);
-      });
-      // Eventos para comprar
-      document.querySelectorAll('.buy-plan-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const title = btn.dataset.title;
-          const price = btn.dataset.price;
-          const link = btn.dataset.link;
-          openPaymentModal(title, price, link);
-        });
-      });
-    });
-  }
+/* ── ADMIN ─────────────────────────────────────────── */
+const PWD='Alex27Junio';
+function openAdminPwd(){document.getElementById('pwd-ov').classList.add('on');document.getElementById('pwd-in').value='';document.getElementById('pwd-err').style.display='none';setTimeout(()=>document.getElementById('pwd-in').focus(),100);}
+function closePwdModal(){document.getElementById('pwd-ov').classList.remove('on');}
+function checkPwd(){if(document.getElementById('pwd-in').value===PWD){closePwdModal();openAdmin();}else{document.getElementById('pwd-err').style.display='block';document.getElementById('pwd-in').value='';}}
+function openAdmin(){document.getElementById('adm-ov').classList.add('on');renderAdminPlans();}
+function closeAdmin(){document.getElementById('adm-ov').classList.remove('on');}
 
-  // ---- Modal de pago simulado ----
-  const modal = document.getElementById('paymentModal');
-  const modalPlanPrice = document.getElementById('modalPlanPrice');
-  const modalPayAmount = document.getElementById('modalPayAmount');
-  let currentPaymentLink = '';
+/* ── TOAST ─────────────────────────────────────────── */
+let toastT;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),3200);}
 
-  function openPaymentModal(title, price, link) {
-    document.getElementById('modalPlanDetails').innerHTML = `<div style="font-size:1.4rem; font-weight:700;">${title}</div>
-    <div style="font-size:1.8rem; color:#9bc5ff;">${price}</div>`;
-    modalPlanPrice.innerText = price;
-    modalPayAmount.innerText = price;
-    currentPaymentLink = link;
-    modal.classList.remove('hidden');
-  }
+/* ── UTIL ──────────────────────────────────────────── */
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML;}
 
-  document.getElementById('closePaymentModal').addEventListener('click', ()=>{
-    modal.classList.add('hidden');
-  });
-  document.getElementById('simulatePaymentBtn').addEventListener('click', ()=>{
-    // Simulación: mostrar éxito y abrir enlace real en iframe oculto o redirigir? 
-    // Según requisito: "se abrirá en la propia página web no se abrirá ni una pestaña"
-    // Mostramos un pequeño iframe con el enlace dentro del modal o una confirmación.
-    alert(`✅ Pago simulado exitoso. Serás redirigido al checkout seguro.\n(Enlace: ${currentPaymentLink})`);
-    // Podemos abrir en un iframe pequeño en el modal
-    const iframe = document.createElement('iframe');
-    iframe.src = currentPaymentLink;
-    iframe.style.width = '100%';
-    iframe.style.height = '400px';
-    iframe.style.borderRadius = '20px';
-    iframe.style.marginTop = '15px';
-    const modalContent = document.querySelector('.payment-modal');
-    // Reemplazar contenido del modal temporalmente
-    modalContent.innerHTML = `<div style="text-align:center; padding:1rem;">Redirigiendo a PayPal seguro...<br>
-      <button class="secondary-btn" id="backFromPaypalFrame" style="margin:1rem;">Volver</button></div>`;
-    modalContent.appendChild(iframe);
-    document.getElementById('backFromPaypalFrame').addEventListener('click', ()=>{
-      modal.classList.add('hidden');
-      // restaurar modal para próximos usos (se recargará)
-      setTimeout(()=> location.reload(), 100); // manera simple
+/* ── INIT ──────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded',()=>{
+  applyLang();
+  document.getElementById('pg-plans').style.display='none';
+  const h=window.location.hash;
+  if(h==='#premium')goPlans();
+  // Start listening to plans in real time
+  document.addEventListener('fbReady',()=>{
+    listenPlans(()=>{
+      renderPublicPlans();
+      renderAdminPlans();
     });
   });
-
-  // ---- Admin ----
-  const correctPass = 'Alex27Junio';
-  document.getElementById('adminStarBtn').addEventListener('click', ()=> {
-    showView(adminPanel);
-  });
-  document.getElementById('adminLoginBtn').addEventListener('click', ()=>{
-    if(document.getElementById('adminPassInput').value === correctPass) {
-      document.getElementById('adminLoginSection').classList.add('hidden');
-      document.getElementById('adminContent').classList.remove('hidden');
-      loadAdminPlansList();
-    } else alert('Contraseña incorrecta');
-  });
-  document.getElementById('adminLogoutBtn').addEventListener('click', ()=>{
-    document.getElementById('adminContent').classList.add('hidden');
-    document.getElementById('adminLoginSection').classList.remove('hidden');
-    showView(homeView);
-  });
-
-  function loadAdminPlansList() {
-    const listDiv = document.getElementById('adminPlansList');
-    window.firebaseOnValue(plansRef, (snapshot) => {
-      listDiv.innerHTML = '';
-      if (!snapshot.exists()) { listDiv.innerHTML = '<p>No hay planes.</p>'; return; }
-      const plans = snapshot.val();
-      Object.entries(plans).forEach(([id, plan]) => {
-        const item = document.createElement('div');
-        item.style.background = '#1a2a3f'; item.style.padding = '10px 15px'; item.style.borderRadius = '20px'; item.style.marginBottom = '8px';
-        item.innerHTML = `<strong>${plan.title}</strong> - ${plan.price} 
-          <button class="secondary-btn" data-delid="${id}" style="margin-left:15px; padding:4px 12px;">🗑️ Eliminar</button>`;
-        listDiv.appendChild(item);
-      });
-      document.querySelectorAll('[data-delid]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const id = btn.dataset.delid;
-          window.firebaseRemove(window.firebaseRef(db, `plans/${id}`));
-        });
-      });
+  // Also try immediately (if Firebase loaded before DOMContentLoaded)
+  if(window._db){
+    listenPlans(()=>{
+      renderPublicPlans();
+      renderAdminPlans();
     });
   }
-
-  document.getElementById('addPlanBtn').addEventListener('click', ()=>{
-    const title = document.getElementById('newPlanTitle').value.trim();
-    const desc = document.getElementById('newPlanDesc').value.trim();
-    const price = document.getElementById('newPlanPrice').value.trim();
-    const link = document.getElementById('newPlanLink').value.trim();
-    if(!title || !price) { alert('Título y precio obligatorios'); return; }
-    const newPlanRef = window.firebasePush(plansRef);
-    window.firebaseSet(newPlanRef, {
-      title, desc, price, paymentLink: link || 'https://www.paypal.com/ncp/payment/8HWP3ZM5SYDDE',
-      createdAt: window.firebaseServerTimestamp()
-    });
-    document.getElementById('newPlanTitle').value = '';
-    document.getElementById('newPlanDesc').value = '';
-    document.getElementById('newPlanPrice').value = '';
-    alert('Plan subido');
-  });
-
-  // Inicializar
-  updateUITexts();
-  loadPlansToUI();
+});
 </script>
+
 </body>
 </html>
